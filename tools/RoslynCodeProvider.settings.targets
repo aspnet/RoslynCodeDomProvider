@@ -1,0 +1,46 @@
+<Project DefaultTargets="UnitTest" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <!-- Configurable properties-->
+
+    <PropertyGroup>
+        <BuildQuality Condition="'$(BuildQuality)' == ''">rtm</BuildQuality>
+        <VersionStartYear>2014</VersionStartYear>
+        <VersionMajor>1</VersionMajor>
+        <VersionMinor>0</VersionMinor>
+        <VersionRelease>3</VersionRelease>
+        <VersionRelease Condition="'$(BuildQuality)' != 'rtm'">$(VersionRelease)-$(BuildQuality)</VersionRelease>
+    </PropertyGroup>
+
+    <PropertyGroup Label="NuGet package dependencies">
+        <MSNetCompilersNuGetPackageVersion>1.3.2</MSNetCompilersNuGetPackageVersion>
+    </PropertyGroup>
+
+    <!-- Default properties -->
+
+    <PropertyGroup>
+        <RepositoryRoot Condition="'$(RepositoryRoot)' == ''">$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), RoslynCodeProvider.sln))\</RepositoryRoot>
+    </PropertyGroup>
+
+    <PropertyGroup Label="Common Configuration">
+        <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
+        <OutputPath>$(RepositoryRoot)bin\$(Configuration)\</OutputPath>
+        <IntermediateOutputPath>$(RepositoryRoot)obj\$(Configuration)\$(MSBuildProjectName)\</IntermediateOutputPath>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <AssemblyPath Condition="'$(AssemblyPath)' == ''">$(OutputPath)</AssemblyPath>
+        <NuGetOutputPath>$(AssemblyPath)Packages</NuGetOutputPath>
+        <NuGetSymbolsOutputPath>$(AssemblyPath)\SymbolPackages</NuGetSymbolsOutputPath>
+        <TestOutputPath>$(OutputPath)test\</TestOutputPath>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <ReferencePackagesPath>$(RepositoryRoot)packages\</ReferencePackagesPath>
+        <NuGetPackSymbols Condition="'$(NuGetPackSymbols)' == ''">true</NuGetPackSymbols>
+        <SourceRootFullPath>$(RepositoryRoot)\src\$(MSBuildProjectName)\</SourceRootFullPath>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <CustomAfterMicrosoftCommonTargets>$(RepositoryRoot)tools\RoslynCodeProvider.targets</CustomAfterMicrosoftCommonTargets>
+        <CustomAfterNuGetProjTargets>$(CustomAfterMicrosoftCommonTargets)</CustomAfterNuGetProjTargets>
+    </PropertyGroup>
+</Project>

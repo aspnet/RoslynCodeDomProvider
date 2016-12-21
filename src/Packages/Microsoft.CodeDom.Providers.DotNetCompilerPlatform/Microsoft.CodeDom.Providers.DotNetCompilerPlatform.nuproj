@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory),RoslynCodeProvider.sln))\tools\RoslynCodeProvider.settings.targets" />
+    <PropertyGroup>
+        <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+        <NuGetPackageId>$(MSBuildProjectName)</NuGetPackageId>
+        <NuSpecFile>$(MSBuildProjectName).nuspec</NuSpecFile>
+    </PropertyGroup>
+    <ItemGroup>
+        <NuGetContent Include="$(AssemblyName).dll">
+            <Source>$(AssemblyPath)</Source>
+            <Destination>lib\net45</Destination>
+        </NuGetContent>
+        <NuGetContent Include="$(AssemblyName).xml">
+            <Source>$(OutputPath)</Source>
+            <Destination>lib\net45</Destination>
+        </NuGetContent>
+        <NuGetContent Include="$(AssemblyName).pdb" Condition="'$(NuGetPackSymbols)' == 'true'">
+            <Source>$(OutputPath)</Source>
+            <Destination>lib\net45</Destination>
+        </NuGetContent>
+        <NuGetContentProject Include="$(RepositoryRoot)\src\$(MSBuildProjectName)\$(MSBuildProjectName).csproj" Condition="'$(NuGetPackSymbols)' == 'true'" />
+        <NuGetContent Include="Content\*">
+            <Destination>content</Destination>
+        </NuGetContent>
+        <NuGetContent Include="build\*">
+            <Destination>build</Destination>
+        </NuGetContent>
+        <NuGetContent Include="$(AssemblyPath)*.ps1">
+            <Destination>tools</Destination>
+        </NuGetContent>
+    </ItemGroup>
+    <Import Project="$(RepositoryRoot)Tools\NuGetProj.targets"/>
+</Project>

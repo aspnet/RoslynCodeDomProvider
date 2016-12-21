@@ -1,0 +1,53 @@
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="tools\RoslynCodeProvider.settings.targets"/>
+
+  <UsingTask AssemblyFile="..\Build\tools\Microsoft.Web.MsBuildTasks2.dll" TaskName="Microsoft.Web.MsBuildTasks.PoliCheck"/>
+
+  <ItemGroup>
+    <AssemblyProject Include="src\Microsoft.CodeDom.Providers.DotNetCompilerPlatform\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <AssemblyProject Include="RoslynCodeProviderTest\Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageProject Include="src\Packages\Packages.csproj" />
+  </ItemGroup>
+
+  <!-- Composite targets -->
+  <Target Name="BuildCI" DependsOnTargets="Clean;Build" />
+
+  <Target Name="Build" DependsOnTargets="BuildAssemblies;BuildPackages" />
+  <Target Name="Clean" DependsOnTargets="CleanPackages;CleanAssemblies" />
+  <Target Name="Rebuild" DependsOnTargets="Clean;Build" />
+
+  <!-- Core build-->
+
+  <Target Name="BuildAssemblies" DependsOnTargets="RestorePackages">
+    <MSBuild Targets="Build" Projects="@(AssemblyProject)" />
+  </Target>
+
+  <Target Name="CleanAssemblies">
+    <MSBuild Targets="Clean" Projects="@(AssemblyProject)" />
+  </Target>
+
+  <Target Name="RebuildAssemblies" DependsOnTargets="Clean;Build" />
+
+  <!-- Packages build -->
+
+  <Target Name="BuildPackages" DependsOnTargets="RestorePackages">
+    <MSBuild Targets="" Projects="@(PackageProject)" />
+  </Target>
+
+  <Target Name="CleanPackages">
+    <MSBuild Targets="Clean" Projects="@(PackageProject)" />
+  </Target>
+
+  <Target Name="RebuildPackages" DependsOnTargets="CleanPackages;BuildPackages" />
+
+  <Target Name="RestorePackages">
+    <Exec Command=".nuget\NuGet.exe restore" />
+  </Target>
+
+  <Import Project="tools\RoslynCodeProvider.targets" />
+</Project>
