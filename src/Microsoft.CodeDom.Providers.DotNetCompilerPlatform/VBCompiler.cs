@@ -1,3 +1,6 @@
+// Copyright (c) .NET Foundation. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
 ﻿using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -66,11 +69,11 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
             // Ignore vb warning that complains about assemblyKeyName (Dev10 662544)
             // but only for target 3.5 and above (715329)
             noWarnStrings.Add("41008");
-            
+
             // disable ObsoleteWarnings
             noWarnStrings.Add("40000"); // [Obsolete("with message")]
             noWarnStrings.Add("40008"); // [Obsolete] without message
-            
+
             if (noWarnStrings.Count > 0) {
                 CompilationUtil.PrependCompilerOption(options, "/nowarn:" + String.Join(",", noWarnStrings));
             }
@@ -294,7 +297,7 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
 
             // Prepend it to the compilerOptions
             if (VBImportsString.Length > 0) {
-                CompilationUtil.PrependCompilerOption(compilParams, VBImportsString);                    
+                CompilationUtil.PrependCompilerOption(compilParams, VBImportsString);
             }
         }
     }

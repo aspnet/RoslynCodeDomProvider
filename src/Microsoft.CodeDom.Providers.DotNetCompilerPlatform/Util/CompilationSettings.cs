@@ -1,3 +1,6 @@
+// Copyright (c) .NET Foundation. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
 ﻿using System;
 using System.IO;
 
@@ -36,7 +39,7 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
         private static ICompilerSettings _vb = new CompilerSettings(CompilerFullPath(@"bin\roslyn\vbc.exe"), DefaultCompilerServerTTL);
 
         public static ICompilerSettings CSC2 {
-            get { 
+            get {
                 return _csc;
             }
         }

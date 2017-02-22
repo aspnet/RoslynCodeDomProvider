@@ -1,3 +1,6 @@
+// Copyright (c) .NET Foundation. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
 ﻿using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
@@ -142,7 +145,7 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
 
         protected abstract void ProcessCompilerOutputLine(CompilerResults results, string line);
 
-        protected abstract string CmdArgsFromParameters(CompilerParameters options);        
+        protected abstract string CmdArgsFromParameters(CompilerParameters options);
 
         protected abstract string FullPathsOption {
             get;
@@ -181,7 +184,7 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
             var filenames = new string[sources.Length];
             CompilerResults results = null;
 
-            // the extra try-catch is here to mitigate exception filter injection attacks. 
+            // the extra try-catch is here to mitigate exception filter injection attacks.
             try {
                 WindowsImpersonationContext impersonation = RevertImpersonation();
                 try {
@@ -254,7 +257,7 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
 
             var pdbname = "pdb";
 
-            // Don't delete pdbs when debug=false but they have specified pdbonly. 
+            // Don't delete pdbs when debug=false but they have specified pdbonly.
             if (options.CompilerOptions != null
                     && -1 != CultureInfo.InvariantCulture.CompareInfo.IndexOf(options.CompilerOptions, "/debug:pdbonly", CompareOptions.IgnoreCase)) {
                 results.TempFiles.AddExtension(pdbname, true);

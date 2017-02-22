@@ -104,7 +104,7 @@ Project global versioning targets.
     <PropertyGroup>
       <VersionMajor>$([System.Convert]::ToInt16('$(VersionMajor)'))</VersionMajor>
       <VersionMinor>$([System.Convert]::ToInt16('$(VersionMinor)'))</VersionMinor>
-      <VersionBuild>$([System.Convert]::ToInt16('$(VersionBuild)'))</VersionBuild>
+      <VersionBuild>$([System.Convert]::ToInt32('$(VersionBuild)'))</VersionBuild>
       <VersionRevision>$([System.Convert]::ToInt16('$(VersionRevision)'))</VersionRevision>
     </PropertyGroup>
   </Target>

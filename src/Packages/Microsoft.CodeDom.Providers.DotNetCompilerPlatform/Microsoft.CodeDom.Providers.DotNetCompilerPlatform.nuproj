@@ -26,7 +26,7 @@
         <NuGetContent Include="build\*">
             <Destination>build</Destination>
         </NuGetContent>
-        <NuGetContent Include="$(AssemblyPath)*.ps1">
+        <NuGetContent Include="tools\*.ps1">
             <Destination>tools</Destination>
         </NuGetContent>
     </ItemGroup>
