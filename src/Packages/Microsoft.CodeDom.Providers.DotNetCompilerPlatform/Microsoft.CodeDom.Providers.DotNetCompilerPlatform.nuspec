@@ -15,7 +15,12 @@
         <requireLicenseAcceptance>true</requireLicenseAcceptance>
         <tags>Roslyn CodeDOM Compiler CSharp VB.Net ASP.NET</tags>
         <dependencies>
-            <dependency id="Microsoft.Net.Compilers" version="$MSNetCompilersNuGetPackageVersion$" />
+            <group targetFramework=".NETFramework4.5">
+                <dependency id="Microsoft.Net.Compilers" version="$MSNetCompilersNuGetPackageVersion$" />
+            </group>
+            <group targetFramework=".NETFramework4.6">
+                <dependency id="Microsoft.Net.Compilers" version="$MSNetCompilersNuGetPackageLatestVersion$" />
+            </group>
         </dependencies>
     </metadata>
 </package>
