@@ -23,6 +23,9 @@
         <NuGetContent Include="Content\net45\*">
             <Destination>content\net45</Destination>
         </NuGetContent>
+        <NuGetContent Include="Content\net46\*">
+            <Destination>content\net46</Destination>
+        </NuGetContent>
         <NuGetContent Include="build\*">
             <Destination>build\net45</Destination>
         </NuGetContent>
