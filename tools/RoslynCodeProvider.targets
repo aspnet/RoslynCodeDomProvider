@@ -22,7 +22,8 @@
             <NuSpecProperties>
                 NuGetPackageVersion=$(NuGetPackageVersion);
                 NuGetPackageId=$(NuGetPackageId);
-                MSNetCompilersNuGetPackageVersion=$(MSNetCompilersNuGetPackageVersion)
+                MSNetCompilersNuGetPackageVersion=$(MSNetCompilersNuGetPackageVersion);
+                MSNetCompilersNuGetPackageLatestVersion=$(MSNetCompilersNuGetPackageLatestVersion)
             </NuSpecProperties>
         </PropertyGroup>
     </Target>

@@ -20,14 +20,17 @@
             <Destination>lib\net45</Destination>
         </NuGetContent>
         <NuGetContentProject Include="$(RepositoryRoot)\src\$(MSBuildProjectName)\$(MSBuildProjectName).csproj" Condition="'$(NuGetPackSymbols)' == 'true'" />
-        <NuGetContent Include="Content\*">
-            <Destination>content</Destination>
+        <NuGetContent Include="Content\net45\*">
+            <Destination>content\net45</Destination>
+        </NuGetContent>
+        <NuGetContent Include="Content\net46\*">
+            <Destination>content\net46</Destination>
         </NuGetContent>
         <NuGetContent Include="build\*">
-            <Destination>build</Destination>
+            <Destination>build\net45</Destination>
         </NuGetContent>
         <NuGetContent Include="tools\*.ps1">
-            <Destination>tools</Destination>
+            <Destination>tools\net45</Destination>
         </NuGetContent>
     </ItemGroup>
     <Import Project="$(RepositoryRoot)Tools\NuGetProj.targets"/>
