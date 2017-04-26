@@ -6,13 +6,13 @@
         <VersionStartYear>2014</VersionStartYear>
         <VersionMajor>1</VersionMajor>
         <VersionMinor>0</VersionMinor>
-        <VersionRelease>4</VersionRelease>
+        <VersionRelease>5</VersionRelease>
         <VersionRelease Condition="'$(BuildQuality)' != 'rtm'">$(VersionRelease)-$(BuildQuality)</VersionRelease>
     </PropertyGroup>
 
     <PropertyGroup Label="NuGet package dependencies">
         <MSNetCompilersNuGetPackageVersion>1.3.2</MSNetCompilersNuGetPackageVersion>
-        <MSNetCompilersNuGetPackageLatestVersion>2.0.1</MSNetCompilersNuGetPackageLatestVersion>
+        <MSNetCompilersNuGetPackageLatestVersion>2.1.0</MSNetCompilersNuGetPackageLatestVersion>
     </PropertyGroup>
 
     <!-- Default properties -->

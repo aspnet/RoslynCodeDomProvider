@@ -1,8 +1,10 @@
-// Copyright (c) .NET Foundation. All rights reserved.
+﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
     internal sealed class CompilerSettings : ICompilerSettings {
@@ -34,9 +36,33 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
 
     internal static class CompilationSettingsHelper {
         private const int DefaultCompilerServerTTL = 10; //seconds
+        private const int DefaultCompilerServerTTLInDevEnvironment = 60 * 15;
+        private const string DevEnvironmentVariableName = "DEV_ENVIRONMENT";
+        private const string DebuggerAttachedEnvironmentVariable = "IN_DEBUG_MODE";
 
-        private static ICompilerSettings _csc = new CompilerSettings(CompilerFullPath(@"bin\roslyn\csc.exe"), DefaultCompilerServerTTL);
-        private static ICompilerSettings _vb = new CompilerSettings(CompilerFullPath(@"bin\roslyn\vbc.exe"), DefaultCompilerServerTTL);
+        private static ICompilerSettings _csc;
+        private static ICompilerSettings _vb;
+
+        static CompilationSettingsHelper() {
+            var ttl = DefaultCompilerServerTTL;
+            var devEnvironmentSetting = Environment.GetEnvironmentVariable(DevEnvironmentVariableName, EnvironmentVariableTarget.Process);
+            var debuggerAttachedEnvironmentSetting = Environment.GetEnvironmentVariable(DebuggerAttachedEnvironmentVariable, 
+                EnvironmentVariableTarget.Process);
+            var isDebuggerAttached = IsDebuggerAttached;
+
+            if (!string.IsNullOrEmpty(devEnvironmentSetting) || 
+                !string.IsNullOrEmpty(debuggerAttachedEnvironmentSetting) ||
+                isDebuggerAttached) {
+                ttl = DefaultCompilerServerTTLInDevEnvironment;
+            }
+
+            _csc = new CompilerSettings(CompilerFullPath(@"bin\roslyn\csc.exe"), ttl);
+            _vb = new CompilerSettings(CompilerFullPath(@"bin\roslyn\vbc.exe"), ttl);
+
+            if (isDebuggerAttached) {
+                Environment.SetEnvironmentVariable(DebuggerAttachedEnvironmentVariable, "1", EnvironmentVariableTarget.Process);
+            }
+        }
 
         public static ICompilerSettings CSC2 {
             get {
@@ -54,5 +80,14 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
             string compilerFullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, relativePath);
             return compilerFullPath;
         }
+
+        private static bool IsDebuggerAttached {
+            get {
+                return IsDebuggerPresent() || Debugger.IsAttached;
+            }
+        }
+
+        [DllImport("kernel32.dll")]
+        private extern static bool IsDebuggerPresent();
     }
 }
