@@ -18,7 +18,7 @@ $binDirectory = Join-Path $projectRoot 'bin'
 # Microsoft.VisualStudio.Web.Host.exe cannot find the assembly.
 # However, users will see the error after they clean solutions.
 New-Item $binDirectory -type directory -force | Out-Null
-Copy-Item $libDirectory\* $binDirectory | Out-Null
+Copy-Item $libDirectory\* $binDirectory -force | Out-Null
 
 # For Web Site, we need to copy the Roslyn toolset into
 # the applicaiton's bin folder. 
@@ -56,7 +56,7 @@ if ($project.Type -eq 'Web Site') {
     $compilerPackageToolsDirectory = Join-Path $compilerPackageDirectory 'tools'
     $roslynSubDirectory = Join-Path $binDirectory $roslynSubFolder
     New-Item $roslynSubDirectory -type directory -force | Out-Null
-    Copy-Item $compilerPackageToolsDirectory\* $roslynSubDirectory | Out-Null
+    Copy-Item $compilerPackageToolsDirectory\* $roslynSubDirectory -force | Out-Null
 
     # Generate a .refresh file for each dll/exe file.
     Push-Location
