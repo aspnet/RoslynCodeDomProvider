@@ -39,6 +39,9 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
         private const int DefaultCompilerServerTTLInDevEnvironment = 60 * 15;
         private const string DevEnvironmentVariableName = "DEV_ENVIRONMENT";
         private const string DebuggerAttachedEnvironmentVariable = "IN_DEBUG_MODE";
+        // Full path of the directory that contains the Roslyn binaries
+        // and the hosting process has permission to access that path
+        private const string CustomRoslynCompilerLocation = "ROSLYN_COMPILER_LOCATION";
 
         private static ICompilerSettings _csc;
         private static ICompilerSettings _vb;
@@ -56,8 +59,17 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
                 ttl = DefaultCompilerServerTTLInDevEnvironment;
             }
 
-            _csc = new CompilerSettings(CompilerFullPath(@"bin\roslyn\csc.exe"), ttl);
-            _vb = new CompilerSettings(CompilerFullPath(@"bin\roslyn\vbc.exe"), ttl);
+            var customRoslynCompilerLocation = Environment.GetEnvironmentVariable(CustomRoslynCompilerLocation, EnvironmentVariableTarget.Process);
+            if(customRoslynCompilerLocation != null)
+            {
+                _csc = new CompilerSettings($"{customRoslynCompilerLocation}\\csc.exe", ttl);
+                _vb = new CompilerSettings($"{customRoslynCompilerLocation}\\vbc.exe", ttl);
+            }
+            else
+            {
+                _csc = new CompilerSettings(CompilerFullPath(@"bin\roslyn\csc.exe"), ttl);
+                _vb = new CompilerSettings(CompilerFullPath(@"bin\roslyn\vbc.exe"), ttl);
+            }
 
             if (isDebuggerAttached) {
                 Environment.SetEnvironmentVariable(DebuggerAttachedEnvironmentVariable, "1", EnvironmentVariableTarget.Process);
