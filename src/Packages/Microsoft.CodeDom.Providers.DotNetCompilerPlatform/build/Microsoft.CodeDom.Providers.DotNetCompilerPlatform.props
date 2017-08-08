@@ -4,7 +4,16 @@
       <Link>roslyn\%(RecursiveDir)%(Filename)%(Extension)</Link>
     </RoslyCompilerFiles>
   </ItemGroup>
- <Target Name="RoslynCompilerFilesToPublish">
+  <Target Name="IncludeRoslynCompilerFilesToFilesForPackagingFromProject" AfterTargets="ConfigureFoldersForAspNetCompileMerge" >
+    <ItemGroup>
+      <FilesForPackagingFromProject Include="@(RoslyCompilerFiles)">
+        <DestinationRelativePath>bin\roslyn\%(RecursiveDir)%(Filename)%(Extension)</DestinationRelativePath>
+        <FromTarget>IncludeRoslynCompilerFilesToFilesForPackagingFromProject</FromTarget>
+        <Category>Run</Category>
+      </FilesForPackagingFromProject>
+    </ItemGroup>
+  </Target>
+  <Target Name="RoslynCompilerFilesToPublish">
     <ItemGroup>
       <_RoslynFiles Include="@(RoslyCompilerFiles)" />
       <FilesForPackagingFromProject Include="%(_RoslynFiles.Identity)">
