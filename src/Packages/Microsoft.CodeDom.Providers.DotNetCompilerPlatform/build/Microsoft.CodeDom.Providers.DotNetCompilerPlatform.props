@@ -4,15 +4,6 @@
       <Link>roslyn\%(RecursiveDir)%(Filename)%(Extension)</Link>
     </RoslyCompilerFiles>
   </ItemGroup>
-  <Target Name="IncludeRoslynCompilerFilesToFilesForPackagingFromProject" AfterTargets="ConfigureFoldersForAspNetCompileMerge" >
-    <ItemGroup>
-      <FilesForPackagingFromProject Include="@(RoslyCompilerFiles)">
-        <DestinationRelativePath>bin\roslyn\%(RecursiveDir)%(Filename)%(Extension)</DestinationRelativePath>
-        <FromTarget>IncludeRoslynCompilerFilesToFilesForPackagingFromProject</FromTarget>
-        <Category>Run</Category>
-      </FilesForPackagingFromProject>
-    </ItemGroup>
-  </Target>
   <Target Name="RoslynCompilerFilesToPublish">
     <ItemGroup>
       <_RoslynFiles Include="@(RoslyCompilerFiles)" />
@@ -27,6 +18,15 @@
       $(CopyAllFilesToSingleFolderForPackageDependsOn);
     </CopyAllFilesToSingleFolderForPackageDependsOn>
   </PropertyGroup>
+  <Target Name="IncludeRoslynCompilerFilesToFilesForPackagingFromProject" BeforeTargets="PrepareForRun" >
+    <ItemGroup>
+      <FilesForPackagingFromProject Include="@(RoslyCompilerFiles)">
+        <DestinationRelativePath>bin\roslyn\%(RecursiveDir)%(Filename)%(Extension)</DestinationRelativePath>
+        <FromTarget>IncludeRoslynCompilerFilesToFilesForPackagingFromProject</FromTarget>
+        <Category>Run</Category>
+      </FilesForPackagingFromProject>
+    </ItemGroup>
+  </Target>
   <Target Name="CopyRoslynCompilerFilesToOutputDirectory" AfterTargets="CopyFilesToOutputDirectory">
     <Copy SourceFiles="@(RoslyCompilerFiles)" DestinationFolder="$(WebProjectOutputDir)\bin\roslyn" ContinueOnError="true" SkipUnchangedFiles="true" Retries="0" />
   </Target>
