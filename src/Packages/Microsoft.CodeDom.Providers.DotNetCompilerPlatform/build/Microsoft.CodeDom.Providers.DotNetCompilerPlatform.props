@@ -4,20 +4,6 @@
       <Link>roslyn\%(RecursiveDir)%(Filename)%(Extension)</Link>
     </RoslyCompilerFiles>
   </ItemGroup>
-  <Target Name="RoslynCompilerFilesToPublish">
-    <ItemGroup>
-      <_RoslynFiles Include="@(RoslyCompilerFiles)" />
-      <FilesForPackagingFromProject Include="%(_RoslynFiles.Identity)">
-        <DestinationRelativePath>bin\roslyn\%(RecursiveDir)%(Filename)%(Extension)</DestinationRelativePath>
-      </FilesForPackagingFromProject>
-    </ItemGroup>
-  </Target>
-  <PropertyGroup>
-    <CopyAllFilesToSingleFolderForPackageDependsOn>
-      RoslynCompilerFilesToPublish;
-      $(CopyAllFilesToSingleFolderForPackageDependsOn);
-    </CopyAllFilesToSingleFolderForPackageDependsOn>
-  </PropertyGroup>
   <Target Name="IncludeRoslynCompilerFilesToFilesForPackagingFromProject" BeforeTargets="PrepareForRun" >
     <ItemGroup>
       <FilesForPackagingFromProject Include="@(RoslyCompilerFiles)">
