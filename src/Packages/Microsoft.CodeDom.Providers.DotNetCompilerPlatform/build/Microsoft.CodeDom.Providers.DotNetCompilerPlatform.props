@@ -4,20 +4,15 @@
       <Link>roslyn\%(RecursiveDir)%(Filename)%(Extension)</Link>
     </RoslyCompilerFiles>
   </ItemGroup>
- <Target Name="RoslynCompilerFilesToPublish">
+  <Target Name="IncludeRoslynCompilerFilesToFilesForPackagingFromProject" BeforeTargets="PrepareForRun" >
     <ItemGroup>
-      <_RoslynFiles Include="@(RoslyCompilerFiles)" />
-      <FilesForPackagingFromProject Include="%(_RoslynFiles.Identity)">
+      <FilesForPackagingFromProject Include="@(RoslyCompilerFiles)">
         <DestinationRelativePath>bin\roslyn\%(RecursiveDir)%(Filename)%(Extension)</DestinationRelativePath>
+        <FromTarget>IncludeRoslynCompilerFilesToFilesForPackagingFromProject</FromTarget>
+        <Category>Run</Category>
       </FilesForPackagingFromProject>
     </ItemGroup>
   </Target>
-  <PropertyGroup>
-    <CopyAllFilesToSingleFolderForPackageDependsOn>
-      RoslynCompilerFilesToPublish;
-      $(CopyAllFilesToSingleFolderForPackageDependsOn);
-    </CopyAllFilesToSingleFolderForPackageDependsOn>
-  </PropertyGroup>
   <Target Name="CopyRoslynCompilerFilesToOutputDirectory" AfterTargets="CopyFilesToOutputDirectory">
     <Copy SourceFiles="@(RoslyCompilerFiles)" DestinationFolder="$(WebProjectOutputDir)\bin\roslyn" ContinueOnError="true" SkipUnchangedFiles="true" Retries="0" />
   </Target>
