@@ -39,6 +39,7 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
         private const int DefaultCompilerServerTTLInDevEnvironment = 60 * 15;
         private const string DevEnvironmentVariableName = "DEV_ENVIRONMENT";
         private const string DebuggerAttachedEnvironmentVariable = "IN_DEBUG_MODE";
+        private const string CustomTTLEnvironmentVariableName = "VBCSCOMPILER_TTL"; // the setting value is in seconds
         // Full path of the directory that contains the Roslyn binaries
         // and the hosting process has permission to access that path
         private const string CustomRoslynCompilerLocation = "ROSLYN_COMPILER_LOCATION";
@@ -51,12 +52,23 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
             var devEnvironmentSetting = Environment.GetEnvironmentVariable(DevEnvironmentVariableName, EnvironmentVariableTarget.Process);
             var debuggerAttachedEnvironmentSetting = Environment.GetEnvironmentVariable(DebuggerAttachedEnvironmentVariable, 
                 EnvironmentVariableTarget.Process);
+            var customTtlSetting = Environment.GetEnvironmentVariable(CustomTTLEnvironmentVariableName, EnvironmentVariableTarget.Process);
             var isDebuggerAttached = IsDebuggerAttached;
+            int customTtl;
 
-            if (!string.IsNullOrEmpty(devEnvironmentSetting) || 
-                !string.IsNullOrEmpty(debuggerAttachedEnvironmentSetting) ||
-                isDebuggerAttached) {
-                ttl = DefaultCompilerServerTTLInDevEnvironment;
+            // custom TTL setting always win
+            if(int.TryParse(customTtlSetting, out customTtl))
+            {
+                ttl = customTtl;
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(devEnvironmentSetting) ||
+                    !string.IsNullOrEmpty(debuggerAttachedEnvironmentSetting) ||
+                    isDebuggerAttached)
+                {
+                    ttl = DefaultCompilerServerTTLInDevEnvironment;
+                }
             }
 
             var customRoslynCompilerLocation = Environment.GetEnvironmentVariable(CustomRoslynCompilerLocation, EnvironmentVariableTarget.Process);
