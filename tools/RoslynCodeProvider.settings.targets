@@ -6,7 +6,7 @@
         <VersionStartYear>2014</VersionStartYear>
         <VersionMajor>1</VersionMajor>
         <VersionMinor>0</VersionMinor>
-        <VersionRelease>7</VersionRelease>
+        <VersionRelease>8</VersionRelease>
         <VersionRelease Condition="'$(BuildQuality)' != 'rtm'">$(VersionRelease)-$(BuildQuality)</VersionRelease>
     </PropertyGroup>
 
