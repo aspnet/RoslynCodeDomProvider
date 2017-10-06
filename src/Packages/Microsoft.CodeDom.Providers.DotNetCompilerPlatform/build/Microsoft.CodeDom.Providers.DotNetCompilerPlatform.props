@@ -4,7 +4,7 @@
       <Link>roslyn\%(RecursiveDir)%(Filename)%(Extension)</Link>
     </RoslyCompilerFiles>
   </ItemGroup>
-  <Target Name="IncludeRoslynCompilerFilesToFilesForPackagingFromProject" BeforeTargets="PrepareForRun" >
+  <Target Name="IncludeRoslynCompilerFilesToFilesForPackagingFromProject" BeforeTargets="PipelineCollectFilesPhase" >
     <ItemGroup>
       <FilesForPackagingFromProject Include="@(RoslyCompilerFiles)">
         <DestinationRelativePath>bin\roslyn\%(RecursiveDir)%(Filename)%(Extension)</DestinationRelativePath>
