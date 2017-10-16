@@ -4,7 +4,7 @@
       <Link>roslyn\%(RecursiveDir)%(Filename)%(Extension)</Link>
     </RoslyCompilerFiles>
   </ItemGroup>
-  <Target Name="IncludeRoslynCompilerFilesToFilesForPackagingFromProject" BeforeTargets="PrepareForRun" >
+  <Target Name="IncludeRoslynCompilerFilesToFilesForPackagingFromProject" BeforeTargets="PipelineCollectFilesPhase" >
     <ItemGroup>
       <FilesForPackagingFromProject Include="@(RoslyCompilerFiles)">
         <DestinationRelativePath>bin\roslyn\%(RecursiveDir)%(Filename)%(Extension)</DestinationRelativePath>
@@ -15,10 +15,16 @@
   </Target>
   <Target Name="CopyRoslynCompilerFilesToOutputDirectory" AfterTargets="CopyFilesToOutputDirectory">
     <Copy SourceFiles="@(RoslyCompilerFiles)" DestinationFolder="$(WebProjectOutputDir)\bin\roslyn" ContinueOnError="true" SkipUnchangedFiles="true" Retries="0" />
+    <ItemGroup  Condition="'$(MSBuildLastTaskResult)' == 'True'" >
+      <FileWrites Include="$(WebProjectOutputDir)\bin\roslyn\*" />
+    </ItemGroup>
   </Target>
   <Target Name = "KillVBCSCompilerAndRetryCopy" AfterTargets="CopyRoslynCompilerFilesToOutputDirectory" Condition="'$(MSBuildLastTaskResult)' == 'False'" >
     <KillProcess ProcessName="VBCSCompiler" ImagePath="$(WebProjectOutputDir)" />
     <Copy SourceFiles="@(RoslyCompilerFiles)" DestinationFolder="$(WebProjectOutputDir)\bin\roslyn" ContinueOnError="true" SkipUnchangedFiles="true" />
+    <ItemGroup>
+      <FileWrites Include="$(WebProjectOutputDir)\bin\roslyn\*" />
+    </ItemGroup>
   </Target>
   <UsingTask TaskName="KillProcess" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
     <ParameterGroup>
