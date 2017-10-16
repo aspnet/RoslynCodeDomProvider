@@ -12,7 +12,7 @@
 
     <PropertyGroup Label="NuGet package dependencies">
         <MSNetCompilersNuGetPackageVersion>1.3.2</MSNetCompilersNuGetPackageVersion>
-        <MSNetCompilersNuGetPackageLatestVersion>2.1.0</MSNetCompilersNuGetPackageLatestVersion>
+        <MSNetCompilersNuGetPackageLatestVersion>2.4.0</MSNetCompilersNuGetPackageLatestVersion>
     </PropertyGroup>
 
     <!-- Default properties -->
