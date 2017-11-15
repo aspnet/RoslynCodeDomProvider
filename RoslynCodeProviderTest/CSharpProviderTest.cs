@@ -1,6 +1,5 @@
 ﻿using Microsoft.CodeDom.Providers.DotNetCompilerPlatform;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using System.CodeDom.Compiler;
 using System.IO;
 
