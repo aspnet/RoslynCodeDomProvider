@@ -165,8 +165,9 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
                         // Removing the custom parameter, as the compiler can't process it.
                         options.CompilerOptions = options.CompilerOptions.Replace($"/{CustomCompilerPath}:{customCompilerPath}", "");
                     }
+                    // Falling back to the default behavior.
+                    else _compilerFullPath = _compilerSettings.CompilerFullPath;
                 }
-                // Falling back to the default behavior.
                 else _compilerFullPath = _compilerSettings.CompilerFullPath;
 
                 // Try opening the file to make sure that the compiler exists.
