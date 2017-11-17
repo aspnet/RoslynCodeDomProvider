@@ -21,17 +21,9 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
             _compilerServerTimeToLive = compilerServerTimeToLive;
         }
 
-        string ICompilerSettings.CompilerFullPath {
-            get {
-                return _compilerFullPath;
-            }
-        }
+        string ICompilerSettings.CompilerFullPath => _compilerFullPath;
 
-        int ICompilerSettings.CompilerServerTimeToLive {
-            get{
-                return _compilerServerTimeToLive;
-            }
-        }
+        int ICompilerSettings.CompilerServerTimeToLive => _compilerServerTimeToLive;
     }
 
     internal static class CompilationSettingsHelper {
@@ -88,28 +80,14 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
             }
         }
 
-        public static ICompilerSettings CSC2 {
-            get {
-                return _csc;
-            }
-        }
+        public static ICompilerSettings CSC2 => _csc;
 
-        public static ICompilerSettings VBC2 {
-            get {
-                return _vb;
-            }
-        }
+        public static ICompilerSettings VBC2 => _vb;
 
-        private static string CompilerFullPath(string relativePath) {
-            string compilerFullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, relativePath);
-            return compilerFullPath;
-        }
+        public static string CompilerFullPath(string relativePath) =>
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, relativePath);
 
-        private static bool IsDebuggerAttached {
-            get {
-                return IsDebuggerPresent() || Debugger.IsAttached;
-            }
-        }
+        private static bool IsDebuggerAttached => IsDebuggerPresent() || Debugger.IsAttached;
 
         [DllImport("kernel32.dll")]
         private extern static bool IsDebuggerPresent();
