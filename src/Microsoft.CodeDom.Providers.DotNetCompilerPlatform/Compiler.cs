@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-﻿using System;
+using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -12,18 +12,21 @@ using System.Reflection;
 using System.Security.Permissions;
 using System.Security.Principal;
 using System.Text;
+using static Microsoft.CodeDom.Providers.DotNetCompilerPlatform.Constants.CustomCompilerParameters;
 
 namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
     internal abstract class Compiler : ICodeCompiler {
         private readonly CodeDomProvider _codeDomProvider;
         private readonly ICompilerSettings _compilerSettings;
-        private string _compilerFullPath = null;
         private const string CLR_PROFILING_SETTING = "COR_ENABLE_PROFILING";
         private const string DISABLE_PROFILING = "0";
 
+        // Needs to be initialized using InitializeCompilerFullPath where the CompilerParameters are available.
+        private string _compilerFullPath = null;
+
         public Compiler(CodeDomProvider codeDomProvider, ICompilerSettings compilerSettings) {
-            this._codeDomProvider = codeDomProvider;
-            this._compilerSettings = compilerSettings;
+            _codeDomProvider = codeDomProvider;
+            _compilerSettings = compilerSettings;
         }
 
         public CompilerResults CompileAssemblyFromDom(CompilerParameters options, CodeCompileUnit compilationUnit) {
@@ -46,6 +49,8 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
             if (compilationUnits == null) {
                 throw new ArgumentNullException("compilationUnits");
             }
+
+            InitializeCompilerFullPath(options);
 
             try {
                 var sources = compilationUnits.Select(c => {
@@ -82,6 +87,8 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
                 throw new ArgumentNullException("fileNames");
             }
 
+            InitializeCompilerFullPath(options);
+
             try {
                 // Try opening the files to make sure they exists.  This will throw an exception
                 // if it doesn't
@@ -117,6 +124,8 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
                 throw new ArgumentNullException("sources");
             }
 
+            InitializeCompilerFullPath(options);
+
             try {
                 return FromSourceBatch(options, sources);
             }
@@ -129,17 +138,40 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
             get;
         }
 
-        protected virtual string CompilerName {
-            get {
-                if (null == _compilerFullPath) {
-                    _compilerFullPath = _compilerSettings.CompilerFullPath;
+        protected void InitializeCompilerFullPath(CompilerParameters options = null) {
+            if (string.IsNullOrEmpty(_compilerFullPath)) {
+                if (options != null) {
+                    // Determining whether the custom compiler path parameter is provided.
+                    var customCompilerPathParameter = options.CompilerOptions.Split('/').FirstOrDefault(p => p.StartsWith(CustomCompilerPath));
+                    if (!string.IsNullOrEmpty(customCompilerPathParameter)) {
+                        if (!customCompilerPathParameter.Contains(":")) {
+                            throw new ArgumentException($"There's no value defined for the \"{CustomCompilerPath}\" compiler parameter!");
+                        }
 
-                    // Try opening the file to make sure the compiler exist.  This will throw an exception
-                    // if it doesn't
-                    using (var str = File.OpenRead(_compilerFullPath)) { }
+                        // Removing trailing space (when this is not the last parameter) and extracting value.
+                        var customCompilerPath = customCompilerPathParameter.TrimEnd(' ').Split(':')[1];
+
+                        if (string.IsNullOrEmpty(customCompilerPath)) {
+                            throw new ArgumentException($"The value of the \"{CustomCompilerPath}\" compiler parameter can't be empty!");
+                        }
+
+                        // Extracting the name of the compiler executable from the default path.
+                        var compilerExecutable = _compilerSettings.CompilerFullPath.Substring(_compilerSettings.CompilerFullPath.LastIndexOf('\\'));
+
+                        // And finally, we're able to construct the complete custom path to the compiler executable.
+                        // If the custom path contains spaces, then it has to be surrounded by quotes, which we don't need now.
+                        _compilerFullPath = CompilationSettingsHelper.CompilerFullPath($"{customCompilerPath.Trim('"')}\\{compilerExecutable}");
+
+                        // Removing the custom parameter, as the compiler can't process it.
+                        options.CompilerOptions = options.CompilerOptions.Replace($"/{CustomCompilerPath}:{customCompilerPath}", "");
+                    }
                 }
+                // Falling back to the default behavior.
+                else _compilerFullPath = _compilerSettings.CompilerFullPath;
 
-                return _compilerFullPath;
+                // Try opening the file to make sure that the compiler exists.
+                // This will throw an exception if it doesn't.
+                using (var str = File.OpenRead(_compilerFullPath)) { }
             }
         }
 
@@ -282,7 +314,7 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
             }
 
             Compile(options,
-                CompilerName,
+                _compilerFullPath,
                 args,
                 ref outputFile,
                 ref retValue);
@@ -300,7 +332,7 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
                         replacedArgs = true;
                         var outputLine = string.Format("{0}>{1} {2}",
                             Environment.CurrentDirectory,
-                            CompilerName,
+                            _compilerFullPath,
                             trueArgs);
                         results.Output.Add(outputLine);
                     }
