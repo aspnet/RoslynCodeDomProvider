@@ -13,3 +13,4 @@ PublishProfiles/
 .build/
 .testPublish/
 msbuild.*
+src/**/tools/Roslyn*/

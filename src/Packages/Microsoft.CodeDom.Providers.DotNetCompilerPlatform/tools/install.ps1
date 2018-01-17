@@ -3,7 +3,6 @@
 
 param($installPath, $toolsPath, $package, $project)
 
-$compilerPackageName = 'Microsoft.Net.Compilers'
 $roslynSubFolder = 'roslyn'
 
 if ($project -eq $null) {
@@ -12,6 +11,8 @@ if ($project -eq $null) {
 
 $libDirectory = Join-Path $installPath 'lib\net45'
 $projectRoot = $project.Properties.Item('FullPath').Value
+$projectTargetFramework = $project.Properties.Item('TargetFrameworkMoniker').Value
+$shouldUseRoslyn45 = $projectTargetFramework -match '4.5'
 $binDirectory = Join-Path $projectRoot 'bin'
 
 # We need to copy the provider assembly into the bin\ folder, otherwise
@@ -26,25 +27,16 @@ Copy-Item $libDirectory\* $binDirectory -force | Out-Null
 if ($project.Type -eq 'Web Site') {
     $packageDirectory = Split-Path $installPath
 
-    # Get the installed Microsoft.Net.Compilers package.
-    $compilerPackage = Get-Package -ProjectName $project.Name | Where-Object {$_.Id -eq $compilerPackageName}
-    if ($compilerPackage -eq $null)
+    if($package.Versions -eq $null)
     {
-        Write-Host "Package $compilerPackageName is not installed correctly."
-        Write-Host 'The install.ps1 did not complete.'
-        break
-    }
-
-    if($compilerPackage.Versions -eq $null)
-    {
-        $compilerVersion = $compilerPackage.Version
+        $compilerVersion = $package.Version
     }
     else
     {
-		$compilerVersion = @($compilerPackage.Versions)[0]
+		$compilerVersion = @($package.Versions)[0]
     }
 
-    $compilerPackageFolderName = $compilerPackage.Id + "." + $compilerVersion
+    $compilerPackageFolderName = $package.Id + "." + $compilerVersion
     $compilerPackageDirectory = Join-Path $packageDirectory $compilerPackageFolderName
     if ((Get-Item $compilerPackageDirectory) -isnot [System.IO.DirectoryInfo])
     {
@@ -53,7 +45,14 @@ if ($project.Type -eq 'Web Site') {
         break
     }
 
-    $compilerPackageToolsDirectory = Join-Path $compilerPackageDirectory 'tools'
+    if($shouldUseRoslyn45)
+    {
+        $compilerPackageToolsDirectory = Join-Path $compilerPackageDirectory 'tools\roslyn45'
+    }
+    else
+    {
+        $compilerPackageToolsDirectory = Join-Path $compilerPackageDirectory 'tools\roslynlatest'
+    }
     $roslynSubDirectory = Join-Path $binDirectory $roslynSubFolder
     New-Item $roslynSubDirectory -type directory -force | Out-Null
     Copy-Item $compilerPackageToolsDirectory\* $roslynSubDirectory -force | Out-Null
