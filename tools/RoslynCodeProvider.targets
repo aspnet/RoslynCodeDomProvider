@@ -2,10 +2,11 @@
 
     <!-- Build order -->
     <PropertyGroup>
-        <BuildDependsOn>SetNuSpecProperties;$(BuildDependsOn)</BuildDependsOn>
+        <BuildDependsOn>SetNuSpecProperties;DownloadRoslynBinariesToToolsFolder;$(BuildDependsOn)</BuildDependsOn>
     </PropertyGroup>
 
     <Import Project="$(MSBuildThisFileDirectory)version.targets"/>
+    <Import Project="$(MSBuildThisFileDirectory)RoslynCodeProvider.Extensions.targets"/>
 
     <!-- Post-targets computed properties. -->
 
@@ -22,9 +23,12 @@
             <NuSpecProperties>
                 NuGetPackageVersion=$(NuGetPackageVersion);
                 NuGetPackageId=$(NuGetPackageId);
-                MSNetCompilersNuGetPackageVersion=$(MSNetCompilersNuGetPackageVersion);
-                MSNetCompilersNuGetPackageLatestVersion=$(MSNetCompilersNuGetPackageLatestVersion)
             </NuSpecProperties>
         </PropertyGroup>
+    </Target>
+
+    <Target Name="DownloadRoslynBinariesToToolsFolder">
+        <DownloadRoslynBinaries NupkgToolPath="$(NupkgToolPath)" LocalRoslynFolderName="$(LocalRoslynFolderName)" LocalLatestRoslynFolderName="$(LocalLatestRoslynFolderName)" 
+            ReferenceRoslynNupkgVersion="$(MSNetCompilersNuGetPackageVersion)" ReferenceLatestRoslynNupkgVersion="$(MSNetCompilersNuGetPackageLatestVersion)" />
     </Target>
 </Project>

@@ -14,13 +14,5 @@
         <licenseUrl>http://www.microsoft.com/web/webpi/eula/net_library_eula_ENU.htm</licenseUrl>
         <requireLicenseAcceptance>true</requireLicenseAcceptance>
         <tags>Roslyn CodeDOM Compiler CSharp VB.Net ASP.NET</tags>
-        <dependencies>
-            <group targetFramework=".NETFramework4.5">
-                <dependency id="Microsoft.Net.Compilers" version="$MSNetCompilersNuGetPackageVersion$" />
-            </group>
-            <group targetFramework=".NETFramework4.6">
-                <dependency id="Microsoft.Net.Compilers" version="$MSNetCompilersNuGetPackageLatestVersion$" />
-            </group>
-        </dependencies>
     </metadata>
 </package>
