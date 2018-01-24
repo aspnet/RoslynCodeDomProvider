@@ -71,8 +71,14 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
                 }
             }
 
+            // locate Roslyn compilers order: 1. environment variable  2. appsetting  3. default location
             var customRoslynCompilerLocation = Environment.GetEnvironmentVariable(CustomRoslynCompilerLocation, EnvironmentVariableTarget.Process);
-            if(customRoslynCompilerLocation != null)
+            if(string.IsNullOrEmpty(customRoslynCompilerLocation))
+            {
+                customRoslynCompilerLocation = AppSettings.RoslynCompilerLocation;
+            }
+
+            if(!string.IsNullOrEmpty(customRoslynCompilerLocation))
             {
                 _csc = new CompilerSettings($"{customRoslynCompilerLocation}\\csc.exe", ttl);
                 _vb = new CompilerSettings($"{customRoslynCompilerLocation}\\vbc.exe", ttl);

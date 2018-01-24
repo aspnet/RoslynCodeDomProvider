@@ -20,6 +20,8 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
             if (!bool.TryParse(disableProfilingDuringCompilation, out _disableProfilingDuringCompilation)) {
                 _disableProfilingDuringCompilation = true;
             }
+
+            _roslynCompilerLocation =  appSettings["aspnet:RoslynCompilerLocation"];
         }
 
         private static void EnsureSettingsLoaded() {
@@ -44,6 +46,14 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
             get {
                 EnsureSettingsLoaded();
                 return _disableProfilingDuringCompilation;
+            }
+        }
+
+        private static string _roslynCompilerLocation = string.Empty;
+        public static string RoslynCompilerLocation {
+            get {
+                EnsureSettingsLoaded();
+                return _roslynCompilerLocation;
             }
         }
     }
