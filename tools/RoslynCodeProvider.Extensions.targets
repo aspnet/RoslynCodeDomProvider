@@ -30,49 +30,54 @@
 
                         var targetFilePath = Path.Combine(Path.GetTempPath(), string.Format(roslynPackageName, ReferenceRoslynNupkgVersion));
                         var targetExtractPath = Path.Combine(Path.GetTempPath(), LocalRoslynFolderName);
-                        var targetPath = Path.Combine(NupkgToolPath, LocalRoslynFolderName);
+                        var packageToolsPath = Path.Combine(NupkgToolPath, LocalRoslynFolderName);
                         if (Directory.Exists(targetExtractPath))
                         {
                             Directory.Delete(targetExtractPath, true);
                         }
-                        if (Directory.Exists(targetPath))
+                        if (Directory.Exists(packageToolsPath))
                         {
-                            Directory.Delete(targetPath, true);
+                            Directory.Delete(packageToolsPath, true);
                         }
 
                         wc.DownloadFile(string.Format(roslynNugetBaseUri, ReferenceRoslynNupkgVersion), targetFilePath);
+                        Log.LogMessage("Microsoft.Net.Compilers.{0}.nupkg is downloaded", ReferenceRoslynNupkgVersion);
+                        
                         ZipFile.ExtractToDirectory(targetFilePath, targetExtractPath);
-                        Directory.CreateDirectory(targetPath);
+                        Directory.CreateDirectory(packageToolsPath);
                         foreach(var file in Directory.GetFiles(Path.Combine(targetExtractPath, "tools"))){
                             var fi = new FileInfo(file);
-                            File.Copy(file, Path.Combine(targetPath, fi.Name));
+                            File.Copy(file, Path.Combine(packageToolsPath, fi.Name));
                         }
 
                         targetFilePath = Path.Combine(Path.GetTempPath(), string.Format(roslynPackageName, ReferenceLatestRoslynNupkgVersion));
                         targetExtractPath = Path.Combine(Path.GetTempPath(), LocalLatestRoslynFolderName);
-                        targetPath = Path.Combine(NupkgToolPath, LocalLatestRoslynFolderName);
+                        packageToolsPath = Path.Combine(NupkgToolPath, LocalLatestRoslynFolderName);
                         if (Directory.Exists(targetExtractPath))
                         {
                             Directory.Delete(targetExtractPath, true);
                         }
-                        if (Directory.Exists(targetPath))
+                        if (Directory.Exists(packageToolsPath))
                         {
-                            Directory.Delete(targetPath, true);
+                            Directory.Delete(packageToolsPath, true);
                         }
 
                         wc.DownloadFile(string.Format(roslynNugetBaseUri, ReferenceLatestRoslynNupkgVersion), targetFilePath);
+                        Log.LogMessage("Microsoft.Net.Compilers.{0}.nupkg is downloaded", ReferenceLatestRoslynNupkgVersion);
+
                         ZipFile.ExtractToDirectory(targetFilePath, targetExtractPath);
-                        Directory.CreateDirectory(targetPath);
+                        Directory.CreateDirectory(packageToolsPath);
                         foreach (var file in Directory.GetFiles(Path.Combine(targetExtractPath, "tools")))
                         {
                             var fi = new FileInfo(file);
-                            File.Copy(file, Path.Combine(targetPath, fi.Name));
+                            File.Copy(file, Path.Combine(packageToolsPath, fi.Name));
                         }
                     }
                 }
                 catch (Exception ex)
                 {
                   Log.LogErrorFromException(ex);
+                  return false;
                 }
                 return true;
                 ]]>
