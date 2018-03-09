@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="AppSettings.cs" />
     <Compile Include="Compiler.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="CSharpCompiler.cs" />
     <Compile Include="CSharpCodeProvider.cs">
       <SubType>Component</SubType>
