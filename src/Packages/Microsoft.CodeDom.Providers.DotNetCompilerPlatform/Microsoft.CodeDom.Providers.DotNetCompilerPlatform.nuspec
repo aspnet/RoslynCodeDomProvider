@@ -7,7 +7,10 @@
         <authors>Microsoft</authors>
         <owners>Microsoft</owners>
         <copyright>&#169; Microsoft Corporation. All rights reserved.</copyright>
-        <description>Replacement CodeDOM providers that use the new .NET Compiler Platform ("Roslyn") compiler as a service APIs. This provides support for new language features in systems using CodeDOM (e.g. ASP.NET runtime compilation) as well as improving the compilation performance of these systems.</description>
+        <description>Replacement CodeDOM providers that use the new .NET Compiler Platform ("Roslyn") compiler as a service APIs. This provides support for new language features in systems using CodeDOM (e.g. ASP.NET runtime compilation) as well as improving the compilation performance of these systems.
+        
+        This package was built from the source at $GitCommitLink$
+        </description>
         <summary>Replacement CodeDOM providers that use the new .NET Compiler Platform ("Roslyn") compiler as a service APIs.</summary>
         <language>en-US</language>
         <projectUrl>http://www.asp.net/</projectUrl>
