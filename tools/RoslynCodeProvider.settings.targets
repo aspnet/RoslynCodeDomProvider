@@ -6,8 +6,8 @@
         <BuildQuality Condition="'$(BuildQuality)' == ''">rtm</BuildQuality>
         <VersionStartYear>2014</VersionStartYear>
         <VersionMajor>1</VersionMajor>
-        <VersionMinor>0</VersionMinor>
-        <VersionRelease>9</VersionRelease>
+        <VersionMinor>1</VersionMinor>
+        <VersionRelease>0</VersionRelease>
         <VersionRelease Condition="'$(BuildQuality)' != 'rtm'">$(VersionRelease)-$(BuildQuality)</VersionRelease>
     </PropertyGroup>
 
