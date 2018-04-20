@@ -14,5 +14,6 @@ $binDirectory = Join-Path $projectRoot 'bin'
 $targetDirectory = Join-Path $binDirectory $roslynSubFolder
 
 if (Test-Path $targetDirectory) {
-    Remove-Item $targetDirectory -Force -Recurse
+    Get-Process -Name "VBCSCompiler" -ErrorAction SilentlyContinue | Stop-Process -Force -PassThru -ErrorAction SilentlyContinue | Wait-Process
+    Remove-Item $targetDirectory -Force -Recurse -ErrorAction SilentlyContinue
 }
