@@ -8,7 +8,6 @@
         <VersionMajor>1</VersionMajor>
         <VersionMinor>1</VersionMinor>
         <VersionRelease>0</VersionRelease>
-        <VersionRelease Condition="'$(BuildQuality)' != 'rtm'">$(VersionRelease)-$(BuildQuality)</VersionRelease>
     </PropertyGroup>
 
     <PropertyGroup Label="NuGet package dependencies">
