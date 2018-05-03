@@ -6,16 +6,16 @@ for an introduction to Microsoft.CodeDom.Providers.DotNetCompilerPlatform.
 
 
 ## Breaking changes
-+ #### Version 1.1.0
++ #### Version 2.0.0
     - #### What is changed?
 
-        Before 1.1.0 version, Microsoft.CodeDom.Providers.DotNetCompilerPlatform nupkg references Microsoft.Net.Compilers nupkg in order to deploy the Roslyn compiler assemblies unto you application folder. In version 1.1.0 version, the dependency is removed. Instead, Microsoft.CodeDom.Providers.DotNetCompilerPlatform nupkg includes all the Roslyn compiler assemblies under tools folder.
+        Before 2.0.0 version, Microsoft.CodeDom.Providers.DotNetCompilerPlatform nupkg references Microsoft.Net.Compilers nupkg in order to deploy the Roslyn compiler assemblies unto you application folder. In version 2.0.0 version, the dependency is removed. Instead, Microsoft.CodeDom.Providers.DotNetCompilerPlatform nupkg includes all the Roslyn compiler assemblies under tools folder.
     - #### What does that mean?
 
         When you build your project in Visual Studio, Visual Studio(msbuild) will use the Roslyn compiler shipped with it to compile the source code in your project. However, if Microsoft.Net.Compilers nupkg is installed in your project, it overrides the compiler location and Visual Studio(msbuild) will use the Roslyn compiler from Microsoft.Net.Compilers nupkg. This causes two problems. 1. When you install the latest Visual Studio update which always contains new Roslyn Compiler and you configure Visual Studio to use latest language feature. And you do use the latest language feature in your code, the intellisense works and IDE doesn't show any syntax error. However, when you build your project, you see some compilation error. This is because your project is still using the old version of Microsoft.Net.Compilers nupkg. 2. The Roslyn compiler shipped with Visual Studio is NGen'd which means it has better cold startup performance. So it takes more time to build the project, if the project references Microsoft.Net.Compilers nupkg.
     - #### What shall I do?
 
-        If you are using Visual Studio 2017 with latest update, you should upgrade Microsoft.CodeDom.Providers.DotNetCompilerPlatform nupkg to 1.1.0 and **remove Microsoft.Net.Compilers nupkg from your project**.
+        If you are using Visual Studio 2017 with latest update, you should upgrade Microsoft.CodeDom.Providers.DotNetCompilerPlatform nupkg to 2.0.0 and **remove Microsoft.Net.Compilers nupkg from your project**.
 
 
 ## Configurations
@@ -45,7 +45,7 @@ for an introduction to Microsoft.CodeDom.Providers.DotNetCompilerPlatform.
 
     **How to use it** - ```msbuild mysolution.sln /t:build /p:RoslynToolPath="[Roslyn compiler folder full path]"```
 
-    **Use case** - In 1.1.0 version, Microsoft.CodeDom.Providers.DotNetCompilerPlatform nupkg removes the dependency on Microsoft.Net.Compilers nupkg. Instead, it embeds one version of Roslyn compiler inside the nupkg. It's possible that the embeded version of Roslyn compiler is not the one you want, so through this setting you can specify a version of Roslyn compiler at build time which will be copied to bin\roslyn folder.
+    **Use case** - In 2.0.0 version, Microsoft.CodeDom.Providers.DotNetCompilerPlatform nupkg removes the dependency on Microsoft.Net.Compilers nupkg. Instead, it embeds one version of Roslyn compiler inside the nupkg. It's possible that the embeded version of Roslyn compiler is not the one you want, so through this setting you can specify a version of Roslyn compiler at build time which will be copied to bin\roslyn folder.
 
 
 + **Specify the TTL of Roslyn compiler server** - Microsoft.CodeDom.Providers.DotNetCompilerPlatform leverages Roslyn compiler server(VBCSCompiler.exe) to compile the generated code. In order to save system resources, VBCSCompiler.exe will be shutdown after idling 10 seconds in the server environment. However, in the development environment(running your web application from visual studio) the idle time is set to 15 mininutes. The reason behind this is to improve the startup performance of your web application when you run/debug the application in Visual Studio, since VBCSCompiler.exe takes several seconds to start if relevant Roslyn assemblies are not NGen'd. With this setting, you can control the idle time of VBCSCompiler.exe.

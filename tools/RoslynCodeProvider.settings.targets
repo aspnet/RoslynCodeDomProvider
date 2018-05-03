@@ -5,14 +5,14 @@
     <PropertyGroup>
         <BuildQuality Condition="'$(BuildQuality)' == ''">rtm</BuildQuality>
         <VersionStartYear>2014</VersionStartYear>
-        <VersionMajor>1</VersionMajor>
-        <VersionMinor>1</VersionMinor>
+        <VersionMajor>2</VersionMajor>
+        <VersionMinor>0</VersionMinor>
         <VersionRelease>0</VersionRelease>
     </PropertyGroup>
 
     <PropertyGroup Label="NuGet package dependencies">
         <MSNetCompilersNuGetPackageVersion>1.3.2</MSNetCompilersNuGetPackageVersion>
-        <MSNetCompilersNuGetPackageLatestVersion>2.7.0</MSNetCompilersNuGetPackageLatestVersion>
+        <MSNetCompilersNuGetPackageLatestVersion>2.8.0</MSNetCompilersNuGetPackageLatestVersion>
     </PropertyGroup>
 
     <!-- Default properties -->
