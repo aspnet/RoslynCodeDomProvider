@@ -14,6 +14,7 @@
         <summary>Replacement CodeDOM providers that use the new .NET Compiler Platform ("Roslyn") compiler as a service APIs.</summary>
         <language>en-US</language>
         <projectUrl>http://www.asp.net/</projectUrl>
+        <iconUrl>http://go.microsoft.com/fwlink/?LinkID=288859</iconUrl>
         <licenseUrl>http://www.microsoft.com/web/webpi/eula/net_library_eula_ENU.htm</licenseUrl>
         <requireLicenseAcceptance>true</requireLicenseAcceptance>
         <tags>Roslyn CodeDOM Compiler CSharp VB.Net ASP.NET</tags>

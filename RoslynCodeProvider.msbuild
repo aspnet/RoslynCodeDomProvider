@@ -1,6 +1,4 @@
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="tools\RoslynCodeProvider.settings.targets"/>
-
   <UsingTask AssemblyFile="..\Build\tools\Microsoft.Web.MsBuildTasks2.dll" TaskName="Microsoft.Web.MsBuildTasks.PoliCheck"/>
 
   <ItemGroup>
