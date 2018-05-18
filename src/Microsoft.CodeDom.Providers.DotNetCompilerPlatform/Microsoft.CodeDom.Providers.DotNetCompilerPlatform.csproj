@@ -82,7 +82,7 @@
     <ItemGroup>
       <FilesToSign Include="$(TargetPath)" Condition="'$(SignAssembly)' == 'true'">
         <Authenticode>Microsoft</Authenticode>
-        <StrongName>StrongName</StrongName>
+        <StrongName>MsSharedLib72</StrongName>
       </FilesToSign>
     </ItemGroup>
   </Target>
