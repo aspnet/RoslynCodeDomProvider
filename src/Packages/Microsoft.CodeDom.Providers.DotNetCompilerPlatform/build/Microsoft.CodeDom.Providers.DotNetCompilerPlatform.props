@@ -62,13 +62,19 @@
                         using(var results = searcher.Get())
                           {
                             var mo = results.Cast<ManagementObject>().FirstOrDefault();
-                            Log.LogMessage("ExecutablePath is {0}", (string)mo["ExecutablePath"]);
-                            if(mo != null && ((string)mo["ExecutablePath"]).StartsWith(ImagePath, StringComparison.OrdinalIgnoreCase))
+                            if(mo != null)
                             {
-                              p.Kill();
-                              p.WaitForExit();
-                              Log.LogMessage("{0} is killed", (string)mo["ExecutablePath"]);
-                              break;
+                              var path = (string)mo["ExecutablePath"];
+                              var executablePath = path != null ? path : string.Empty;
+                              Log.LogMessage("ExecutablePath is {0}", executablePath);
+
+                              if(executablePath.StartsWith(ImagePath, StringComparison.OrdinalIgnoreCase))
+                              {
+                                p.Kill();
+                                p.WaitForExit();
+                                Log.LogMessage("{0} is killed", executablePath);
+                                break;
+                              }
                             }
                           }
                       }
@@ -76,7 +82,7 @@
                 }
                 catch (Exception ex)
                 {
-                  Log.LogErrorFromException(ex);
+                  Log.LogWarning(ex.Message);
                 }
                 return true;
                 ]]>
