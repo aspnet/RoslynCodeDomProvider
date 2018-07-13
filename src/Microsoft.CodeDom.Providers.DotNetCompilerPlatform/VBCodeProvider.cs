@@ -18,8 +18,11 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
             : this(null) {
         }
 
-        // Constructor used for unit test purpose
-        internal VBCodeProvider(ICompilerSettings compilerSettings = null) {
+		/// <summary>
+		/// Creates an instance using the given ICompilerSettings
+		/// </summary>
+		/// <param name="compilerSettings"></param>
+		public VBCodeProvider(ICompilerSettings compilerSettings = null) {
             _compilerSettings = compilerSettings == null ? CompilationSettingsHelper.VBC2 : compilerSettings;
         }
 
