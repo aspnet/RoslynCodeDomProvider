@@ -14,12 +14,12 @@
         <VersionStartYear>2014</VersionStartYear>
         <VersionMajor>2</VersionMajor>
         <VersionMinor>0</VersionMinor>
-        <VersionRelease>0</VersionRelease>
+        <VersionRelease>1</VersionRelease>
     </PropertyGroup>
 
     <PropertyGroup Label="NuGet package dependencies">
         <MSNetCompilersNuGetPackageVersion>1.3.2</MSNetCompilersNuGetPackageVersion>
-        <MSNetCompilersNuGetPackageLatestVersion>2.8.2</MSNetCompilersNuGetPackageLatestVersion>
+        <MSNetCompilersNuGetPackageLatestVersion>2.9.0</MSNetCompilersNuGetPackageLatestVersion>
     </PropertyGroup>
 
     <!-- Default properties -->
