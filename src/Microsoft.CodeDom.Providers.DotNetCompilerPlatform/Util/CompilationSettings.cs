@@ -7,12 +7,19 @@ using System.IO;
 using System.Runtime.InteropServices;
 
 namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
-    internal sealed class CompilerSettings : ICompilerSettings {
+	/// <inheritdoc/>
+	public sealed class CompilerSettings : ICompilerSettings {
 
         private readonly string _compilerFullPath;
         private readonly int _compilerServerTimeToLive = 0; // seconds
 
-        public CompilerSettings(string compilerFullPath, int compilerServerTimeToLive) {
+		/// <summary>
+		/// Creates a new instance of CompilerSettings
+		/// </summary>
+		/// <param name="compilerFullPath">The full path to csc.exe or vbc.exe</param>
+		/// <param name="compilerServerTimeToLive">TTL in seconds</param>
+		/// <exception cref="ArgumentNullException"></exception>
+		public CompilerSettings(string compilerFullPath, int compilerServerTimeToLive) {
             if (string.IsNullOrEmpty(compilerFullPath)) {
                 throw new ArgumentNullException("compilerFullPath");
             }
