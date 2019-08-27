@@ -39,12 +39,6 @@
         <NuGetContent Include="build\net46\*">
             <Destination>build\net46</Destination>
         </NuGetContent>
-        <NuGetContent Include="tools\*.ps1" Condition="'$(SignAssembly)' != 'true'">
-            <Destination>tools\net45</Destination>
-        </NuGetContent>
-            <NuGetContent Include="tools\signed\*.ps1" Condition="'$(SignAssembly)' == 'true'">
-        <Destination>tools\net45</Destination>
-        </NuGetContent>
         <NuGetContent Include="tools\$(LocalRoslynFolderName)\*">
             <Destination>tools\$(LocalRoslynFolderName)</Destination>
         </NuGetContent>
@@ -53,19 +47,6 @@
         </NuGetContent>
     </ItemGroup>
     <Import Project="$(RepositoryRoot)Tools\NuGetProj.targets"/>
-    <Target Name="SignPowerShellScript" Condition=" '$(SignAssembly)' == 'true' " AfterTargets="BeforeBuild">
-        <ItemGroup>
-            <OriginalScriptFiles Include="$(MSBuildThisFileDirectory)\tools\*.ps1" />
-        </ItemGroup>
-        <Copy SourceFiles="@(OriginalScriptFiles)" DestinationFolder="$(MSBuildThisFileDirectory)\tools\signed" SkipUnchangedFiles="true" />
-        <ItemGroup>
-            <ScriptFilesToSign Include="$(MSBuildThisFileDirectory)\tools\signed\*.ps1">
-                <Authenticode>Microsoft400</Authenticode>
-            </ScriptFilesToSign>
-        </ItemGroup>
-        <SignFiles Files="@(ScriptFilesToSign)" Type="$(SignType)" BinariesDirectory="$(MSBuildThisFileDirectory)\tools\signed" 
-            IntermediatesDirectory="$(MSBuildThisFileDirectory)\tools" ESRPSigning="$(ESRPSigning)" UseBearerToken="$(UseBearerToken)" />
-    </Target>
     <Target Name="AfterBuild">
         <PropertyGroup>
             <OutDir>$(PackageOutputDir)</OutDir>
