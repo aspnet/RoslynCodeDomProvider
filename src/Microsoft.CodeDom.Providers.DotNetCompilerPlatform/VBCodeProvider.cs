@@ -3,11 +3,13 @@
 
 ﻿using System;
 using System.CodeDom.Compiler;
+using System.ComponentModel;
 
 namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
     /// <summary>
     /// Provides access to instances of the .NET Compiler Platform VB code generator and code compiler.
     /// </summary>
+    [DesignerCategory("code")]
     public sealed class VBCodeProvider : Microsoft.VisualBasic.VBCodeProvider {
         private ICompilerSettings _compilerSettings;
 
