@@ -3,11 +3,13 @@
 
 ﻿using System;
 using System.CodeDom.Compiler;
+using System.ComponentModel;
 
 namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
     /// <summary>
     /// Provides access to instances of the .NET Compiler Platform C# code generator and code compiler.
     /// </summary>
+    [DesignerCategory("code")]
     public sealed class CSharpCodeProvider : Microsoft.CSharp.CSharpCodeProvider {
         private ICompilerSettings _compilerSettings;
 
