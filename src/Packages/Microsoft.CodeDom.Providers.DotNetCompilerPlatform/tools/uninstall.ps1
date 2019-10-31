@@ -1,6 +1,11 @@
 # Copyright (c) .NET Foundation. All rights reserved.
 # Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+#####################################################################################################
+## Although the NuGet package includes msbuild targets that does this same work, the ps1 files are  #
+## kept for use in web site projects                                                                #
+#####################################################################################################
+
 param($installPath, $toolsPath, $package, $project)
 
 $roslynSubFolder = 'roslyn'

@@ -1,12 +1,16 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.Extensions.props"/>
+  <Import Project="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.Extensions.targets"/>
 
-  <ItemGroup>
-    <RoslynCompilerFiles Include="$(RoslynToolPath)\*">
-      <Link>roslyn\%(RecursiveDir)%(Filename)%(Extension)</Link>
-    </RoslynCompilerFiles>
-  </ItemGroup>
-  <Target Name="IncludeRoslynCompilerFilesToFilesForPackagingFromProject" BeforeTargets="PipelineCollectFilesPhase" >
+  <Target Name="SetRoslynCompilerFiles" DependsOnTargets="LocateRoslynCompilerFiles">
+    <Message Text="Using Roslyn from '$(RoslynToolPath)' folder" />
+    <ItemGroup>
+      <RoslynCompilerFiles Include="$(RoslynToolPath)\*">
+        <Link>roslyn\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      </RoslynCompilerFiles>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="IncludeRoslynCompilerFilesToFilesForPackagingFromProject" BeforeTargets="PipelineCollectFilesPhase" DependsOnTargets="SetRoslynCompilerFiles" >
     <ItemGroup>
       <FilesForPackagingFromProject Include="@(RoslynCompilerFiles)">
         <DestinationRelativePath>bin\roslyn\%(RecursiveDir)%(Filename)%(Extension)</DestinationRelativePath>
@@ -15,29 +19,35 @@
       </FilesForPackagingFromProject>
     </ItemGroup>
   </Target>
+
   <Target Name="LocateRoslynToolsDestinationFolder" Condition=" '$(RoslynToolsDestinationFolder)' == '' ">
-      <PropertyGroup>
-        <RoslynToolsDestinationFolder>$(WebProjectOutputDir)\bin\roslyn</RoslynToolsDestinationFolder>
-        <RoslynToolsDestinationFolder Condition=" '$(WebProjectOutputDir)' == '' ">$(OutputPath)\roslyn</RoslynToolsDestinationFolder>
+    <PropertyGroup>
+      <RoslynToolsDestinationFolder>$(WebProjectOutputDir)\bin\roslyn</RoslynToolsDestinationFolder>
+      <RoslynToolsDestinationFolder Condition=" '$(WebProjectOutputDir)' == '' ">$(OutputPath)\roslyn</RoslynToolsDestinationFolder>
     </PropertyGroup>
   </Target>
-  <Target Name="CopyRoslynCompilerFilesToOutputDirectory" AfterTargets="CopyFilesToOutputDirectory" DependsOnTargets="LocateRoslynToolsDestinationFolder">
+
+  <Target Name="CopyRoslynCompilerFilesToOutputDirectory" AfterTargets="CopyFilesToOutputDirectory" DependsOnTargets="LocateRoslynToolsDestinationFolder;SetRoslynCompilerFiles">
     <Copy SourceFiles="@(RoslynCompilerFiles)" DestinationFolder="$(RoslynToolsDestinationFolder)" ContinueOnError="true" SkipUnchangedFiles="true" Retries="0" />
     <ItemGroup  Condition="'$(MSBuildLastTaskResult)' == 'True'" >
       <FileWrites Include="$(RoslynToolsDestinationFolder)\*" />
     </ItemGroup>
   </Target>
-  <Target Name="CheckIfShouldKillVBCSCompiler">
+
+  <Target Name="CheckIfShouldKillVBCSCompiler" DependsOnTargets="LocateRoslynCompilerFiles;LocateRoslynToolsDestinationFolder">
     <CheckIfVBCSCompilerWillOverride src="$(RoslynToolPath)\VBCSCompiler.exe" dest="$(RoslynToolsDestinationFolder)\VBCSCompiler.exe">
       <Output TaskParameter="WillOverride" PropertyName="ShouldKillVBCSCompiler" />
     </CheckIfVBCSCompilerWillOverride>
   </Target>
-  <Target Name = "KillVBCSCompilerBeforeCopy" BeforeTargets="CopyRoslynCompilerFilesToOutputDirectory" DependsOnTargets="LocateRoslynToolsDestinationFolder;CheckIfShouldKillVBCSCompiler" >
+
+  <Target Name="KillVBCSCompilerBeforeCopy" BeforeTargets="CopyRoslynCompilerFilesToOutputDirectory" DependsOnTargets="LocateRoslynToolsDestinationFolder;CheckIfShouldKillVBCSCompiler" >
     <KillProcess ProcessName="VBCSCompiler" ImagePath="$(RoslynToolsDestinationFolder)" Condition="'$(ShouldKillVBCSCompiler)' == 'True'" />
   </Target>
-  <Target Name = "KillVBCSCompilerBeforeClean" AfterTargets="BeforeClean" DependsOnTargets="LocateRoslynToolsDestinationFolder">
+
+  <Target Name="KillVBCSCompilerBeforeClean" AfterTargets="BeforeClean" DependsOnTargets="LocateRoslynToolsDestinationFolder">
     <KillProcess ProcessName="VBCSCompiler" ImagePath="$(RoslynToolsDestinationFolder)" />
   </Target>
+
   <UsingTask TaskName="KillProcess" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
     <ParameterGroup>
       <ProcessName ParameterType="System.String" Required="true" />
@@ -89,6 +99,7 @@
       </Code>
     </Task>
   </UsingTask>
+
   <UsingTask TaskName="CheckIfVBCSCompilerWillOverride" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
     <ParameterGroup>
       <Src ParameterType="System.String" Required="true" />
@@ -102,7 +113,7 @@
                 WillOverride = false;
                 try {
                   WillOverride = File.Exists(Src) && File.Exists(Dest) && (File.GetLastWriteTime(Src) != File.GetLastWriteTime(Dest));
-                } 
+                }
                 catch { }
                 ]]>
       </Code>
