@@ -20,8 +20,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 		packages\repositories.config = packages\repositories.config
+		tools\RoslynCodeProvider.Extensions.targets = tools\RoslynCodeProvider.Extensions.targets
 		RoslynCodeProvider.msbuild = RoslynCodeProvider.msbuild
 		tools\RoslynCodeProvider.settings.targets = tools\RoslynCodeProvider.settings.targets
+		tools\RoslynCodeProvider.targets = tools\RoslynCodeProvider.targets
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{6EB4E0F1-33C7-4743-A925-C8D5BC32FB81}"
