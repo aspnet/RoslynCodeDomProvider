@@ -22,24 +22,9 @@
     <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.nuspec" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.Extensions.props" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.Extensions.props" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\content\net45\app.config.install.xdt" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\content\net45\app.config.uninstall.xdt" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\content\net45\web.config.install.xdt" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\content\net45\web.config.ininstall.xdt" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\content\net46\app.config.install.xdt" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\content\net46\app.config.uninstall.xdt" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\content\net46\web.config.install.xdt" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\content\net46\web.config.ininstall.xdt" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\tools\install.ps1" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\tools\uninstall.ps1" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="**\*.targets" />
     <None Include="**\*.xdt" />
-    <None Include="**\*.nuspec" />
+    <None Include="**\*.ps1" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="Build">
