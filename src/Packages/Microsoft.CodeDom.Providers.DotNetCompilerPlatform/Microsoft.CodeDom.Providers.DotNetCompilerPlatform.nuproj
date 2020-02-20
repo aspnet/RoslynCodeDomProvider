@@ -1,79 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory),RoslynCodeProvider.sln))\tools\RoslynCodeProvider.settings.targets" />
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory),RoslynCodeProvider.sln))\tools\RoslynCodeProvider.settings.targets" />
+  <PropertyGroup>
+    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+    <NuGetPackageId>$(MSBuildProjectName)</NuGetPackageId>
+    <NuSpecFile>$(MSBuildProjectName).nuspec</NuSpecFile>
+    <IsPackage>true</IsPackage>
+  </PropertyGroup>
+  <ItemGroup>
+    <NuGetContent Include="$(AssemblyName).dll">
+      <Source>$(AssemblyPath)</Source>
+      <Destination>lib\net45</Destination>
+    </NuGetContent>
+    <NuGetContent Include="$(AssemblyName).xml">
+      <Source>$(OutputPath)</Source>
+      <Destination>lib\net45</Destination>
+    </NuGetContent>
+    <NuGetContent Include="$(AssemblyName).pdb" Condition="'$(NuGetPackSymbols)' == 'true'">
+      <Source>$(OutputPath)</Source>
+      <Destination>lib\net45</Destination>
+    </NuGetContent>
+    <NuGetContentProject Include="$(RepositoryRoot)\src\$(MSBuildProjectName)\$(MSBuildProjectName).csproj" Condition="'$(NuGetPackSymbols)' == 'true'" />
+    <NuGetContent Include="Content\net45\*">
+      <Destination>content\net45</Destination>
+    </NuGetContent>
+    <NuGetContent Include="Content\net46\*">
+      <Destination>content\net46</Destination>
+    </NuGetContent>
+    <NuGetContent Include="Content\net472\*">
+      <Destination>content\net472</Destination>
+    </NuGetContent>
+    <NuGetContent Include="build\*">
+      <Destination>build\net45</Destination>
+    </NuGetContent>
+    <NuGetContent Include="build\*">
+      <Destination>build\net472</Destination>
+    </NuGetContent>
+    <NuGetContent Include="build\*">
+      <Destination>build\net46</Destination>
+    </NuGetContent>
+    <NuGetContent Include="build\net45\*">
+      <Destination>build\net45</Destination>
+    </NuGetContent>
+    <NuGetContent Include="build\net46\*">
+      <Destination>build\net46</Destination>
+    </NuGetContent>
+    <NuGetContent Include="build\net472\*">
+      <Destination>build\net472</Destination>
+    </NuGetContent>
+    <NuGetContent Include="tools\*.ps1" Condition="'$(SignAssembly)' != 'true'">
+      <Destination>tools\net45</Destination>
+    </NuGetContent>
+    <NuGetContent Include="tools\signed\*.ps1" Condition="'$(SignAssembly)' == 'true'">
+      <Destination>tools\net45</Destination>
+    </NuGetContent>
+    <NuGetContent Include="tools\$(LocalRoslyn45FolderName)\*">
+      <Destination>tools\$(LocalRoslyn45FolderName)</Destination>
+    </NuGetContent>
+    <NuGetContent Include="tools\$(LocalRoslyn46FolderName)\*">
+      <Destination>tools\$(LocalRoslyn46FolderName)</Destination>
+    </NuGetContent>
+    <NuGetContent Include="tools\$(LocalRoslyn472FolderName)\*">
+      <Destination>tools\$(LocalRoslyn472FolderName)</Destination>
+    </NuGetContent>
+  </ItemGroup>
+  <Import Project="$(RepositoryRoot)Tools\NuGetProj.targets"/>
+  <Target Name="SignPowerShellScript" Condition=" '$(SignAssembly)' == 'true' " AfterTargets="BeforeBuild">
+    <ItemGroup>
+      <OriginalScriptFiles Include="$(MSBuildThisFileDirectory)\tools\*.ps1" />
+    </ItemGroup>
+    <Copy SourceFiles="@(OriginalScriptFiles)" DestinationFolder="$(MSBuildThisFileDirectory)\tools\signed" SkipUnchangedFiles="true" />
+    <ItemGroup>
+      <ScriptFilesToSign Include="$(MSBuildThisFileDirectory)\tools\signed\*.ps1">
+        <Authenticode>Microsoft400</Authenticode>
+      </ScriptFilesToSign>
+    </ItemGroup>
+    <SignFiles Files="@(ScriptFilesToSign)" Type="$(SignType)" BinariesDirectory="$(MSBuildThisFileDirectory)\tools\signed"
+        IntermediatesDirectory="$(MSBuildThisFileDirectory)\tools" ESRPSigning="$(ESRPSigning)" UseBearerToken="$(UseBearerToken)" />
+  </Target>
+  <Target Name="AfterBuild">
     <PropertyGroup>
-        <AssemblyName>$(MSBuildProjectName)</AssemblyName>
-        <NuGetPackageId>$(MSBuildProjectName)</NuGetPackageId>
-        <NuSpecFile>$(MSBuildProjectName).nuspec</NuSpecFile>
-        <IsPackage>true</IsPackage>
+      <OutDir>$(PackageOutputDir)</OutDir>
     </PropertyGroup>
     <ItemGroup>
-        <NuGetContent Include="$(AssemblyName).dll">
-            <Source>$(AssemblyPath)</Source>
-            <Destination>lib\net45</Destination>
-        </NuGetContent>
-        <NuGetContent Include="$(AssemblyName).xml">
-            <Source>$(OutputPath)</Source>
-            <Destination>lib\net45</Destination>
-        </NuGetContent>
-        <NuGetContent Include="$(AssemblyName).pdb" Condition="'$(NuGetPackSymbols)' == 'true'">
-            <Source>$(OutputPath)</Source>
-            <Destination>lib\net45</Destination>
-        </NuGetContent>
-        <NuGetContentProject Include="$(RepositoryRoot)\src\$(MSBuildProjectName)\$(MSBuildProjectName).csproj" Condition="'$(NuGetPackSymbols)' == 'true'" />
-        <NuGetContent Include="Content\net45\*">
-            <Destination>content\net45</Destination>
-        </NuGetContent>
-        <NuGetContent Include="Content\net46\*">
-            <Destination>content\net46</Destination>
-        </NuGetContent>
-        <NuGetContent Include="build\*">
-            <Destination>build\net45</Destination>
-        </NuGetContent>
-        <NuGetContent Include="build\*">
-            <Destination>build\net46</Destination>
-        </NuGetContent>
-        <NuGetContent Include="build\net45\*">
-            <Destination>build\net45</Destination>
-        </NuGetContent>
-        <NuGetContent Include="build\net46\*">
-            <Destination>build\net46</Destination>
-        </NuGetContent>
-        <NuGetContent Include="tools\*.ps1" Condition="'$(SignAssembly)' != 'true'">
-            <Destination>tools\net45</Destination>
-        </NuGetContent>
-            <NuGetContent Include="tools\signed\*.ps1" Condition="'$(SignAssembly)' == 'true'">
-        <Destination>tools\net45</Destination>
-        </NuGetContent>
-        <NuGetContent Include="tools\$(LocalRoslynFolderName)\*">
-            <Destination>tools\$(LocalRoslynFolderName)</Destination>
-        </NuGetContent>
-        <NuGetContent Include="tools\$(LocalLatestRoslynFolderName)\*">
-            <Destination>tools\$(LocalLatestRoslynFolderName)</Destination>
-        </NuGetContent>
+      <FilesToSign Include="$(NuGetPackTargetFile)" Condition="'$(SignAssembly)' == 'true'">
+        <Authenticode>NuGet</Authenticode>
+      </FilesToSign>
     </ItemGroup>
-    <Import Project="$(RepositoryRoot)Tools\NuGetProj.targets"/>
-    <Target Name="SignPowerShellScript" Condition=" '$(SignAssembly)' == 'true' " AfterTargets="BeforeBuild">
-        <ItemGroup>
-            <OriginalScriptFiles Include="$(MSBuildThisFileDirectory)\tools\*.ps1" />
-        </ItemGroup>
-        <Copy SourceFiles="@(OriginalScriptFiles)" DestinationFolder="$(MSBuildThisFileDirectory)\tools\signed" SkipUnchangedFiles="true" />
-        <ItemGroup>
-            <ScriptFilesToSign Include="$(MSBuildThisFileDirectory)\tools\signed\*.ps1">
-                <Authenticode>Microsoft400</Authenticode>
-            </ScriptFilesToSign>
-        </ItemGroup>
-        <SignFiles Files="@(ScriptFilesToSign)" Type="$(SignType)" BinariesDirectory="$(MSBuildThisFileDirectory)\tools\signed" 
-            IntermediatesDirectory="$(MSBuildThisFileDirectory)\tools" ESRPSigning="$(ESRPSigning)" UseBearerToken="$(UseBearerToken)" />
-    </Target>
-    <Target Name="AfterBuild">
-        <PropertyGroup>
-            <OutDir>$(PackageOutputDir)</OutDir>
-        </PropertyGroup>
-        <ItemGroup>
-            <FilesToSign Include="$(NuGetPackTargetFile)" Condition="'$(SignAssembly)' == 'true'">
-                <Authenticode>NuGet</Authenticode>
-            </FilesToSign>
-        </ItemGroup>
-    </Target>
+  </Target>
 </Project>

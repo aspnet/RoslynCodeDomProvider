@@ -30,7 +30,7 @@
     </Target>
 
     <Target Name="DownloadRoslynBinariesToToolsFolder">
-        <DownloadRoslynBinaries NupkgToolPath="$(NupkgToolPath)" LocalRoslynFolderName="$(LocalRoslynFolderName)" LocalLatestRoslynFolderName="$(LocalLatestRoslynFolderName)" 
-            ReferenceRoslynNupkgVersion="$(MSNetCompilersNuGetPackageVersion)" ReferenceLatestRoslynNupkgVersion="$(MSNetCompilersNuGetPackageLatestVersion)" />
+        <DownloadRoslynBinaries NupkgToolPath="$(NupkgToolPath)" LocalRoslyn45FolderName="$(LocalRoslyn45FolderName)" LocalRoslyn46FolderName="$(LocalRoslyn46FolderName)" LocalRoslyn472FolderName="$(LocalRoslyn472FolderName)" 
+            ReferenceRoslyn45NupkgVersion="$(MSNetCompilers45NuGetPackageVersion)" ReferenceRoslyn46NupkgVersion="$(MSNetCompilers46NuGetPackageVersion)" ReferenceRoslyn472NupkgVersion="$(MSNetCompilers472NuGetPackageVersion)" />
     </Target>
 </Project>
