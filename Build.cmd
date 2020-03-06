@@ -15,7 +15,7 @@ REM set logOptions=/v:diag /flp:Summary;Verbosity=normal;LogFile=msbuild.log /fl
 
 echo Please build from VS 2015(or newer version) Developer Command Prompt
 
-%MSBUILDEXE% "%~dp0\RoslynCodeProvider.msbuild" /t:BuildAll %logOptions% /maxcpucount /nodeReuse:false %cfgOption%%*
+%MSBUILDEXE% "%~dp0\RoslynCodeProvider.msbuild" /t:Build %logOptions% /maxcpucount /nodeReuse:false %cfgOption%%*
 if %ERRORLEVEL% neq 0 goto BuildFail
 goto BuildSuccess
 
