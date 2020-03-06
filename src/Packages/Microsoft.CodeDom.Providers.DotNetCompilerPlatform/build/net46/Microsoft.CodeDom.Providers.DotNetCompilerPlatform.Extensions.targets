@@ -2,7 +2,7 @@
 
   <Target Name="LocateRoslynCompilerFiles">
     <PropertyGroup>
-      <RoslynToolPath Condition="'$(RoslynToolPath)' == ''">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\tools\roslynlatest'))</RoslynToolPath>
+      <RoslynToolPath Condition="'$(RoslynToolPath)' == ''">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\tools\roslyn46'))</RoslynToolPath>
     </PropertyGroup>
   </Target>
 
