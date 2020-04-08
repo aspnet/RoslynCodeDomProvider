@@ -10,8 +10,8 @@
     <!-- Configurable properties-->
 
     <PropertyGroup>
-        <BuildQuality Condition="'$(BuildQuality)' == ''">rtm</BuildQuality>
-        <VersionStartYear>2019</VersionStartYear>
+        <BuildQuality Condition="'$(BuildQuality)' == ''">preview</BuildQuality>
+        <VersionStartYear>2020</VersionStartYear>
         <VersionMajor>3</VersionMajor>
         <VersionMinor>4</VersionMinor>
         <VersionRelease>0</VersionRelease>
@@ -23,7 +23,18 @@
         <MSNetCompilers472NuGetPackageVersion>3.4.0</MSNetCompilers472NuGetPackageVersion>
     </PropertyGroup>
 
-    <!-- Default properties -->
+  <Target Name="SuperClean" AfterTargets="Clean"  Condition="'$(MSBuildProjectExtension)' != '.nuproj'">
+    <RemoveDir Directories="$(OutputPath)" />
+    <RemoveDir Directories="$(IntermediateOutputRoot)" />
+  </Target>
+
+  <Target Name="SuperCleanPackage" AfterTargets="Clean" Condition="'$(MSBuildProjectExtension)' == '.nuproj'">
+    <RemoveDir Directories="$(NuGetOutputPath)" />
+    <RemoveDir Directories="$(NuGetSymbolsOutputPath)" />
+    <Message Text="$(NuGetScriptDirectory)\$(NuGetProcessedScriptSubDirectory)" Condition="'$(NuGetScriptDirectory)' != ''" />
+  </Target>
+
+  <!-- Default properties -->
 
     <PropertyGroup>
         <RepositoryRoot Condition="'$(RepositoryRoot)' == ''">$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), RoslynCodeProvider.sln))\</RepositoryRoot>
