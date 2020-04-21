@@ -19,8 +19,8 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
 
         private static volatile Regex outputReg;
 
-        public VBCompiler(CodeDomProvider codeDomProvider, ICompilerSettings compilerSettings = null)
-            : base(codeDomProvider, compilerSettings) {
+        public VBCompiler(CodeDomProvider codeDomProvider, IProviderOptions providerOptions = null)
+            : base(codeDomProvider, providerOptions) {
         }
 
         protected override string FileExtension {

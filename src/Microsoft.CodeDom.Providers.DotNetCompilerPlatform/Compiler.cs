@@ -16,14 +16,15 @@ using System.Text;
 namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
     internal abstract class Compiler : ICodeCompiler {
         private readonly CodeDomProvider _codeDomProvider;
-        private readonly ICompilerSettings _compilerSettings;
+        private readonly IProviderOptions _providerOptions;
         private string _compilerFullPath = null;
         private const string CLR_PROFILING_SETTING = "COR_ENABLE_PROFILING";
         private const string DISABLE_PROFILING = "0";
 
-        public Compiler(CodeDomProvider codeDomProvider, ICompilerSettings compilerSettings) {
+        public Compiler(CodeDomProvider codeDomProvider, IProviderOptions providerOptions)
+        {
             this._codeDomProvider = codeDomProvider;
-            this._compilerSettings = compilerSettings;
+            this._providerOptions = providerOptions;
         }
 
         public CompilerResults CompileAssemblyFromDom(CompilerParameters options, CodeCompileUnit compilationUnit) {
@@ -132,7 +133,7 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
         protected virtual string CompilerName {
             get {
                 if (null == _compilerFullPath) {
-                    _compilerFullPath = _compilerSettings.CompilerFullPath;
+                    _compilerFullPath = _providerOptions.CompilerFullPath;
 
                     // Try opening the file to make sure the compiler exist.  This will throw an exception
                     // if it doesn't
@@ -277,8 +278,8 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
             }
 
             // Appending TTL to the command line arguments.
-            if (_compilerSettings.CompilerServerTimeToLive > 0) {
-                args = string.Format("/shared /keepalive:\"{0}\" {1}", _compilerSettings.CompilerServerTimeToLive, args);
+            if (_providerOptions.CompilerServerTimeToLive > 0) {
+                args = string.Format("/shared /keepalive:\"{0}\" {1}", _providerOptions.CompilerServerTimeToLive, args);
             }
 
             Compile(options,

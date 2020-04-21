@@ -11,6 +11,7 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
 
         private const int DefaultCompilerServerTTL = 0; // set TTL to 0 to turn of keepalive switch
 
+        //smolloy debug degub todo - these two lines, and the next two properties are obsolete.
         private static ICompilerSettings _csc = new CompilerSettings(CompilerFullPath(@"csc.exe"), DefaultCompilerServerTTL);
         private static ICompilerSettings _vb = new CompilerSettings(CompilerFullPath(@"vbc.exe"), DefaultCompilerServerTTL);
 
