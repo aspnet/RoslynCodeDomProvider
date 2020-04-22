@@ -1,7 +1,8 @@
-﻿using Microsoft.CodeDom.Providers.DotNetCompilerPlatform;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
 using System.CodeDom.Compiler;
 using System.IO;
+using Microsoft.CodeDom.Providers.DotNetCompilerPlatform;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
 
@@ -17,6 +18,7 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
             string compilerPath = Path.Combine(frameworkFolder, "csc.exe");
             var codeDomProviderType = typeof(Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CSharpCodeProvider);
             csharpCodeProvider = new CSharpCodeProvider(compilerSettings: CompilerSettingsHelper.CSC);
+            AppContext.SetSwitch("Switch.System.DisableTempFileCollectionDirectoryFeature", true);
         }
 
         [TestMethod]
