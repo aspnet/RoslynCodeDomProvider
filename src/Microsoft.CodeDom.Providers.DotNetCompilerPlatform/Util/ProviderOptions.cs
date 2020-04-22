@@ -6,10 +6,17 @@ using System.Collections.ObjectModel;
 using System.Threading;
 
 namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
+
+    /// <summary>
+    /// A set of options for the C# and VB CodeProviders.
+    /// </summary>
     public sealed class ProviderOptions : IProviderOptions {
 
         private IDictionary<string, string> _allOptions;
 
+        /// <summary>
+        /// Create a default set of options for the C# and VB CodeProviders.
+        /// </summary>
         public ProviderOptions()
         {
             this.CompilerFullPath = null;
@@ -31,7 +38,10 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
             this.UseAspNetSettings = false; 
         }
 
-        public ProviderOptions(IProviderOptions opts) : this()
+        /// <summary>
+        /// Create a set of options for the C# or VB CodeProviders using the specified inputs.
+        /// </summary>
+        public ProviderOptions(IProviderOptions opts)
         {
             this.CompilerFullPath = opts.CompilerFullPath;
             this.CompilerServerTimeToLive = opts.CompilerServerTimeToLive;
@@ -41,29 +51,54 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
             this.AllOptions = opts.AllOptions;
         }
 
-        internal ProviderOptions(ICompilerSettings settings) : this()
+        /// <summary>
+        /// Create a set of options for the C# or VB CodeProviders using some specified inputs.
+        /// </summary>
+        public ProviderOptions(string compilerFullPath, int compilerServerTimeToLive) : this()
         {
-            this.CompilerFullPath = settings.CompilerFullPath;
-            this.CompilerServerTimeToLive = settings.CompilerServerTimeToLive;
+            this.CompilerFullPath = compilerFullPath;
+            this.CompilerServerTimeToLive = compilerServerTimeToLive;
         }
 
+#pragma warning disable CS0618
+        internal ProviderOptions(ICompilerSettings settings) : this(settings.CompilerFullPath, settings.CompilerServerTimeToLive) { }
+#pragma warning restore CS0618
+
+        /// <summary>
+        /// The full path to csc.exe or vbc.exe
+        /// </summary>
         public string CompilerFullPath { get; internal set; }
 
+        /// <summary>
+        /// TTL in seconds
+        /// </summary>
         public int CompilerServerTimeToLive { get; internal set; }
 
-        // smolloy todo debug degub - we don't use this. It is used by the framework. Do we care to call it out like this?
+        /// <summary>
+        /// Used by in-box framework code providers to determine which compat version of the compiler to use.
+        /// </summary>
         public string CompilerVersion { get; internal set; }
 
+        // smolloy todo debug degub - Does it really override everything? Is that the right thing to do?
+        /// <summary>
+        /// Treat all warnings as errors. Will override defaults and command-line options given for a compiler.
+        /// </summary>
         public bool WarnAsError { get; internal set; }
 
+        /// <summary>
+        /// Use the set of compiler options that was traditionally added programatically for ASP.Net.
+        /// </summary>
         public bool UseAspNetSettings { get; internal set; }
 
+        /// <summary>
+        /// A collection of all &lt;providerOptions&gt; specified in config for the given CodeDomProvider.
+        /// </summary>
         public IDictionary<string, string> AllOptions {
             get {
                 return _allOptions;
             }
             internal set {
-                _allOptions = new ReadOnlyDictionary<string, string>(value);
+                _allOptions = (value != null) ? new ReadOnlyDictionary<string, string>(value) : null;
             }
         }
     }

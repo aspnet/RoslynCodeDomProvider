@@ -7,13 +7,19 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
+
+#pragma warning disable CS0618
+    internal class TestCompilerSettings : ICompilerSettings {
+        public string CompilerFullPath { get; set; }
+        public int CompilerServerTimeToLive { get; set; }
+    }
+
     internal static class CompilerSettingsHelper {
 
         private const int DefaultCompilerServerTTL = 0; // set TTL to 0 to turn of keepalive switch
 
-        //smolloy debug degub todo - these two lines, and the next two properties are obsolete.
-        private static ICompilerSettings _csc = new CompilerSettings(CompilerFullPath(@"csc.exe"), DefaultCompilerServerTTL);
-        private static ICompilerSettings _vb = new CompilerSettings(CompilerFullPath(@"vbc.exe"), DefaultCompilerServerTTL);
+        private static ICompilerSettings _csc = new ProviderOptions(CompilerFullPath(@"csc.exe"), DefaultCompilerServerTTL);
+        private static ICompilerSettings _vb = new ProviderOptions(CompilerFullPath(@"vbc.exe"), DefaultCompilerServerTTL);
 
         public static ICompilerSettings CSC {
             get {
@@ -34,4 +40,5 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
             return compilerFullPath;
         }
     }
+#pragma warning restore CS0618
 }

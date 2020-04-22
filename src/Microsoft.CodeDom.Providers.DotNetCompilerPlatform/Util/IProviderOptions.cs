@@ -5,6 +5,8 @@ using System.Collections.Generic;
 
 namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
 
+#pragma warning disable CS0618
+
 	/// <summary>
 	/// Provides settings for the C# and VB CodeProviders
 	/// </summary>
@@ -45,4 +47,6 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
 		/// </summary>
 		IDictionary<string, string> AllOptions { get; }
 	}
+#pragma warning restore CS0618
+
 }
