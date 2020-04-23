@@ -46,6 +46,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -64,6 +65,7 @@
     <Compile Include="CSharpProviderTest.cs" />
     <Compile Include="CompilerSettingsHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProviderOptionsTests.cs" />
     <Compile Include="VBCodeProviderTests.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -71,6 +73,9 @@
       <Project>{be52ed6a-f180-499d-80bb-b0237b50023c}</Project>
       <Name>Microsoft.CodeDom.Providers.DotNetCompilerPlatform</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

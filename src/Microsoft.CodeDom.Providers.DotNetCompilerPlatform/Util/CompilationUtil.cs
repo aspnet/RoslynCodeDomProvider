@@ -17,8 +17,8 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
 
         static CompilationUtil()
         {
-            CSC2 = GetProviderOptionsFor("cs");
-            VBC2 = GetProviderOptionsFor("vb");
+            CSC2 = GetProviderOptionsFor(".cs");
+            VBC2 = GetProviderOptionsFor(".vb");
 
             if (IsDebuggerAttached)
             {
@@ -46,7 +46,12 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
             if (String.IsNullOrEmpty(compilerFullPath))
                 options.TryGetValue("CompilerLocation", out compilerFullPath);
             if (String.IsNullOrEmpty(compilerFullPath))
-                compilerFullPath = CompilerFullPath(@"bin\roslyn\csc.exe");
+                compilerFullPath = CompilerFullPath(@"bin\roslyn");
+
+            if (fileExt.Equals(".cs", StringComparison.InvariantCultureIgnoreCase))
+                compilerFullPath = Path.Combine(compilerFullPath, "csc.exe");
+            else if (fileExt.Equals(".vb", StringComparison.InvariantCultureIgnoreCase))
+                compilerFullPath = Path.Combine(compilerFullPath, "vbc.exe");
 
 
             //
