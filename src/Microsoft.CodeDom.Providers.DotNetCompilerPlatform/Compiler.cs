@@ -16,7 +16,7 @@ using System.Text;
 namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
     internal abstract class Compiler : ICodeCompiler {
         private readonly CodeDomProvider _codeDomProvider;
-        private readonly IProviderOptions _providerOptions;
+        protected readonly IProviderOptions _providerOptions;
         private string _compilerFullPath = null;
         private const string CLR_PROFILING_SETTING = "COR_ENABLE_PROFILING";
         private const string DISABLE_PROFILING = "0";
@@ -165,10 +165,14 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
         // CodeDom sets TreatWarningAsErrors to true whenever warningLevel is non-zero.
         // However, TreatWarningAsErrors should be false by default.
         // And users should be able to set the value by set the value of option "WarnAsError".
-        // ASP.Net does fix this "WarnAsError" option, but only for old CodeDom providers (CSharp/VB).
-        // So we need to do this correction here.
-        private static void FixTreatWarningsAsErrors(CompilerParameters parameters) {
-            parameters.TreatWarningsAsErrors = false;
+        // ASP.Net does fix this "WarnAsError" option in a like named function, but only for old CodeDom providers (CSharp/VB).
+        // The ASP.Net fix was to set TreatWarningAsErrors to false anytime '/warnaserror' was
+        // detected in the compiler command line options, thus allowing the user-specified
+        // option to prevail. In these CodeDom providers though, users have control through
+        // the 'WarnAsError' provider option as well as manual control over the command
+        // line args. So just go with the 'WarnAsError' provider option here.
+        private void FixTreatWarningsAsErrors(CompilerParameters parameters) {
+            parameters.TreatWarningsAsErrors = _providerOptions.WarnAsError;
         }
 
         private CompilerResults FromSourceBatch(CompilerParameters options, string[] sources) {

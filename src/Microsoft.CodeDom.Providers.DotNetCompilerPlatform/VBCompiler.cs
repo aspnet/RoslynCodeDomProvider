@@ -52,30 +52,38 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
 
         protected override void FixUpCompilerParameters(CompilerParameters options) {
             base.FixUpCompilerParameters(options);
-            // Hard code OptionInfer to true, which is the default value in the root web config.
-            // TODO This code should be removed once CodeDom directly supports provider options such as WarnAsError, OptionInfer
-            CompilationUtil.PrependCompilerOption(options, " /optionInfer+");
 
-            List<string> noWarnStrings = new List<string>(3);
+            // We used to magically add some ASP.net-centric options here. For compatibilities sake
+            // we will continue to do so in ASP.Net mode. If these are getting in the way for people
+            // though, disable ASP.Net mode and they will go away. (Sort of. These mostly are the defaults
+            // in the XDT config transform, so they will already be here anyway for most folks.)
+            if (_providerOptions.UseAspNetSettings)
+            {
+                // Hard code OptionInfer to true, which is the default value in the root web config.
+                // TODO This code should be removed once CodeDom directly supports provider options such as WarnAsError, OptionInfer
+                CompilationUtil.PrependCompilerOption(options, " /optionInfer+");
 
-            // If VB, add all the imported namespaces on the command line (DevDiv 21499).
-            // This is VB only because other languages don't support global command line
-            // namespace imports.
-            AddVBGlobalNamespaceImports(options);
+                List<string> noWarnStrings = new List<string>(3);
 
-            // Add any command line flags needed to support the My.* feature
-            AddVBMyFlags(options);
+                // If VB, add all the imported namespaces on the command line (DevDiv 21499).
+                // This is VB only because other languages don't support global command line
+                // namespace imports.
+                AddVBGlobalNamespaceImports(options);
 
-            // Ignore vb warning that complains about assemblyKeyName (Dev10 662544)
-            // but only for target 3.5 and above (715329)
-            noWarnStrings.Add("41008");
+                // Add any command line flags needed to support the My.* feature
+                AddVBMyFlags(options);
 
-            // disable ObsoleteWarnings
-            noWarnStrings.Add("40000"); // [Obsolete("with message")]
-            noWarnStrings.Add("40008"); // [Obsolete] without message
+                // Ignore vb warning that complains about assemblyKeyName (Dev10 662544)
+                // but only for target 3.5 and above (715329)
+                noWarnStrings.Add("41008");
 
-            if (noWarnStrings.Count > 0) {
-                CompilationUtil.PrependCompilerOption(options, "/nowarn:" + String.Join(",", noWarnStrings));
+                // disable ObsoleteWarnings
+                noWarnStrings.Add("40000"); // [Obsolete("with message")]
+                noWarnStrings.Add("40008"); // [Obsolete] without message
+
+                if (noWarnStrings.Count > 0) {
+                    CompilationUtil.PrependCompilerOption(options, "/nowarn:" + String.Join(",", noWarnStrings));
+                }
             }
         }
 
