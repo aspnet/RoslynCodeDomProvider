@@ -500,11 +500,19 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
         }
 
 
-        public void CompileAssemblyFromFile(CodeDomProvider provider) {
+        public void CompileAssemblyFromFile(CodeDomProvider provider)
+        {
+            CompileAssemblyFromFile_CheckArgs(provider, null, false);
+        }
+
+        public void CompileAssemblyFromFile_CheckArgs(CodeDomProvider provider, string argStringToFind, bool expected) {
             var sourcePath = Path.Combine(Path.GetTempPath(), "foobarSourcefile.cs");
             try {
                 using (var sourceStream = File.Create(sourcePath)) {
                     var content = "public class FooClass { public string Execute() { return \"output\";}}";
+                    // If we're checking cmd args, we actually want to fail compilation so we can examine output.
+                    if (argStringToFind != null)
+                        content = "nonsense that doesn't compile.";
                     var bytes = Encoding.ASCII.GetBytes(content);
                     sourceStream.Write(bytes, 0, bytes.Length);
                 }
@@ -515,6 +523,13 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
                     },
                     sourcePath
                 );
+
+                if (argStringToFind != null)
+                {
+                    Assert.AreNotEqual(Success, result.NativeCompilerReturnValue);
+                    Assert.AreEqual<bool>(expected, result.Output[0].Contains(argStringToFind));
+                    return;
+                }
 
                 Assert.AreEqual(Success, result.NativeCompilerReturnValue);
                 var type = result.CompiledAssembly.GetType("FooClass");

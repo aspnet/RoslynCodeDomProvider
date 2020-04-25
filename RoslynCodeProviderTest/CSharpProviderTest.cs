@@ -14,9 +14,6 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext) {
-            string frameworkFolder = Path.GetDirectoryName(typeof(object).Assembly.Location);
-            string compilerPath = Path.Combine(frameworkFolder, "csc.exe");
-            var codeDomProviderType = typeof(Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CSharpCodeProvider);
 #pragma warning disable CS0618
             csharpCodeProvider = new CSharpCodeProvider(compilerSettings: CompilerSettingsHelper.CSC);
 #pragma warning restore CS0618
@@ -116,5 +113,22 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
         public void CompileAssemblyFromFile() {
             commonTests.CompileAssemblyFromFile(csharpCodeProvider);
         }
+
+        [TestMethod]
+        public void CompileAssemblyFromFile_ASPNet_Magic()
+        {
+            // Complete added frippery is: "/nowarn:1659;1699;1701;612;618"
+            ProviderOptions opts = new ProviderOptions(CompilerSettingsHelper.CSC) { UseAspNetSettings = true };
+            commonTests.CompileAssemblyFromFile_CheckArgs(new CSharpCodeProvider(opts), "/nowarn:1659;1699;1701;612;618", true);
+        }
+
+        [TestMethod]
+        public void CompileAssemblyFromFile_No_ASPNet_Magic()
+        {
+            // _codeProvider uses options (aka CompilerSettingsHelper.VB) created via constructor, so it should
+            // have the ASP.Net frippery disabled.
+            commonTests.CompileAssemblyFromFile_CheckArgs(csharpCodeProvider, "/nowarn:1659;1699;1701;612;618", false);
+        }
+
     }
 }

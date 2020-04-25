@@ -60,7 +60,9 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
         [TestMethod]
         public void FromICompilerSettings()
         {
-            IProviderOptions opts = new ProviderOptions(CompilerSettingsHelper.CSC);
+#pragma warning disable CS0618
+            IProviderOptions opts = new ProviderOptions((ICompilerSettings)(CompilerSettingsHelper.CSC));
+#pragma warning restore CS0618
             Assert.IsNotNull(opts);
             Assert.AreEqual<string>(CompilerSettingsHelper.CSC.CompilerFullPath, opts.CompilerFullPath);   // Would include csc.exe or vbc.exe if the extension we searched for wasn't fake.
             Assert.AreEqual<int>(CompilerSettingsHelper.CSC.CompilerServerTimeToLive, opts.CompilerServerTimeToLive);   // 10 in Production. 900 in a "dev" environment.

@@ -25,7 +25,7 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext context) {
-            VBCompiler.MySupport = " ";
+            //VBCompiler.MySupport = " ";   // Don't need to do this anymore with UseAspNetSettings feature
             VBCompiler.VBImportsString = " ";
         }
 
@@ -44,7 +44,7 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
 End Class");
         }
 
-         [TestMethod]
+        [TestMethod]
         public void CompileAssemblyFromSource_WarningAsError() {
             commonTests.CompileAssemblyFromSource_WarningAsError(_codeProvider,
                 // the variable a is declared but not used
@@ -55,6 +55,23 @@ End Class");
    End Function
 End Class",
           "BC42024");
+        }
+
+        [TestMethod]
+        public void CompileAssemblyFromFile_ASPNet_Magic()
+        {
+            // Complete added frippery is: "/nowarn:41008,40000,40008 /define:_MYTYPE=\\\"Web\\\"    /optionInfer+"
+            // But let's just check for _MYTYPE.
+            ProviderOptions opts = new ProviderOptions(CompilerSettingsHelper.VB) { UseAspNetSettings = true };
+            commonTests.CompileAssemblyFromFile_CheckArgs(new VBCodeProvider(opts), "/define:_MYTYPE=\\\"Web\\\"", true);
+        }
+
+        [TestMethod]
+        public void CompileAssemblyFromFile_No_ASPNet_Magic()
+        {
+            // _codeProvider uses options (aka CompilerSettingsHelper.VB) created via constructor, so it should
+            // have the ASP.Net frippery disabled.
+            commonTests.CompileAssemblyFromFile_CheckArgs(_codeProvider, "/define:_MYTYPE=\"Web\"", false);
         }
     }
 
