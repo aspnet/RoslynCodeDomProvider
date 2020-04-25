@@ -22,7 +22,11 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
             this.CompilerFullPath = null;
             this.CompilerVersion = null;
             this.WarnAsError = false;
-            this.AllOptions = null;
+
+            // To be consistent, make sure there is always a dictionary here. It is less than ideal
+            // for some parts of code to be checking AllOptions.count and some part checking
+            // for AllOptions == null.
+            this.AllOptions = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>());
 
             // This results in no keep-alive for the compiler. This will likely result in
             // slower performance for any program that calls out the the compiler any
@@ -48,7 +52,7 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
             this.CompilerVersion = opts.CompilerVersion;
             this.WarnAsError = opts.WarnAsError;
             this.UseAspNetSettings = opts.UseAspNetSettings;
-            this.AllOptions = opts.AllOptions;
+            this.AllOptions = new ReadOnlyDictionary<string, string>(opts.AllOptions);
         }
 
         /// <summary>

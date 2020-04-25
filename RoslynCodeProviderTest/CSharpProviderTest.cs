@@ -17,7 +17,9 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
             string frameworkFolder = Path.GetDirectoryName(typeof(object).Assembly.Location);
             string compilerPath = Path.Combine(frameworkFolder, "csc.exe");
             var codeDomProviderType = typeof(Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CSharpCodeProvider);
+#pragma warning disable CS0618
             csharpCodeProvider = new CSharpCodeProvider(compilerSettings: CompilerSettingsHelper.CSC);
+#pragma warning restore CS0618
             AppContext.SetSwitch("Switch.System.DisableTempFileCollectionDirectoryFeature", true);
         }
 

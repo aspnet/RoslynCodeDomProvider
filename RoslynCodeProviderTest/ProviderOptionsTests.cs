@@ -44,6 +44,32 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
             Assert.AreEqual<string>("bar2", opts.AllOptions["AnotherCoolSetting"]);
         }
 
+        [TestMethod]
+        public void FromShortConstructor()
+        {
+            IProviderOptions opts = new ProviderOptions(@"D:\My\Fun\Compiler\Path\compiles.exe", 123);
+            Assert.IsNotNull(opts);
+            Assert.AreEqual<string>(@"D:\My\Fun\Compiler\Path\compiles.exe", opts.CompilerFullPath);   // Would include csc.exe or vbc.exe if the extension we searched for wasn't fake.
+            Assert.AreEqual<int>(123, opts.CompilerServerTimeToLive);   // 10 in Production. 900 in a "dev" environment.
+            Assert.IsFalse(opts.UseAspNetSettings);  // Default via constructor is false.
+            Assert.IsFalse(opts.WarnAsError);
+            Assert.IsNull(opts.CompilerVersion);
+            Assert.AreEqual<int>(0, opts.AllOptions.Count);
+        }
+
+        [TestMethod]
+        public void FromICompilerSettings()
+        {
+            IProviderOptions opts = new ProviderOptions(CompilerSettingsHelper.CSC);
+            Assert.IsNotNull(opts);
+            Assert.AreEqual<string>(CompilerSettingsHelper.CSC.CompilerFullPath, opts.CompilerFullPath);   // Would include csc.exe or vbc.exe if the extension we searched for wasn't fake.
+            Assert.AreEqual<int>(CompilerSettingsHelper.CSC.CompilerServerTimeToLive, opts.CompilerServerTimeToLive);   // 10 in Production. 900 in a "dev" environment.
+            Assert.IsFalse(opts.UseAspNetSettings);  // Default via constructor is false.
+            Assert.IsFalse(opts.WarnAsError);
+            Assert.IsNull(opts.CompilerVersion);
+            Assert.AreEqual<int>(0, opts.AllOptions.Count);
+        }
+
         // <providerOptions> override defaults
         [TestMethod]
         public void FromProviderOptions()

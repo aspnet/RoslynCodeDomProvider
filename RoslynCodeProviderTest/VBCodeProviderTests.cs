@@ -18,8 +18,10 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
         private const int Failed = 1;
         private const int Success = 0;
 
+#pragma warning disable CS0618
         private CommonCodeDomProviderTests commonTests = new CommonCodeDomProviderTests();
         private CodeDomProvider _codeProvider = new VBCodeProvider(CompilerSettingsHelper.VB);
+#pragma warning restore CS0618
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext context) {
