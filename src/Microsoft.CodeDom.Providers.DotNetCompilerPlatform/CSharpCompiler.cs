@@ -14,8 +14,8 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
         private static volatile Regex outputRegWithFileAndLine;
         private static volatile Regex outputRegSimple;
 
-        public CSharpCompiler(CodeDomProvider codeDomProvider, ICompilerSettings compilerSettings = null)
-            : base(codeDomProvider, compilerSettings) {
+        public CSharpCompiler(CodeDomProvider codeDomProvider, IProviderOptions providerOptions = null)
+            : base(codeDomProvider, providerOptions) {
         }
 
         protected override string FileExtension {
@@ -69,14 +69,22 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
 
         protected override void FixUpCompilerParameters(CompilerParameters options) {
             base.FixUpCompilerParameters(options);
-            List<string> noWarnStrings = new List<string>(5);
-            noWarnStrings.AddRange(new string[] { "1659", "1699", "1701" });
 
-            // disableObsoleteWarnings
-            noWarnStrings.Add("612"); // [Obsolete] without message
-            noWarnStrings.Add("618"); // [Obsolete("with message")]
+            // We used to magically add some ASP.net-centric options here. For compatibilities sake
+            // we will continue to do so in ASP.Net mode. If these are getting in the way for people
+            // though, disable ASP.Net mode and they will go away. (Sort of. These are the defaults
+            // in the XDT config transform, so they will already be here anyway for most folks.)
+            if (_providerOptions.UseAspNetSettings)
+            {
+                List<string> noWarnStrings = new List<string>(5);
+                noWarnStrings.AddRange(new string[] { "1659", "1699", "1701" });
 
-            CompilationUtil.PrependCompilerOption(options, "/nowarn:" + String.Join(";", noWarnStrings));
+                // disableObsoleteWarnings
+                noWarnStrings.Add("612"); // [Obsolete] without message
+                noWarnStrings.Add("618"); // [Obsolete("with message")]
+
+                CompilationUtil.PrependCompilerOption(options, "/nowarn:" + String.Join(";", noWarnStrings));
+            }
         }
 
         protected override string CmdArgsFromParameters(CompilerParameters parameters) {

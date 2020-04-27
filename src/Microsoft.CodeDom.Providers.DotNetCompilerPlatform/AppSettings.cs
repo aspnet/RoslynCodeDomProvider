@@ -1,12 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Specialized;
 using System.Web.Configuration;
 
 namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
@@ -32,6 +27,8 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
             lock (_lock) {
                 if (!_settingsInitialized) {
                     try {
+                        // I think it should be safe to straight up use regular ConfigurationManager here...
+                        // but if it ain't broke, don't fix it.
                         LoadSettings(WebConfigurationManager.AppSettings);
                     }
                     finally {

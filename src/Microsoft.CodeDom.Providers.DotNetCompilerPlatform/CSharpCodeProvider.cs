@@ -11,22 +11,30 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
     /// </summary>
     [DesignerCategory("code")]
     public sealed class CSharpCodeProvider : Microsoft.CSharp.CSharpCodeProvider {
-        private ICompilerSettings _compilerSettings;
+        private IProviderOptions _providerOptions;
 
         /// <summary>
         /// Default Constructor
         /// </summary>
         public CSharpCodeProvider()
-            : this(null) {
+            : this((IProviderOptions)null) {
         }
 
-        
         /// <summary>
         /// Creates an instance using the given ICompilerSettings
         /// </summary>
         /// <param name="compilerSettings"></param>
+        [Obsolete("ICompilerSettings is obsolete. Please update code to use IProviderOptions instead.", false)]
         public CSharpCodeProvider(ICompilerSettings compilerSettings = null) {
-            _compilerSettings = compilerSettings == null ? CompilationSettingsHelper.CSC2 : compilerSettings;
+            _providerOptions = compilerSettings == null ? CompilationUtil.CSC2 : new ProviderOptions(compilerSettings);
+        }
+
+        /// <summary>
+        /// Creates an instance using the given IProviderOptions
+        /// </summary>
+        /// <param name="providerOptions"></param>
+        public CSharpCodeProvider(IProviderOptions providerOptions = null) {
+            _providerOptions = providerOptions == null ? CompilationUtil.CSC2 : providerOptions;
         }
 
         /// <summary>
@@ -35,7 +43,7 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
         /// <returns>An instance of the .NET Compiler Platform C# code compiler</returns>
         [Obsolete("Callers should not use the ICodeCompiler interface and should instead use the methods directly on the CodeDomProvider class.")]
         public override ICodeCompiler CreateCompiler() {
-            return new CSharpCompiler(this, _compilerSettings);
+            return new CSharpCompiler(this, _providerOptions);
         }
     }
 }

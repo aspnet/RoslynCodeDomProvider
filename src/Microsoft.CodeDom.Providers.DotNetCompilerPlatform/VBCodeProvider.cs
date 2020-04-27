@@ -11,21 +11,30 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
     /// </summary>
     [DesignerCategory("code")]
     public sealed class VBCodeProvider : Microsoft.VisualBasic.VBCodeProvider {
-        private ICompilerSettings _compilerSettings;
+        private IProviderOptions _providerOptions;
 
         /// <summary>
         /// Default Constructor
         /// </summary>
         public VBCodeProvider()
-            : this(null) {
+            : this((IProviderOptions)null) {
         }
 
-		/// <summary>
-		/// Creates an instance using the given ICompilerSettings
-		/// </summary>
-		/// <param name="compilerSettings"></param>
-		public VBCodeProvider(ICompilerSettings compilerSettings = null) {
-            _compilerSettings = compilerSettings == null ? CompilationSettingsHelper.VBC2 : compilerSettings;
+        /// <summary>
+        /// Creates an instance using the given ICompilerSettings
+        /// </summary>
+        /// <param name="compilerSettings"></param>
+        [Obsolete("ICompilerSettings is obsolete. Please update code to use IProviderOptions instead.", false)]
+        public VBCodeProvider(ICompilerSettings compilerSettings = null) {
+            _providerOptions = compilerSettings == null ? CompilationUtil.VBC2 : new ProviderOptions(compilerSettings);
+        }
+
+        /// <summary>
+        /// Creates an instance using the given ICompilerSettings
+        /// </summary>
+        /// <param name="providerOptions"></param>
+        public VBCodeProvider(IProviderOptions providerOptions = null) {
+            _providerOptions = providerOptions == null ? CompilationUtil.VBC2 : providerOptions;
         }
 
         /// <summary>
@@ -34,7 +43,7 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
         /// <returns>An instance of the .NET Compiler Platform VB code compiler</returns>
         [Obsolete("Callers should not use the ICodeCompiler interface and should instead use the methods directly on the CodeDomProvider class.")]
         public override ICodeCompiler CreateCompiler() {
-            return new VBCompiler(this, _compilerSettings);
+            return new VBCompiler(this, _providerOptions);
         }
     }
 }
