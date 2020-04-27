@@ -165,12 +165,13 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
         // CodeDom sets TreatWarningAsErrors to true whenever warningLevel is non-zero.
         // However, TreatWarningAsErrors should be false by default.
         // And users should be able to set the value by set the value of option "WarnAsError".
-        // ASP.Net does fix this "WarnAsError" option in a like named function, but only for old CodeDom providers (CSharp/VB).
-        // The ASP.Net fix was to set TreatWarningAsErrors to false anytime '/warnaserror' was
+        // ASP.Net does fix this option in a like named function, but only for old CodeDom providers (CSharp/VB).
+        // The old ASP.Net fix was to set TreatWarningAsErrors to false anytime '/warnaserror' was
         // detected in the compiler command line options, thus allowing the user-specified
         // option to prevail. In these CodeDom providers though, users have control through
         // the 'WarnAsError' provider option as well as manual control over the command
-        // line args. So just go with the 'WarnAsError' provider option here.
+        // line args. 'WarnAsError' will default to false but can be set by the user.
+        // So just go with the 'WarnAsError' provider option here.
         private void FixTreatWarningsAsErrors(CompilerParameters parameters) {
             parameters.TreatWarningsAsErrors = _providerOptions.WarnAsError;
         }
