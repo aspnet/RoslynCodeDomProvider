@@ -21,6 +21,14 @@
       <Destination>lib\net45</Destination>
     </NuGetContent>
     <NuGetContentProject Include="$(RepositoryRoot)\src\$(MSBuildProjectName)\$(MSBuildProjectName).csproj" Condition="'$(NuGetPackSymbols)' == 'true'" />
+    <NuGetContent Include="DotNetCompilerPlatformTasks.dll">
+      <Source>$(OutputPath)</Source>
+      <Destination>tasks</Destination>
+    </NuGetContent>
+    <NuGetContent Include="System.Management.dll">
+      <Source>$(OutputPath)</Source>
+      <Destination>tasks</Destination>
+    </NuGetContent>
     <NuGetContent Include="Content\net45\*">
       <Destination>content\net45</Destination>
     </NuGetContent>
