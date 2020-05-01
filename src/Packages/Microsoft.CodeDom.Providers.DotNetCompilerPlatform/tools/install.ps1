@@ -20,6 +20,56 @@ $projectTargetFramework = $project.Properties.Item('TargetFrameworkMoniker').Val
 $shouldUseRoslyn45 = $projectTargetFramework -match '4.5'
 $binDirectory = Join-Path $projectRoot 'bin'
 
+#
+# Some things vary depending on which framework version you target. Set the defaults first
+# so the variables are scoped for the entire script. If you target an older framework,
+# (4.5-4.7.1) then we need to change some of these.
+#
+$compilerPackageToolsDirectory = Join-Path $compilerPackageDirectory 'tools\roslyn472'
+$csLanguageVersion = 'default'
+$vbLanguageVersion = 'default'
+if ($projectTargetFramework -match '^4\.5')
+{
+    $compilerPackageToolsDirectory = Join-Path $compilerPackageDirectory 'tools\roslyn45'
+    $csLanguageVersion = '6'
+    $vbLanguageVersion = '14'
+}
+else if (($projectTargetFramework -match '^4\.6') or ($projectTargetFramework -match '^4\.7$') or ($projectTargetFramework -match '^4\.7\.[01]'))
+{
+    $compilerPackageToolsDirectory = Join-Path $compilerPackageDirectory 'tools\roslyn46'
+    $csLanguageVersion = 'default'
+    $vbLanguageVersion = 'default'
+}
+
+
+# Fill out the config entries for these code dom providers here. Using powershell to do
+# this allows us to cache and restore customized attribute values from previous versions of
+# this package in the upgrade scenario.
+. "$PSScriptRoot\common.ps1"
+$csCodeDomProvider = [CodeDomProviderDescription]@{
+	TypeName="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CSharpCodeProvider";
+	AssemblyRef="Microsoft.CodeDom.Providers.DotNetCompilerPlatform";
+    Version="3.4.0.0";
+    FileExtension=".cs";
+    Parameters=@(
+		[CompilerParameterDescription]@{ Name="language"; DefaultValue="c#;cs;csharp"; IsRequired=$true; IsProviderOption=$false  },
+		[CompilerParameterDescription]@{ Name="warningLevel"; DefaultValue="4"; IsRequired=$false; IsProviderOption=$false  },
+		[CompilerParameterDescription]@{ Name="compilerOptions"; DefaultValue="/langversion:" + $csLanguageVersion + " /nowarn:1659;1699;1701;612;618"; IsRequired=$false; IsProviderOption=$false  });
+}
+InstallCodeDomProvider $csCodeDomProvider
+$vbCodeDomProvider = [CodeDomProviderDescription]@{
+	TypeName="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.VBCodeProvider";
+	Assembly="Microsoft.CodeDom.Providers.DotNetCompilerPlatform";
+    Version="3.4.0.0";
+    FileExtension=".vb";
+    Parameters=@(
+		[CompilerParameterDescription]@{ Name="language"; DefaultValue="vb;vbs;visualbasic;vbscript"; IsRequired=$true; IsProviderOption=$false  },
+		[CompilerParameterDescription]@{ Name="warningLevel"; DefaultValue="4"; IsRequired=$false; IsProviderOption=$false  },
+		[CompilerParameterDescription]@{ Name="compilerOptions"; DefaultValue="/langversion:" + $vbLanguageVersion + " /nowarn:41008,40000,40008 /define:_MYTYPE=\&quot;Web\&quot; /optionInfer+"; IsRequired=$false; IsProviderOption=$false  });
+}
+InstallCodeDomProvider $vbCodeDomProvider
+
+
 # We need to copy the provider assembly into the bin\ folder, otherwise
 # Microsoft.VisualStudio.Web.Host.exe cannot find the assembly.
 # However, users will see the error after they clean solutions.
@@ -50,14 +100,6 @@ if ($project.Type -eq 'Web Site') {
         break
     }
 
-    if($shouldUseRoslyn45)
-    {
-        $compilerPackageToolsDirectory = Join-Path $compilerPackageDirectory 'tools\roslyn45'
-    }
-    else
-    {
-        $compilerPackageToolsDirectory = Join-Path $compilerPackageDirectory 'tools\roslynlatest'
-    }
     $roslynSubDirectory = Join-Path $binDirectory $roslynSubFolder
     New-Item $roslynSubDirectory -type directory -force | Out-Null
     Copy-Item $compilerPackageToolsDirectory\* $roslynSubDirectory -force | Out-Null

@@ -8,6 +8,15 @@
 
 param($installPath, $toolsPath, $package, $project)
 
+
+# First save the code dom compiler declarations off to a temp file so they can be restored
+# in the event that this is a package upgrade scenario.
+. "$PSScriptRoot\common.ps1"
+CommonUninstall "Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CSharpCodeProvider, Microsoft.CodeDom.Providers.DotNetCompilerPlatform"
+CommonUninstall "Microsoft.CodeDom.Providers.DotNetCompilerPlatform.VBCodeProvider, Microsoft.CodeDom.Providers.DotNetCompilerPlatform"
+
+
+# Then remove the compiler bits from the bin directory
 $roslynSubFolder = 'roslyn'
 
 if ($project -eq $null) {
