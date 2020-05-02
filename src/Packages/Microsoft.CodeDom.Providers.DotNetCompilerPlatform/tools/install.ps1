@@ -21,10 +21,14 @@ $shouldUseRoslyn45 = $projectTargetFramework -match '4.5'
 $binDirectory = Join-Path $projectRoot 'bin'
 
 #
-# Some things vary depending on which framework version you target. Set the defaults first
-# so the variables are scoped for the entire script. If you target an older framework,
-# (4.5-4.7.1) then we need to change some of these.
+# Some things vary depending on which framework version you target. If you target an
+# older framework, (4.5-4.7.1) then we need to change some of these.
 #
+$compilerVersion = $package.Version
+if($package.Versions -ne $null) { $compilerVersion = @($package.Versions)[0] }
+$packageDirectory = Split-Path $installPath
+$compilerPackageFolderName = $package.Id + "." + $compilerVersion
+$compilerPackageDirectory = Join-Path $packageDirectory $compilerPackageFolderName
 $compilerPackageToolsDirectory = Join-Path $compilerPackageDirectory 'tools\roslyn472'
 $csLanguageVersion = 'default'
 $vbLanguageVersion = 'default'
@@ -34,7 +38,7 @@ if ($projectTargetFramework -match '^4\.5')
     $csLanguageVersion = '6'
     $vbLanguageVersion = '14'
 }
-else if (($projectTargetFramework -match '^4\.6') or ($projectTargetFramework -match '^4\.7$') or ($projectTargetFramework -match '^4\.7\.[01]'))
+elseif (($projectTargetFramework -match '^4\.6') -or ($projectTargetFramework -match '^4\.7$') -or ($projectTargetFramework -match '^4\.7\.[01]'))
 {
     $compilerPackageToolsDirectory = Join-Path $compilerPackageDirectory 'tools\roslyn46'
     $csLanguageVersion = 'default'
@@ -48,12 +52,14 @@ else if (($projectTargetFramework -match '^4\.6') or ($projectTargetFramework -m
 . "$PSScriptRoot\common.ps1"
 $csCodeDomProvider = [CodeDomProviderDescription]@{
 	TypeName="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CSharpCodeProvider";
-	AssemblyRef="Microsoft.CodeDom.Providers.DotNetCompilerPlatform";
+	Assembly="Microsoft.CodeDom.Providers.DotNetCompilerPlatform";
     Version="3.4.0.0";
     FileExtension=".cs";
     Parameters=@(
 		[CompilerParameterDescription]@{ Name="language"; DefaultValue="c#;cs;csharp"; IsRequired=$true; IsProviderOption=$false  },
-		[CompilerParameterDescription]@{ Name="warningLevel"; DefaultValue="4"; IsRequired=$false; IsProviderOption=$false  },
+		[CompilerParameterDescription]@{ Name="warningLevel"; DefaultValue="4"; IsRequired=$true; IsProviderOption=$false  },
+		[CompilerParameterDescription]@{ Name="goofyParam"; DefaultValue="foobaz"; IsRequired=$true; IsProviderOption=$true  },
+		[CompilerParameterDescription]@{ Name="verySeriousParam"; DefaultValue="synergy"; IsRequired=$true; IsProviderOption=$true  },
 		[CompilerParameterDescription]@{ Name="compilerOptions"; DefaultValue="/langversion:" + $csLanguageVersion + " /nowarn:1659;1699;1701;612;618"; IsRequired=$false; IsProviderOption=$false  });
 }
 InstallCodeDomProvider $csCodeDomProvider
@@ -64,7 +70,7 @@ $vbCodeDomProvider = [CodeDomProviderDescription]@{
     FileExtension=".vb";
     Parameters=@(
 		[CompilerParameterDescription]@{ Name="language"; DefaultValue="vb;vbs;visualbasic;vbscript"; IsRequired=$true; IsProviderOption=$false  },
-		[CompilerParameterDescription]@{ Name="warningLevel"; DefaultValue="4"; IsRequired=$false; IsProviderOption=$false  },
+		[CompilerParameterDescription]@{ Name="warningLevel"; DefaultValue="4"; IsRequired=$true; IsProviderOption=$false  },
 		[CompilerParameterDescription]@{ Name="compilerOptions"; DefaultValue="/langversion:" + $vbLanguageVersion + " /nowarn:41008,40000,40008 /define:_MYTYPE=\&quot;Web\&quot; /optionInfer+"; IsRequired=$false; IsProviderOption=$false  });
 }
 InstallCodeDomProvider $vbCodeDomProvider
@@ -80,19 +86,7 @@ Copy-Item $libDirectory\* $binDirectory -force | Out-Null
 # the applicaiton's bin folder. 
 # For Web Applicaiton project, this is done in csproj.
 if ($project.Type -eq 'Web Site') {
-    $packageDirectory = Split-Path $installPath
 
-    if($package.Versions -eq $null)
-    {
-        $compilerVersion = $package.Version
-    }
-    else
-    {
-		$compilerVersion = @($package.Versions)[0]
-    }
-
-    $compilerPackageFolderName = $package.Id + "." + $compilerVersion
-    $compilerPackageDirectory = Join-Path $packageDirectory $compilerPackageFolderName
     if ((Get-Item $compilerPackageDirectory) -isnot [System.IO.DirectoryInfo])
     {
         Write-Host "The install.ps1 cannot find the installation location of package $compilerPackageName, or the pakcage is not installed correctly."

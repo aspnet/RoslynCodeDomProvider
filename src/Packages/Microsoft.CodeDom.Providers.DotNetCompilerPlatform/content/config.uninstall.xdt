@@ -5,23 +5,6 @@
   </appSettings>
   <appSettings xdt:Transform="Remove" xdt:Locator="Condition(count(child::*) = 0)">
   </appSettings>
-
-  <system.codedom>
-    <compilers>
-      <compiler
-        extension=".cs"
-        xdt:Transform="Remove"
-        xdt:Locator="Match(extension)" />
-    </compilers>
-  </system.codedom>
-  <system.codedom>
-    <compilers>
-      <compiler
-        extension=".vb"
-        xdt:Transform="Remove"
-        xdt:Locator="Match(extension)" />
-    </compilers>
-  </system.codedom>
   <system.codedom>
     <compilers xdt:Transform="Remove" xdt:Locator="Condition(count(child::*) = 0)" />
   </system.codedom>

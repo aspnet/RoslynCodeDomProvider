@@ -7,8 +7,7 @@
 
   <!-- If compilers tag is absent -->
   <system.codedom>
-    <compilers xdt:Transform="InsertIfMissing">
-    </compilers>
+    <compilers xdt:Transform="InsertIfMissing" />
   </system.codedom>
 
   <!-- If a .cs compiler is already present, the existing entry needs to be removed before inserting the new entry -->
@@ -18,13 +17,6 @@
         extension=".cs"
         xdt:Transform="Remove"
         xdt:Locator="Match(extension)" />
-    </compilers>
-  </system.codedom>
-
-  <!-- Inserting the new compiler -->
-  <system.codedom>
-    <compilers>
-      <compiler extension=".cs" xdt:Transform="Insert" />
     </compilers>
   </system.codedom>
 
@@ -38,10 +30,4 @@
     </compilers>
   </system.codedom>
 
-  <!-- Inserting the new compiler -->
-  <system.codedom>
-    <compilers>
-      <compiler extension=".vb" xdt:Transform="Insert" />
-    </compilers>
-  </system.codedom>
 </configuration>
