@@ -23,7 +23,7 @@
     <PackageReference Include="System.Management" Version="4.5.0" />
   </ItemGroup>
 
-  <Target Name="AfterBuild">
+  <Target Name="RealSignFiles" AfterTargets="CoreCompile">
     <ItemGroup>
       <FilesToSign Include="$(TargetPath)" Condition="'$(SignAssembly)' == 'true'">
         <Authenticode>Microsoft400</Authenticode>
