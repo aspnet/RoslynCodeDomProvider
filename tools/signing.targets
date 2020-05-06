@@ -1,7 +1,7 @@
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <!-- Setup signing for built assemblies. -->
-  <Target Name="GetAssemblyFilesToSign" BeforeTargets="SignFiles" Condition="'$(MSBuildProjectExtension)' != '.nuproj' And '$(SignAssembly)' == 'true'">
+  <Target Name="GetAssemblyFilesToSign" BeforeTargets="SignFiles" Condition="'$(MSBuildProjectExtension)' != '.nuproj' And '$(MSBuildProjectName)' != 'Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest' And '$(SignAssembly)' == 'true'">
     <ItemGroup>
       <FilesToSign Include="$(TargetPath)">
         <Authenticode>Microsoft400</Authenticode>

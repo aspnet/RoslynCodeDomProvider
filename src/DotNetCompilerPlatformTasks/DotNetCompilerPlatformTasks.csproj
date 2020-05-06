@@ -1,8 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory),RoslynCodeProvider.sln))\tools\RoslynCodeProvider.settings.targets" />
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <SignAssembly>true</SignAssembly>
     <DelaySign>true</DelaySign>
     <AssemblyOriginatorKeyFile>..\35MSSharedLib1024.snk</AssemblyOriginatorKeyFile>
@@ -22,14 +24,5 @@
     </PackageReference>
     <PackageReference Include="System.Management" Version="4.5.0" />
   </ItemGroup>
-
-  <Target Name="RealSignFiles" AfterTargets="CoreCompile">
-    <ItemGroup>
-      <FilesToSign Include="$(TargetPath)" Condition="'$(SignAssembly)' == 'true'">
-        <Authenticode>Microsoft400</Authenticode>
-        <StrongName>MsSharedLib72</StrongName>
-      </FilesToSign>
-    </ItemGroup>
-  </Target>
 
 </Project>
