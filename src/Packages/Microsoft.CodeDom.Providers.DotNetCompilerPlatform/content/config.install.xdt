@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
-  <appSettings>
-    <add key="aspnet:RoslynCompilerLocation" value="roslyn" xdt:Transform="Remove" xdt:Locator="Match(key)" />
-  </appSettings>
-  <appSettings xdt:Transform="Remove" xdt:Locator="Condition(count(child::*) = 0)">
-  </appSettings>
 
+  <!-- If system.codedom tag is absent -->
+  <system.codedom xdt:Transform="InsertIfMissing">
+  </system.codedom>
+
+  <!-- If compilers tag is absent -->
+  <system.codedom>
+    <compilers xdt:Transform="InsertIfMissing" />
+  </system.codedom>
+
+  <!-- If a .cs compiler is already present, the existing entry needs to be removed before inserting the new entry -->
   <system.codedom>
     <compilers>
       <compiler
@@ -14,6 +19,8 @@
         xdt:Locator="Match(extension)" />
     </compilers>
   </system.codedom>
+
+  <!-- If a .vb compiler is already present, the existing entry needs to be removed before inserting the new entry -->
   <system.codedom>
     <compilers>
       <compiler
@@ -22,8 +29,5 @@
         xdt:Locator="Match(extension)" />
     </compilers>
   </system.codedom>
-  <system.codedom>
-    <compilers xdt:Transform="Remove" xdt:Locator="Condition(count(child::*) = 0)" />
-  </system.codedom>
-  <system.codedom xdt:Transform="Remove" xdt:Locator="Condition(count(child::*) = 0)" />
+
 </configuration>

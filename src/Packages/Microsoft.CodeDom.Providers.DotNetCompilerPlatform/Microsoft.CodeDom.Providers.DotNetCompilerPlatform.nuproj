@@ -29,14 +29,41 @@
       <Source>$(OutputPath)</Source>
       <Destination>tasks</Destination>
     </NuGetContent>
-    <NuGetContent Include="Content\net45\*">
-      <Destination>content\net45</Destination>
+    <NuGetContent Include="Content\config.install.xdt">
+      <Destination>content\net45\app.config.install.xdt</Destination>
     </NuGetContent>
-    <NuGetContent Include="Content\net46\*">
-      <Destination>content\net46</Destination>
+    <NuGetContent Include="Content\config.install.xdt">
+      <Destination>content\net45\web.config.install.xdt</Destination>
     </NuGetContent>
-    <NuGetContent Include="Content\net472\*">
-      <Destination>content\net472</Destination>
+    <NuGetContent Include="Content\config.uninstall.xdt">
+      <Destination>content\net45\app.config.uninstall.xdt</Destination>
+    </NuGetContent>
+    <NuGetContent Include="Content\config.uninstall.xdt">
+      <Destination>content\net45\web.config.uninstall.xdt</Destination>
+    </NuGetContent>
+    <NuGetContent Include="Content\config.install.xdt">
+      <Destination>content\net46\app.config.install.xdt</Destination>
+    </NuGetContent>
+    <NuGetContent Include="Content\config.install.xdt">
+      <Destination>content\net46\web.config.install.xdt</Destination>
+    </NuGetContent>
+    <NuGetContent Include="Content\config.uninstall.xdt">
+      <Destination>content\net46\app.config.uninstall.xdt</Destination>
+    </NuGetContent>
+    <NuGetContent Include="Content\config.uninstall.xdt">
+      <Destination>content\net46\web.config.uninstall.xdt</Destination>
+    </NuGetContent>
+    <NuGetContent Include="Content\config.install.xdt">
+      <Destination>content\net472\app.config.install.xdt</Destination>
+    </NuGetContent>
+    <NuGetContent Include="Content\config.install.xdt">
+      <Destination>content\net472\web.config.install.xdt</Destination>
+    </NuGetContent>
+    <NuGetContent Include="Content\config.uninstall.xdt">
+      <Destination>content\net472\app.config.uninstall.xdt</Destination>
+    </NuGetContent>
+    <NuGetContent Include="Content\config.uninstall.xdt">
+      <Destination>content\net472\web.config.uninstall.xdt</Destination>
     </NuGetContent>
     <NuGetContent Include="build\*">
       <Destination>build\net45</Destination>
