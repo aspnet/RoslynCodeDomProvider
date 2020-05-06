@@ -34,22 +34,8 @@
     <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\tools\Roslyn472\Microsoft.CSharp.Core.targets" />
     <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\tools\Roslyn472\Microsoft.Managed.Core.targets" />
     <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\tools\Roslyn472\Microsoft.VisualBasic.Core.targets" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\content\app.config.install.xdt" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\content\app.config.uninstall.xdt" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\content\net45\app.config.install.xdt" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\content\net45\app.config.uninstall.xdt" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\content\net45\web.config.install.xdt" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\content\net45\web.config.uninstall.xdt" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\content\net46\app.config.install.xdt" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\content\net46\app.config.uninstall.xdt" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\content\net46\web.config.install.xdt" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\content\net46\web.config.uninstall.xdt" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\content\net472\app.config.install.xdt" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\content\net472\app.config.uninstall.xdt" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\content\net472\web.config.install.xdt" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\content\net472\web.config.uninstall.xdt" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\content\web.config.install.xdt" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\content\web.config.uninstall.xdt" />
+    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\content\config.install.xdt" />
+    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\content\config.uninstall.xdt" />
     <None Include="**\*.ps1" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

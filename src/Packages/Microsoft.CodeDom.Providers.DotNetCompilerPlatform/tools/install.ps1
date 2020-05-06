@@ -8,6 +8,7 @@
 
 param($installPath, $toolsPath, $package, $project)
 
+$assemblyVersion = '3.5.0.0'
 $roslynSubFolder = 'roslyn'
 
 if ($project -eq $null) {
@@ -53,20 +54,18 @@ elseif (($projectTargetFramework -match '^4\.6') -or ($projectTargetFramework -m
 $csCodeDomProvider = [CodeDomProviderDescription]@{
 	TypeName="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CSharpCodeProvider";
 	Assembly="Microsoft.CodeDom.Providers.DotNetCompilerPlatform";
-    Version="3.4.0.0";
+    Version=$assemblyVersion;
     FileExtension=".cs";
     Parameters=@(
 		[CompilerParameterDescription]@{ Name="language"; DefaultValue="c#;cs;csharp"; IsRequired=$true; IsProviderOption=$false  },
 		[CompilerParameterDescription]@{ Name="warningLevel"; DefaultValue="4"; IsRequired=$true; IsProviderOption=$false  },
-		[CompilerParameterDescription]@{ Name="goofyParam"; DefaultValue="foobaz"; IsRequired=$true; IsProviderOption=$true  },
-		[CompilerParameterDescription]@{ Name="verySeriousParam"; DefaultValue="synergy"; IsRequired=$true; IsProviderOption=$true  },
 		[CompilerParameterDescription]@{ Name="compilerOptions"; DefaultValue="/langversion:" + $csLanguageVersion + " /nowarn:1659;1699;1701;612;618"; IsRequired=$false; IsProviderOption=$false  });
 }
 InstallCodeDomProvider $csCodeDomProvider
 $vbCodeDomProvider = [CodeDomProviderDescription]@{
 	TypeName="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.VBCodeProvider";
 	Assembly="Microsoft.CodeDom.Providers.DotNetCompilerPlatform";
-    Version="3.4.0.0";
+    Version=$assemblyVersion;
     FileExtension=".vb";
     Parameters=@(
 		[CompilerParameterDescription]@{ Name="language"; DefaultValue="vb;vbs;visualbasic;vbscript"; IsRequired=$true; IsProviderOption=$false  },

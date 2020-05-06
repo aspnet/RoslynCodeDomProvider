@@ -8,8 +8,9 @@
 
     <Import Project="$(MSBuildThisFileDirectory)version.targets"/>
     <Import Project="$(MSBuildThisFileDirectory)RoslynCodeProvider.Extensions.targets"/>
+    <Import Project="$(MSBuildThisFileDirectory)signing.targets"/>
 
-    <!-- Post-targets computed properties. -->
+  <!-- Post-targets computed properties. -->
 
     <PropertyGroup>
         <SatelliteContractVersion Condition="'$(SatelliteContractVersion)' == ''">$(AssemblyVersion)</SatelliteContractVersion>

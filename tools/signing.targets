@@ -1,0 +1,35 @@
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- Setup signing for built assemblies. -->
+  <Target Name="GetAssemblyFilesToSign" BeforeTargets="SignFiles" Condition="'$(MSBuildProjectExtension)' != '.nuproj' And '$(SignAssembly)' == 'true'">
+    <ItemGroup>
+      <FilesToSign Include="$(TargetPath)">
+        <Authenticode>Microsoft400</Authenticode>
+        <StrongName>MsSharedLib72</StrongName>
+      </FilesToSign>
+    </ItemGroup>
+  </Target>
+
+  <!-- Set up signing for nuget packages. -->
+  <Target Name="SignPowerShellScript" BeforeTargets="GetNuGetContentFromProject" Condition="'$(MSBuildProjectExtension)' == '.nuproj' And '$(SignAssembly)' == 'true'">
+    <ItemGroup>
+      <ScriptFilesToSign Include="tools\*.ps1">
+        <Authenticode>Microsoft400</Authenticode>
+      </ScriptFilesToSign>
+    </ItemGroup>
+    <SignFiles Files="@(ScriptFilesToSign)" Type="$(SignType)" BinariesDirectory="$(NuGetScriptDirectory)\$(NuGetProcessedScriptSubDirectory)"
+        IntermediatesDirectory="$(NuGetScriptDirectory)" ESRPSigning="$(ESRPSigning)" UseBearerToken="$(UseBearerToken)" Condition="'@(ScriptFilesToSign->Count())' &gt; 0" />
+  </Target>
+
+  <Target Name="GetPackageFilesToSign" BeforeTargets="SignFiles" Condition="'$(MSBuildProjectExtension)' == '.nuproj' And '$(SignAssembly)' == 'true'">
+    <PropertyGroup>
+      <OutDir>$(PackageOutputDir)</OutDir>
+    </PropertyGroup>
+    <ItemGroup>
+      <FilesToSign Include="$(NuGetPackTargetFile)">
+        <Authenticode>NuGet</Authenticode>
+      </FilesToSign>
+    </ItemGroup>
+  </Target>
+
+</Project>
