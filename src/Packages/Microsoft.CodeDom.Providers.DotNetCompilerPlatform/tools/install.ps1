@@ -18,7 +18,6 @@ if ($project -eq $null) {
 $libDirectory = Join-Path $installPath 'lib\net45'
 $projectRoot = $project.Properties.Item('FullPath').Value
 $projectTargetFramework = $project.Properties.Item('TargetFrameworkMoniker').Value
-$shouldUseRoslyn45 = $projectTargetFramework -match '4.5'
 $binDirectory = Join-Path $projectRoot 'bin'
 
 #
@@ -33,13 +32,13 @@ $compilerPackageDirectory = Join-Path $packageDirectory $compilerPackageFolderNa
 $compilerPackageToolsDirectory = Join-Path $compilerPackageDirectory 'tools\roslyn472'
 $csLanguageVersion = 'default'
 $vbLanguageVersion = 'default'
-if ($projectTargetFramework -match '^4\.5')
+if ($projectTargetFramework -match 'v4\.5')
 {
     $compilerPackageToolsDirectory = Join-Path $compilerPackageDirectory 'tools\roslyn45'
     $csLanguageVersion = '6'
     $vbLanguageVersion = '14'
 }
-elseif (($projectTargetFramework -match '^4\.6') -or ($projectTargetFramework -match '^4\.7$') -or ($projectTargetFramework -match '^4\.7\.[01]'))
+elseif (($projectTargetFramework -match 'v4\.6') -or ($projectTargetFramework -match 'v4\.7[^\.]') -or ($projectTargetFramework -match 'v4\.7\.[01]'))
 {
     $compilerPackageToolsDirectory = Join-Path $compilerPackageDirectory 'tools\roslyn46'
     $csLanguageVersion = 'default'
