@@ -69,7 +69,7 @@ $vbCodeDomProvider = [CodeDomProviderDescription]@{
     Parameters=@(
 		[CompilerParameterDescription]@{ Name="language"; DefaultValue="vb;vbs;visualbasic;vbscript"; IsRequired=$true; IsProviderOption=$false  },
 		[CompilerParameterDescription]@{ Name="warningLevel"; DefaultValue="4"; IsRequired=$true; IsProviderOption=$false  },
-		[CompilerParameterDescription]@{ Name="compilerOptions"; DefaultValue="/langversion:" + $vbLanguageVersion + " /nowarn:41008,40000,40008 /define:_MYTYPE=\&quot;Web\&quot; /optionInfer+"; IsRequired=$false; IsProviderOption=$false  });
+		[CompilerParameterDescription]@{ Name="compilerOptions"; DefaultValue="/langversion:" + $vbLanguageVersion + " /nowarn:41008,40000,40008 /define:_MYTYPE=\""Web\"" /optionInfer+"; IsRequired=$false; IsProviderOption=$false  });
 }
 InstallCodeDomProvider $vbCodeDomProvider
 
