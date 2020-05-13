@@ -8,6 +8,7 @@
 
 param($installPath, $toolsPath, $package, $project)
 
+$assemblyVersion = '3.5.0.0'
 $roslynSubFolder = 'roslyn'
 
 if ($project -eq $null) {
@@ -17,7 +18,6 @@ if ($project -eq $null) {
 $libDirectory = Join-Path $installPath 'lib\net45'
 $projectRoot = $project.Properties.Item('FullPath').Value
 $projectTargetFramework = $project.Properties.Item('TargetFrameworkMoniker').Value
-$shouldUseRoslyn45 = $projectTargetFramework -match '4.5'
 $binDirectory = Join-Path $projectRoot 'bin'
 
 #
@@ -32,13 +32,13 @@ $compilerPackageDirectory = Join-Path $packageDirectory $compilerPackageFolderNa
 $compilerPackageToolsDirectory = Join-Path $compilerPackageDirectory 'tools\roslyn472'
 $csLanguageVersion = 'default'
 $vbLanguageVersion = 'default'
-if ($projectTargetFramework -match '^4\.5')
+if ($projectTargetFramework -match 'v4\.5')
 {
     $compilerPackageToolsDirectory = Join-Path $compilerPackageDirectory 'tools\roslyn45'
     $csLanguageVersion = '6'
     $vbLanguageVersion = '14'
 }
-elseif (($projectTargetFramework -match '^4\.6') -or ($projectTargetFramework -match '^4\.7$') -or ($projectTargetFramework -match '^4\.7\.[01]'))
+elseif (($projectTargetFramework -match 'v4\.6') -or ($projectTargetFramework -match 'v4\.7[^\.]') -or ($projectTargetFramework -match 'v4\.7\.[01]'))
 {
     $compilerPackageToolsDirectory = Join-Path $compilerPackageDirectory 'tools\roslyn46'
     $csLanguageVersion = 'default'
@@ -53,25 +53,23 @@ elseif (($projectTargetFramework -match '^4\.6') -or ($projectTargetFramework -m
 $csCodeDomProvider = [CodeDomProviderDescription]@{
 	TypeName="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CSharpCodeProvider";
 	Assembly="Microsoft.CodeDom.Providers.DotNetCompilerPlatform";
-    Version="3.4.0.0";
+    Version=$assemblyVersion;
     FileExtension=".cs";
     Parameters=@(
 		[CompilerParameterDescription]@{ Name="language"; DefaultValue="c#;cs;csharp"; IsRequired=$true; IsProviderOption=$false  },
 		[CompilerParameterDescription]@{ Name="warningLevel"; DefaultValue="4"; IsRequired=$true; IsProviderOption=$false  },
-		[CompilerParameterDescription]@{ Name="goofyParam"; DefaultValue="foobaz"; IsRequired=$true; IsProviderOption=$true  },
-		[CompilerParameterDescription]@{ Name="verySeriousParam"; DefaultValue="synergy"; IsRequired=$true; IsProviderOption=$true  },
 		[CompilerParameterDescription]@{ Name="compilerOptions"; DefaultValue="/langversion:" + $csLanguageVersion + " /nowarn:1659;1699;1701;612;618"; IsRequired=$false; IsProviderOption=$false  });
 }
 InstallCodeDomProvider $csCodeDomProvider
 $vbCodeDomProvider = [CodeDomProviderDescription]@{
 	TypeName="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.VBCodeProvider";
 	Assembly="Microsoft.CodeDom.Providers.DotNetCompilerPlatform";
-    Version="3.4.0.0";
+    Version=$assemblyVersion;
     FileExtension=".vb";
     Parameters=@(
 		[CompilerParameterDescription]@{ Name="language"; DefaultValue="vb;vbs;visualbasic;vbscript"; IsRequired=$true; IsProviderOption=$false  },
 		[CompilerParameterDescription]@{ Name="warningLevel"; DefaultValue="4"; IsRequired=$true; IsProviderOption=$false  },
-		[CompilerParameterDescription]@{ Name="compilerOptions"; DefaultValue="/langversion:" + $vbLanguageVersion + " /nowarn:41008,40000,40008 /define:_MYTYPE=\&quot;Web\&quot; /optionInfer+"; IsRequired=$false; IsProviderOption=$false  });
+		[CompilerParameterDescription]@{ Name="compilerOptions"; DefaultValue="/langversion:" + $vbLanguageVersion + " /nowarn:41008,40000,40008 /define:_MYTYPE=\""Web\"" /optionInfer+"; IsRequired=$false; IsProviderOption=$false  });
 }
 InstallCodeDomProvider $vbCodeDomProvider
 
