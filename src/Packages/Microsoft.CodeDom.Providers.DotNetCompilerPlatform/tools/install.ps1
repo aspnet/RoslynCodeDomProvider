@@ -30,19 +30,19 @@ $packageDirectory = Split-Path $installPath
 $compilerPackageFolderName = $package.Id + "." + $compilerVersion
 $compilerPackageDirectory = Join-Path $packageDirectory $compilerPackageFolderName
 $compilerPackageToolsDirectory = Join-Path $compilerPackageDirectory 'tools\roslyn472'
-$csLanguageVersion = 'default'
+$csLanguageVersion = '7.3'
 $vbLanguageVersion = 'default'
 if ($projectTargetFramework -match 'v4\.5')
 {
     $compilerPackageToolsDirectory = Join-Path $compilerPackageDirectory 'tools\roslyn45'
-    $csLanguageVersion = '6'
+    $csLanguageVersion = '6'    # Leave this at 6 for compat
     $vbLanguageVersion = '14'
 }
 elseif (($projectTargetFramework -match 'v4\.6') -or ($projectTargetFramework -match 'v4\.7[^\.]') -or ($projectTargetFramework -match 'v4\.7\.[01]'))
 {
     $compilerPackageToolsDirectory = Join-Path $compilerPackageDirectory 'tools\roslyn46'
-    $csLanguageVersion = 'default'
-    $vbLanguageVersion = 'default'
+    $csLanguageVersion = '7.0'  # This was 'default' which is 7.0 for this version of ms.net.compilers
+    $vbLanguageVersion = 'default'  # Is 15 for this ms.net.compilers... but will leave as 'default' for upgrades since that is still valid in .Net 4.8
 }
 
 
