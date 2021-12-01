@@ -33,7 +33,6 @@
     <!-- We really only need to do this in the Packages project. It's superfluous and causing intermittent
         build errors in all the other projects. -->
     <Target Name="DownloadRoslynBinariesToToolsFolder" Condition="'$(MSBuildProjectExtension)' == '.nuproj'">
-        <DownloadRoslynBinaries NupkgToolPath="$(NupkgToolPath)" LocalRoslyn45FolderName="$(LocalRoslyn45FolderName)" LocalRoslyn46FolderName="$(LocalRoslyn46FolderName)" LocalRoslyn472FolderName="$(LocalRoslyn472FolderName)" 
-            ReferenceRoslyn45NupkgVersion="$(MSNetCompilers45NuGetPackageVersion)" ReferenceRoslyn46NupkgVersion="$(MSNetCompilers46NuGetPackageVersion)" ReferenceRoslyn472NupkgVersion="$(MSNetCompilers472NuGetPackageVersion)" />
+        <DownloadRoslynBinaries NupkgToolPath="$(NupkgToolPath)" LocalRoslyn472FolderName="$(LocalRoslyn472FolderName)" ReferenceRoslyn472NupkgVersion="$(MSNetCompilers472NuGetPackageVersion)" />
     </Target>
 </Project>

@@ -23,14 +23,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.Extensions.targets" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.Extensions.targets" />
     <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.Extensions.targets" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\tools\Roslyn45\Microsoft.CSharp.Core.targets" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\tools\Roslyn45\Microsoft.VisualBasic.Core.targets" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\tools\Roslyn46\Microsoft.CSharp.Core.targets" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\tools\Roslyn46\Microsoft.Managed.Core.targets" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\tools\Roslyn46\Microsoft.VisualBasic.Core.targets" />
     <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\tools\Roslyn472\Microsoft.CSharp.Core.targets" />
     <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\tools\Roslyn472\Microsoft.Managed.Core.targets" />
     <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\tools\Roslyn472\Microsoft.VisualBasic.Core.targets" />

@@ -1,19 +1,13 @@
 <Project DefaultTargets="UnitTest" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
         <NupkgToolPath>$(RepositoryRoot)src\Packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform\tools\</NupkgToolPath>
-        <LocalRoslyn45FolderName>Roslyn45</LocalRoslyn45FolderName>
-        <LocalRoslyn46FolderName>Roslyn46</LocalRoslyn46FolderName>
         <LocalRoslyn472FolderName>Roslyn472</LocalRoslyn472FolderName>
     </PropertyGroup>
     
     <UsingTask TaskName="DownloadRoslynBinaries" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
     <ParameterGroup>
       <NupkgToolPath ParameterType="System.String" Required="true" />
-      <LocalRoslyn45FolderName ParameterType="System.String" Required="true" />
-      <LocalRoslyn46FolderName ParameterType="System.String" Required="true" />
       <LocalRoslyn472FolderName ParameterType="System.String" Required="true" />
-      <ReferenceRoslyn45NupkgVersion ParameterType="System.String" Required="true" />
-      <ReferenceRoslyn46NupkgVersion ParameterType="System.String" Required="true" />
       <ReferenceRoslyn472NupkgVersion ParameterType="System.String" Required="true" />
     </ParameterGroup>
     <Task>
@@ -28,60 +22,12 @@
                 {
                    using (var wc = new WebClient())
                     {
-                        var roslynNugetBaseUri = "https://api.nuget.org/packages/microsoft.net.compilers.{0}.nupkg";
-                        var roslynPackageName = "microsoft.net.compilers.{0}.nupkg";
+                        var roslynNugetBaseUri = "https://api.nuget.org/packages/microsoft.net.compilers.toolset.{0}.nupkg";
+                        var roslynPackageName = "microsoft.net.compilers.toolset.{0}.nupkg";
 
-                        var targetFilePath = Path.Combine(Path.GetTempPath(), string.Format(roslynPackageName, ReferenceRoslyn45NupkgVersion));
-                        var targetExtractPath = Path.Combine(Path.GetTempPath(), LocalRoslyn45FolderName);
-                        var packageToolsPath = Path.Combine(NupkgToolPath, LocalRoslyn45FolderName);
-                        if (Directory.Exists(targetExtractPath))
-                        {
-                            Directory.Delete(targetExtractPath, true);
-                        }
-                        if (Directory.Exists(packageToolsPath))
-                        {
-                            Directory.Delete(packageToolsPath, true);
-                        }
-
-                        wc.DownloadFile(string.Format(roslynNugetBaseUri, ReferenceRoslyn45NupkgVersion), targetFilePath);
-                        Log.LogMessage("Microsoft.Net.Compilers.{0}.nupkg is downloaded", ReferenceRoslyn45NupkgVersion);
-                        
-                        ZipFile.ExtractToDirectory(targetFilePath, targetExtractPath);
-                        Directory.CreateDirectory(packageToolsPath);
-                        foreach(var file in Directory.GetFiles(Path.Combine(targetExtractPath, "tools"))){
-                            var fi = new FileInfo(file);
-                            File.Copy(file, Path.Combine(packageToolsPath, fi.Name));
-                        }
-
-                        targetFilePath = Path.Combine(Path.GetTempPath(), string.Format(roslynPackageName, ReferenceRoslyn46NupkgVersion));
-                        targetExtractPath = Path.Combine(Path.GetTempPath(), LocalRoslyn46FolderName);
-                        packageToolsPath = Path.Combine(NupkgToolPath, LocalRoslyn46FolderName);
-                        if (Directory.Exists(targetExtractPath))
-                        {
-                            Directory.Delete(targetExtractPath, true);
-                        }
-                        if (Directory.Exists(packageToolsPath))
-                        {
-                            Directory.Delete(packageToolsPath, true);
-                        }
-
-                        wc.DownloadFile(string.Format(roslynNugetBaseUri, ReferenceRoslyn46NupkgVersion), targetFilePath);
-                        Log.LogMessage("Microsoft.Net.Compilers.{0}.nupkg is downloaded", ReferenceRoslyn46NupkgVersion);
-
-                        ZipFile.ExtractToDirectory(targetFilePath, targetExtractPath);
-                        Directory.CreateDirectory(packageToolsPath);
-                        foreach (var file in Directory.GetFiles(Path.Combine(targetExtractPath, "tools")))
-                        {
-                            var fi = new FileInfo(file);
-                            File.Copy(file, Path.Combine(packageToolsPath, fi.Name));
-                        }
-
-                        roslynNugetBaseUri = "https://api.nuget.org/packages/microsoft.net.compilers.toolset.{0}.nupkg";
-                        roslynPackageName = "microsoft.net.compilers.toolset.{0}.nupkg";
-
-                        targetFilePath = Path.Combine(Path.GetTempPath(), string.Format(roslynPackageName, ReferenceRoslyn472NupkgVersion));
-                        targetExtractPath = Path.Combine(Path.GetTempPath(), LocalRoslyn472FolderName);
-                        packageToolsPath = Path.Combine(NupkgToolPath, LocalRoslyn472FolderName);
+                        var targetFilePath = Path.Combine(Path.GetTempPath(), string.Format(roslynPackageName, ReferenceRoslyn472NupkgVersion));
+                        var targetExtractPath = Path.Combine(Path.GetTempPath(), LocalRoslyn472FolderName);
+                        var packageToolsPath = Path.Combine(NupkgToolPath, LocalRoslyn472FolderName);
                         if (Directory.Exists(targetExtractPath))
                         {
                             Directory.Delete(targetExtractPath, true);

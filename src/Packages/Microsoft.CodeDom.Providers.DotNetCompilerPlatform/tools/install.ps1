@@ -8,42 +8,26 @@
 
 param($installPath, $toolsPath, $package, $project)
 
-$assemblyVersion = '3.6.0.0'
+$assemblyVersion = '4.0.0.0'
 $roslynSubFolder = 'roslyn'
 
 if ($project -eq $null) {
     $project = Get-Project
 }
 
-$libDirectory = Join-Path $installPath 'lib\net45'
+$libDirectory = Join-Path $installPath 'lib\net472'
 $projectRoot = $project.Properties.Item('FullPath').Value
 $projectTargetFramework = $project.Properties.Item('TargetFrameworkMoniker').Value
 $binDirectory = Join-Path $projectRoot 'bin'
 
-#
-# Some things vary depending on which framework version you target. If you target an
-# older framework, (4.5-4.7.1) then we need to change some of these.
-#
 $compilerVersion = $package.Version
 if($package.Versions -ne $null) { $compilerVersion = @($package.Versions)[0] }
 $packageDirectory = Split-Path $installPath
 $compilerPackageFolderName = $package.Id + "." + $compilerVersion
 $compilerPackageDirectory = Join-Path $packageDirectory $compilerPackageFolderName
 $compilerPackageToolsDirectory = Join-Path $compilerPackageDirectory 'tools\roslyn472'
-$csLanguageVersion = '7.3'
+$csLanguageVersion = 'default'
 $vbLanguageVersion = 'default'
-if ($projectTargetFramework -match 'v4\.5')
-{
-    $compilerPackageToolsDirectory = Join-Path $compilerPackageDirectory 'tools\roslyn45'
-    $csLanguageVersion = '6'    # Leave this at 6 for compat
-    $vbLanguageVersion = '14'
-}
-elseif (($projectTargetFramework -match 'v4\.6') -or ($projectTargetFramework -match 'v4\.7[^\.]') -or ($projectTargetFramework -match 'v4\.7\.[01]'))
-{
-    $compilerPackageToolsDirectory = Join-Path $compilerPackageDirectory 'tools\roslyn46'
-    $csLanguageVersion = '7.0'  # This was 'default' which is 7.0 for this version of ms.net.compilers
-    $vbLanguageVersion = 'default'  # Is 15 for this ms.net.compilers... but will leave as 'default' for upgrades since that is still valid in .Net 4.8
-}
 
 
 # Fill out the config entries for these code dom providers here. Using powershell to do
