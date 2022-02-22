@@ -12,15 +12,15 @@
     <PropertyGroup>
         <BuildQuality Condition="'$(BuildQuality)' == ''">rtm</BuildQuality>
         <VersionStartYear>2020</VersionStartYear>
-        <VersionMajor>3</VersionMajor>
-        <VersionMinor>6</VersionMinor>
+        <VersionMajor>4</VersionMajor>
+        <VersionMinor>1</VersionMinor>
         <VersionRelease>0</VersionRelease>
     </PropertyGroup>
 
     <PropertyGroup Label="NuGet package dependencies">
         <MSNetCompilers45NuGetPackageVersion>1.3.2</MSNetCompilers45NuGetPackageVersion>
         <MSNetCompilers46NuGetPackageVersion>2.10.0</MSNetCompilers46NuGetPackageVersion>
-        <MSNetCompilers472NuGetPackageVersion>3.6.0</MSNetCompilers472NuGetPackageVersion>
+        <MSNetCompilers472NuGetPackageVersion>4.1.0</MSNetCompilers472NuGetPackageVersion>
     </PropertyGroup>
 
   <Target Name="SuperClean" AfterTargets="Clean"  Condition="'$(MSBuildProjectExtension)' != '.nuproj'">
