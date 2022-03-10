@@ -15,7 +15,7 @@
         <language>en-US</language>
         <projectUrl>http://www.asp.net/</projectUrl>
         <iconUrl>http://go.microsoft.com/fwlink/?LinkID=288859</iconUrl>
-        <licenseUrl>http://www.microsoft.com/web/webpi/eula/net_library_eula_ENU.htm</licenseUrl>
+        <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
         <requireLicenseAcceptance>true</requireLicenseAcceptance>
         <tags>Roslyn CodeDOM Compiler CSharp VB.Net ASP.NET</tags>
     </metadata>
