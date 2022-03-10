@@ -36,14 +36,14 @@ function InstallCodeDomProvider($providerDescription) {
 	##### Add the default provider if it wasn't rehydrated above
 	$defaultProvider = $config.xml.configuration["system.codedom"].compilers.compiler | where { $_.extension -eq $providerDescription.FileExtension }
 	if ($defaultProvider -eq $null) { AddDefaultDeclaration $config $providerDescription }
-	SaveConfigFile $config
+	SaveConfigFile $config | Out-Null
 }
 
 function UninstallCodeDomProvider($providerType) {
 	##### Dehydrate config declarations #####
 	$config = ReadConfigFile
 	DehydrateDeclarations $config $providerType | Out-Null
-	SaveConfigFile $config
+	SaveConfigFile $config | Out-Null
 }
 
 function GetConfigFileName() {
@@ -70,7 +70,6 @@ function ReadConfigFile() {
 
 function DehydrateDeclarations($config, $typeName) {
 	$tempFile = GetTempFileName
-	$xml
 	$count = 0
 
 	if ([io.file]::Exists($tempFile)) {
@@ -79,8 +78,7 @@ function DehydrateDeclarations($config, $typeName) {
 	} else {
 		$xml = New-Object System.Xml.XmlDocument
 		$xml.PreserveWhitespace = $true
-		$dd = $xml.CreateElement("driedDeclarations")
-		$xml.AppendChild($dd) | Out-Null
+		$xml.AppendChild($xml.CreateElement("driedDeclarations")) | Out-Null
 	}
 
 	foreach ($rec in $config.xml.configuration["system.codedom"].compilers.compiler  | where { IsSameType $_.type $typeName }) {
@@ -88,7 +86,7 @@ function DehydrateDeclarations($config, $typeName) {
 		$config.xml.configuration["system.codedom"].compilers.RemoveChild($rec) | Out-Null
 
 		# Add the record to the temp stash. Don't worry about duplicates.
-		AppendChildNode $xml.ImportNode($rec, $true) $xml.DocumentElement
+		AppendChildNode $xml.ImportNode($rec, $true) $xml.DocumentElement | Out-Null
 		$count++
 	}
 
@@ -116,8 +114,9 @@ function RehydrateOldDeclarations($config, $providerDescription) {
 		if ($existingRecord -ne $null) { continue }
 
 		# Bring the record back to life
-		AppendChildNode $config.xml.ImportNode($rec, $true) $config.xml.configuration["system.codedom"]["compilers"]
+		AppendChildNode $config.xml.ImportNode($rec, $true) $config.xml.configuration["system.codedom"]["compilers"] | Out-Null
 		$count++
+		Write-Host "Restored system.codedom compiler for extension '$($rec.extension)'."
 	}
 
 	# Make dried record removal permanent
@@ -130,18 +129,15 @@ function UpdateDeclarations($config, $providerDescription) {
 	$count = 0
 
 	foreach ($provider in $config.xml.configuration["system.codedom"].compilers.compiler | where { IsSameType $_.type ($providerDescription.TypeName + "," + $providerDescription.Assembly) }) {
-		# Count the existing declaration as found
-		$count++
 
-		# Update type
-		$provider.type = "$($providerDescription.TypeName), $($providerDescription.Assembly), Version=$($providerDescription.Version), Culture=neutral, PublicKeyToken=31bf3856ad364e35"
+		$failed = $false
 
 		# Add default attributes if they are required and not already present
 		foreach ($p in $providerDescription.Parameters | where { ($_.IsRequired -eq $true) -and ($_.IsProviderOption -eq $false) }) {
 			if ($provider.($p.Name) -eq $null) {
 				if ($p.DefaultValue -eq $null) {
-					Write-Host "Failed to add parameter to '$($provider.name)' codeDom provider: '$($p.Name)' is required, but does not have a default value."
-					return
+					Write-Warning "Failed to add parameter to '$($provider.name)' codeDom provider: '$($p.Name)' is required, but does not have a default value."
+					$failed = $true
 				}
 				$attr = $config.xml.CreateAttribute($p.Name)
 				$attr.Value = $p.DefaultValue
@@ -154,15 +150,21 @@ function UpdateDeclarations($config, $providerDescription) {
 			$existing = $provider.providerOption | where { $_.name -eq $p.Name }
 			if ($existing -eq $null) {
 				if ($p.DefaultValue -eq $null) {
-					Write-Host "Failed to add providerOption to '$($provider.name)' codeDom provider: '$($p.Name)' is required, but does not have a default value."
-					return
+					Write-Warning "Failed to add providerOption to '$($provider.name)' codeDom provider: '$($p.Name)' is required, but does not have a default value."
+					$failed = $true
 				}
 				$po = $config.xml.CreateElement("providerOption")
-				$po.SetAttribute("name", $p.Name)
-				$po.SetAttribute("value", $p.DefaultValue)
-				AppendChildNode $po $provider 4
+				$po.SetAttribute("name", $p.Name) | Out-Null
+				$po.SetAttribute("value", $p.DefaultValue) | Out-Null
+				AppendChildNode $po $provider 4 | Out-Null
 			}
 		}
+
+		# Finally, update type. And do so with remove/add so the 'type' parameter gets put at the end
+		$provider.RemoveAttribute("type") | Out-Null
+		$provider.SetAttribute("type", "$($providerDescription.TypeName), $($providerDescription.Assembly), Version=$($providerDescription.Version), Culture=neutral, PublicKeyToken=31bf3856ad364e35") | Out-Null
+	
+		if ($failed -ne $true) { $count++ }
 	}
 
 	return $count
@@ -172,7 +174,7 @@ function AddDefaultDeclaration($config, $providerDescription) {
 	$dd = $config.xml.CreateElement("compiler")
 
 	# file extension first
-	$dd.SetAttribute("extension", $providerDescription.FileExtension)
+	$dd.SetAttribute("extension", $providerDescription.FileExtension) | Out-Null
 
 	# everything else in the middle
 	foreach ($p in $providerDescription.Parameters) {
@@ -184,19 +186,20 @@ function AddDefaultDeclaration($config, $providerDescription) {
 		if ($p.DefaultValue -ne $null) {
 			if ($p.IsProviderOption -eq $true) {
 				$po = $config.xml.CreateElement("providerOption")
-				$po.SetAttribute("name", $p.Name)
-				$po.SetAttribute("value", $p.DefaultValue)
-				AppendChildNode $po $dd 4
+				$po.SetAttribute("name", $p.Name) | Out-Null
+				$po.SetAttribute("value", $p.DefaultValue) | Out-Null
+				AppendChildNode $po $dd 4 | Out-Null
 			} else {
-				$dd.SetAttribute($p.Name, $p.DefaultValue)
+				$dd.SetAttribute($p.Name, $p.DefaultValue) | Out-Null
 			}
 		}
 	}
 
 	# type last
-	$dd.SetAttribute("type", "$($providerDescription.TypeName), $($providerDescription.Assembly), Version=$($providerDescription.Version), Culture=neutral, PublicKeyToken=31bf3856ad364e35")
+	$dd.SetAttribute("type", "$($providerDescription.TypeName), $($providerDescription.Assembly), Version=$($providerDescription.Version), Culture=neutral, PublicKeyToken=31bf3856ad364e35") | Out-Null
 
-	AppendChildNode $dd $config.xml.configuration["system.codedom"]["compilers"]
+	AppendChildNode $dd $config.xml.configuration["system.codedom"]["compilers"] | Out-Null
+	Write-Host "Added system.codedom compiler for extension '$($dd.extension)'."
 }
 
 function AppendChildNode($provider, $parent, $indentLevel = 3) {
@@ -215,7 +218,7 @@ function AppendChildNode($provider, $parent, $indentLevel = 3) {
 	}
 
 	# Add on a new line with indents. Make sure there is no existing whitespace mucking this up.
-	foreach ($exws in $parent.ChildNodes | where { $_ -is [System.Xml.XmlWhitespace] }) { $parent.RemoveChild($exws) }
+	foreach ($exws in $parent.ChildNodes | where { $_ -is [System.Xml.XmlWhitespace] }) { $parent.RemoveChild($exws) | Out-Null }
 	$parent.AppendChild($parent.OwnerDocument.CreateWhitespace("`r`n")) | Out-Null
 	$parent.AppendChild($parent.OwnerDocument.CreateWhitespace("  " * $indentLevel)) | Out-Null
 	$parent.AppendChild($provider) | Out-Null
@@ -224,7 +227,7 @@ function AppendChildNode($provider, $parent, $indentLevel = 3) {
 }
 
 function SaveConfigFile($config) {
-	$config.xml.Save($config.fileName)
+	$config.xml.Save($config.fileName) | Out-Null
 }
 
 function IsSameType($typeString1, $typeString2) {
