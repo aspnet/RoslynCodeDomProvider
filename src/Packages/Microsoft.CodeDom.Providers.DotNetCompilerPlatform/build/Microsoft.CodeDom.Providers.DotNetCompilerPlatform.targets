@@ -26,10 +26,10 @@
 
   <Target Name="LocateRoslynToolsDestinationFolder" Condition=" '$(RoslynToolsDestinationFolder)' == '' ">
     <!-- Choose one of WebProjectOutputDir or OutputPath -->
-    <!-- But when OutDir is specified given and is different from that choice, also include it without 'bin' -->
+    <!-- But when OutDir is specified given and is different from the above, copy to OutDir as well -->
     <ItemGroup Condition="'$(WebProjectOutputDir)' != ''">
       <RoslynToolsDestinations Include="$(WebProjectOutputDir)\bin\roslyn" />
-      <RoslynToolsDestinations Condition="'$(RoslynCopyToOutDir)' == 'true' AND '$(OutDir)' != '$(WebProjectOutputDir)'" Include="$(OutDir)\roslyn" />
+      <RoslynToolsDestinations Condition="'$(RoslynCopyToOutDir)' == 'true' AND '$(OutDir)' != '$(WebProjectOutputDir)'" Include="$(OutDir)\bin\roslyn" />
     </ItemGroup>
     <ItemGroup Condition="'$(WebProjectOutputDir)' == ''">
       <RoslynToolsDestinations Include="$(OutputPath)\bin\roslyn" />
