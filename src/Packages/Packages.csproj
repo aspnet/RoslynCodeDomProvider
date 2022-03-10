@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory),RoslynCodeProvider.sln))\tools\RoslynCodeProvider.settings.targets" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
@@ -12,22 +12,24 @@
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <UseVSHostingProcess>false</UseVSHostingProcess>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " />
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
     <NuGetProject Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.nuproj" />
     <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.Extensions.targets" />
     <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.Extensions.targets" />
     <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.Extensions.targets" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\tools\Roslyn45\Microsoft.CSharp.Core.targets" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\tools\Roslyn45\Microsoft.VisualBasic.Core.targets" />
     <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\tools\Roslyn46\Microsoft.CSharp.Core.targets" />
     <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\tools\Roslyn46\Microsoft.Managed.Core.targets" />
     <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\tools\Roslyn46\Microsoft.VisualBasic.Core.targets" />

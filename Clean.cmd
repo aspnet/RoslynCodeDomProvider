@@ -13,7 +13,6 @@ set logOptions=/v:n /flp:Summary;Verbosity=diag;LogFile=msbuild.log /flp1:warnin
 REM set logOptions=/v:diag /flp:Summary;Verbosity=diag;LogFile=msbuild.log /flp1:warningsonly;logfile=msbuild.wrn /flp2:errorsonly;logfile=msbuild.err
 
 %MSBUILDEXE% "%~dp0\RoslynCodeProvider.msbuild" /t:Clean %logOptions% /maxcpucount /nodeReuse:false %cfgOption%%*
-rd /q /s Roslyn45
 rd /q /s Roslyn46
 rd /q /s Roslyn472
 rd /q /s RoslynLatest
