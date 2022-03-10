@@ -46,7 +46,7 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
             if (String.IsNullOrEmpty(compilerFullPath))
                 options.TryGetValue("CompilerLocation", out compilerFullPath);
             if (String.IsNullOrEmpty(compilerFullPath))
-                compilerFullPath = CompilerFullPath(@"bin\roslyn");
+                compilerFullPath = CompilerDefaultPath();
 
             if (fileExt.Equals(".cs", StringComparison.InvariantCultureIgnoreCase))
                 compilerFullPath = Path.Combine(compilerFullPath, "csc.exe");
@@ -143,9 +143,18 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
             }
         }
 
-        internal static string CompilerFullPath(string relativePath)
+        internal static string CompilerDefaultPath()
         {
-            string compilerFullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, relativePath);
+            string webPath = @"bin\roslyn";
+            string appPath = @"roslyn";
+
+            // Check bin folder first
+            string compilerFullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, webPath);
+
+            // Then appdomain base
+            if (!File.Exists(compilerFullPath))
+                compilerFullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, appPath);
+
             return compilerFullPath;
         }
 
