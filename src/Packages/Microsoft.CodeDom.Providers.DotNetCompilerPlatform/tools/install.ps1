@@ -15,7 +15,7 @@ if ($project -eq $null) {
     $project = Get-Project
 }
 
-$libDirectory = Join-Path $installPath 'lib\net45'
+$libDirectory = Join-Path $installPath 'lib\net46'
 $projectRoot = $project.Properties.Item('FullPath').Value
 $projectTargetFramework = $project.Properties.Item('TargetFrameworkMoniker').Value
 $binDirectory = Join-Path $projectRoot 'bin'
@@ -32,13 +32,7 @@ $compilerPackageDirectory = Join-Path $packageDirectory $compilerPackageFolderNa
 $compilerPackageToolsDirectory = Join-Path $compilerPackageDirectory 'tools\roslyn472'
 $csLanguageVersion = '7.3'
 $vbLanguageVersion = 'default'
-if ($projectTargetFramework -match 'v4\.5')
-{
-    $compilerPackageToolsDirectory = Join-Path $compilerPackageDirectory 'tools\roslyn45'
-    $csLanguageVersion = '6'    # Leave this at 6 for compat
-    $vbLanguageVersion = '14'
-}
-elseif (($projectTargetFramework -match 'v4\.6') -or ($projectTargetFramework -match 'v4\.7[^\.]') -or ($projectTargetFramework -match 'v4\.7\.[01]'))
+if (($projectTargetFramework -match 'v4\.6') -or ($projectTargetFramework -match 'v4\.7[^\.]') -or ($projectTargetFramework -match 'v4\.7\.[01]'))
 {
     $compilerPackageToolsDirectory = Join-Path $compilerPackageDirectory 'tools\roslyn46'
     $csLanguageVersion = '7.0'  # This was 'default' which is 7.0 for this version of ms.net.compilers
