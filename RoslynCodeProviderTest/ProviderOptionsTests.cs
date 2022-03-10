@@ -34,7 +34,7 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
         {
             IProviderOptions opts = CompilationUtil.GetProviderOptionsFor(".fakevb");
             Assert.IsNotNull(opts);
-            Assert.AreEqual<string>(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"bin\roslyn"), opts.CompilerFullPath);   // Would include csc.exe or vbc.exe if the extension we searched for wasn't fake.
+            Assert.AreEqual<string>(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"roslyn"), opts.CompilerFullPath);   // Would include csc.exe or vbc.exe if the extension we searched for wasn't fake.
             Assert.AreEqual<int>(IsDev ? 15 * 60 : 10, opts.CompilerServerTimeToLive);   // 10 in Production. 900 in a "dev" environment.
             Assert.IsTrue(opts.UseAspNetSettings);  // Default is false... except through the GetProviderOptionsFor factory method we used here.
             Assert.IsFalse(opts.WarnAsError);
@@ -143,7 +143,7 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
             Environment.SetEnvironmentVariable("VBCSCOMPILER_TTL", null);
 
             Assert.IsNotNull(opts);
-            Assert.AreEqual<string>(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"bin\roslyn"), opts.CompilerFullPath);   // Would include csc.exe or vbc.exe if the extension we searched for wasn't fake.
+            Assert.AreEqual<string>(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"roslyn"), opts.CompilerFullPath);   // Would include csc.exe or vbc.exe if the extension we searched for wasn't fake.
             Assert.AreEqual<int>(IsDev ? 15 * 60 : 10, opts.CompilerServerTimeToLive);   // 10 in Production. 900 in a "dev" environment.
             Assert.IsTrue(opts.UseAspNetSettings);  // Default is false... except through the GetProviderOptionsFor factory method we used here.
             Assert.IsFalse(opts.WarnAsError);

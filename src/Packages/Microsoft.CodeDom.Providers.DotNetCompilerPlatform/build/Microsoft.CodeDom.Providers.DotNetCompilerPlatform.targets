@@ -29,10 +29,10 @@
     <!-- But when OutDir is specified given and is different from the above, copy to OutDir as well -->
     <ItemGroup Condition="'$(WebProjectOutputDir)' != ''">
       <RoslynToolsDestinations Include="$(WebProjectOutputDir)\bin\roslyn" />
-      <RoslynToolsDestinations Condition="'$(RoslynCopyToOutDir)' == 'true' AND '$(OutDir)' != '$(WebProjectOutputDir)'" Include="$(OutDir)\bin\roslyn" />
+      <RoslynToolsDestinations Condition="'$(RoslynCopyToOutDir)' == 'true' AND '$(OutDir)' != '$(WebProjectOutputDir)'" Include="$(OutDir)\roslyn" />
     </ItemGroup>
     <ItemGroup Condition="'$(WebProjectOutputDir)' == ''">
-      <RoslynToolsDestinations Include="$(OutputPath)\bin\roslyn" />
+      <RoslynToolsDestinations Include="$(OutputPath)\roslyn" />
       <RoslynToolsDestinations Condition="'$(RoslynCopyToOutDir)' == 'true' AND '$(OutDir)' != '$(OutputPath)'" Include="$(OutDir)\roslyn" />
     </ItemGroup>
   </Target>
