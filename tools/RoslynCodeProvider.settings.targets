@@ -10,16 +10,16 @@
     <!-- Configurable properties-->
 
     <PropertyGroup>
-        <BuildQuality Condition="'$(BuildQuality)' == ''">rtm</BuildQuality>
+        <BuildQuality Condition="'$(BuildQuality)' == ''">preview</BuildQuality>
         <VersionStartYear>2020</VersionStartYear>
         <VersionMajor>3</VersionMajor>
-        <VersionMinor>6</VersionMinor>
+        <VersionMinor>11</VersionMinor>
         <VersionRelease>0</VersionRelease>
     </PropertyGroup>
 
     <PropertyGroup Label="NuGet package dependencies">
         <MSNetCompilers46NuGetPackageVersion>2.10.0</MSNetCompilers46NuGetPackageVersion>
-        <MSNetCompilers472NuGetPackageVersion>3.6.0</MSNetCompilers472NuGetPackageVersion>
+        <MSNetCompilers472NuGetPackageVersion>3.11.0</MSNetCompilers472NuGetPackageVersion>
     </PropertyGroup>
 
   <Target Name="SuperClean" AfterTargets="Clean"  Condition="'$(MSBuildProjectExtension)' != '.nuproj'">
