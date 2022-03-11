@@ -26,21 +26,26 @@
 
   <Target Name="LocateRoslynToolsDestinationFolder" Condition=" '$(RoslynToolsDestinationFolder)' == '' ">
     <!-- Choose one of WebProjectOutputDir or OutputPath -->
-    <!-- But when OutDir is specified given and is different from the above, copy to OutDir as well -->
-    <ItemGroup Condition="'$(WebProjectOutputDir)' != ''">
-      <RoslynToolsDestinations Include="$(WebProjectOutputDir)\bin\roslyn" />
-      <RoslynToolsDestinations Condition="'$(RoslynCopyToOutDir)' == 'true' AND '$(OutDir)' != '$(WebProjectOutputDir)'" Include="$(OutDir)\roslyn" />
-    </ItemGroup>
-    <ItemGroup Condition="'$(WebProjectOutputDir)' == ''">
-      <RoslynToolsDestinations Include="$(OutputPath)\roslyn" />
-      <RoslynToolsDestinations Condition="'$(RoslynCopyToOutDir)' == 'true' AND '$(OutDir)' != '$(OutputPath)'" Include="$(OutDir)\roslyn" />
-    </ItemGroup>
+    <PropertyGroup>
+      <RoslynToolsDestinationFolder>$(WebProjectOutputDir)\bin\roslyn</RoslynToolsDestinationFolder>
+      <RoslynToolsDestinationFolder Condition=" '$(WebProjectOutputDir)' == '' ">$(OutputPath)\roslyn</RoslynToolsDestinationFolder>
+    </PropertyGroup>
+    
+    <!-- But when OutDir is specified there as well -->
+    <PropertyGroup Condition="'$(OutDir)' != ''">
+      <RoslynToolsOutDirFolder>$(OutDir)\bin\roslyn</RoslynToolsOutDirFolder>
+      <RoslynToolsOutDirFolder Condition=" '$(WebProjectOutputDir)' == '' ">$(OutDir)\roslyn</RoslynToolsOutDirFolder>
+    </PropertyGroup>
   </Target>
 
   <Target Name="CopyRoslynCompilerFilesToOutputDirectory" AfterTargets="CopyFilesToOutputDirectory" DependsOnTargets="LocateRoslynToolsDestinationFolder;SetRoslynCompilerFiles">
-    <Copy SourceFiles="@(RoslynCompilerFiles)" DestinationFolder="%(RoslynToolsDestinations.FullPath)" ContinueOnError="true" SkipUnchangedFiles="true" Retries="0" />
+    <Copy SourceFiles="@(RoslynCompilerFiles)" DestinationFolder="$(RoslynToolsDestinationFolder)" ContinueOnError="true" SkipUnchangedFiles="true" Retries="0" />
     <ItemGroup  Condition="'$(MSBuildLastTaskResult)' == 'True'" >
       <FileWrites Include="$(RoslynToolsDestinationFolder)\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(RoslynCompilerFiles)" DestinationFolder="$(RoslynToolsOutDirFolder)" Condition="'$(RoslynToolsOutDirFolder)' != '$(RoslynToolsDestinationFolder)'" ContinueOnError="true" SkipUnchangedFiles="true" Retries="0" />
+    <ItemGroup  Condition="'$(RoslynToolsOutDirFolder)' != '$(RoslynToolsDestinationFolder)' AND '$(MSBuildLastTaskResult)' == 'True'" >
+      <FileWrites Include="$(RoslynToolsOutDirFolder)\*" />
     </ItemGroup>
   </Target>
 
