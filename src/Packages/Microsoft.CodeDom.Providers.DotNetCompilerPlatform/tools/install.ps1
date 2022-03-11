@@ -15,7 +15,7 @@ if ($project -eq $null) {
     $project = Get-Project
 }
 
-$libDirectory = Join-Path $installPath 'lib\net46'
+$libDirectory = Join-Path $installPath 'lib\net462'
 $projectRoot = $project.Properties.Item('FullPath').Value
 $projectTargetFramework = $project.Properties.Item('TargetFrameworkMoniker').Value
 $binDirectory = Join-Path $projectRoot 'bin'
@@ -68,16 +68,16 @@ $vbCodeDomProvider = [CodeDomProviderDescription]@{
 InstallCodeDomProvider $vbCodeDomProvider
 
 
-# We need to copy the provider assembly into the bin\ folder, otherwise
-# Microsoft.VisualStudio.Web.Host.exe cannot find the assembly.
-# However, users will see the error after they clean solutions.
-New-Item $binDirectory -type directory -force | Out-Null
-Copy-Item $libDirectory\* $binDirectory -force | Out-Null
-
 # For Web Site, we need to copy the Roslyn toolset into
 # the applicaiton's bin folder. 
 # For Web Applicaiton project, this is done in csproj.
 if ($project.Type -eq 'Web Site') {
+
+    # We need to copy the provider assembly into the bin\ folder, otherwise
+    # Microsoft.VisualStudio.Web.Host.exe cannot find the assembly.
+    # However, users will see the error after they clean solutions.
+    New-Item $binDirectory -type directory -force | Out-Null
+    Copy-Item $libDirectory\* $binDirectory -force | Out-Null
 
     if ((Get-Item $compilerPackageDirectory) -isnot [System.IO.DirectoryInfo])
     {

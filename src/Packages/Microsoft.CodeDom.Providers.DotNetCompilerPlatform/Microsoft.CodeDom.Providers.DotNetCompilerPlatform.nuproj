@@ -65,6 +65,12 @@
     <NuGetContent Include="build\net472\*">
       <Destination>build\net472</Destination>
     </NuGetContent>
+    <NuGetContent Include="tools\*.ps1" Condition="'$(SignAssembly)' != 'true'">
+      <Destination>tools</Destination>
+    </NuGetContent>
+    <NuGetContent Include="tools\signed\*.ps1" Condition="'$(SignAssembly)' == 'true'">
+      <Destination>tools</Destination>
+    </NuGetContent>
     <NuGetContent Include="tools\$(LocalRoslyn46FolderName)\*">
       <Destination>tools\$(LocalRoslyn46FolderName)</Destination>
     </NuGetContent>
