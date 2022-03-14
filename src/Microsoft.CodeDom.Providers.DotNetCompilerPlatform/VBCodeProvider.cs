@@ -3,6 +3,7 @@
 
 ﻿using System;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
@@ -36,6 +37,13 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
         public VBCodeProvider(IProviderOptions providerOptions = null) {
             _providerOptions = providerOptions == null ? CompilationUtil.VBC2 : providerOptions;
         }
+
+        /// <summary>
+        /// Creates an instance using the given IDictionary to create IProviderOptions
+        /// </summary>
+        /// <param name="providerOptions"></param>
+        public VBCodeProvider(IDictionary<string, string> providerOptions)
+            : this(CompilationUtil.CreateProviderOptions(providerOptions, CompilationUtil.VBC2)) { }
 
         /// <summary>
         /// Gets an instance of the .NET Compiler Platform VB code compiler.
