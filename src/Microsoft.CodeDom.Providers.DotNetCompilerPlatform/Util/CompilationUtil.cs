@@ -30,6 +30,56 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
 
         public static IProviderOptions VBC2 { get; }
 
+        internal static IProviderOptions CreateProviderOptions(IDictionary<string, string> options, IProviderOptions baseOptions)
+        {
+            Dictionary<string, string> allOptions = null;
+
+            // Copy the base options
+            ProviderOptions providerOpts = new ProviderOptions(baseOptions);
+
+            // Update as necessary. Case-sensitive.
+            foreach (var option in options)
+            {
+                if (String.IsNullOrWhiteSpace(option.Key))
+                    continue;
+
+                switch (option.Key)
+                {
+                    case "CompilerFullPath":
+                        providerOpts.CompilerFullPath = option.Value;
+                        break;
+
+                    case "CompilerServerTimeToLive":
+                        if (Int32.TryParse(option.Value, out int newTTL))
+                            providerOpts.CompilerServerTimeToLive = newTTL;
+                        break;
+
+                    case "CompilerVersion":
+                        providerOpts.CompilerVersion = option.Value;
+                        break;
+
+                    case "WarnAsError":
+                        if (Boolean.TryParse(option.Value, out bool warnAsError))
+                            providerOpts.WarnAsError = warnAsError;
+                        break;
+
+                    case "AllOptions":
+                        allOptions = allOptions ?? new Dictionary<string, string>(providerOpts.AllOptions);
+                        allOptions.Remove(option.Key);
+                        allOptions.Add(option.Key, option.Value);
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+
+            if (allOptions != null)
+                providerOpts.AllOptions = allOptions;
+
+            return providerOpts;
+        }
+
         public static IProviderOptions GetProviderOptionsFor(string fileExt)
         {
             //
@@ -48,10 +98,15 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
             if (String.IsNullOrEmpty(compilerFullPath))
                 compilerFullPath = CompilerDefaultPath();
 
-            if (fileExt.Equals(".cs", StringComparison.InvariantCultureIgnoreCase))
-                compilerFullPath = Path.Combine(compilerFullPath, "csc.exe");
-            else if (fileExt.Equals(".vb", StringComparison.InvariantCultureIgnoreCase))
-                compilerFullPath = Path.Combine(compilerFullPath, "vbc.exe");
+            if (!String.IsNullOrWhiteSpace(fileExt))
+            {
+                // If we have a file extension, try to infer the compiler to use
+                // TODO: Should we also check compilerFullPath to assert it is a Directory and not a file?
+                if (fileExt.Equals(".cs", StringComparison.InvariantCultureIgnoreCase) || fileExt.Equals("cs", StringComparison.InvariantCultureIgnoreCase))
+                    compilerFullPath = Path.Combine(compilerFullPath, "csc.exe");
+                else if (fileExt.Equals(".vb", StringComparison.InvariantCultureIgnoreCase) || fileExt.Equals("vb", StringComparison.InvariantCultureIgnoreCase))
+                    compilerFullPath = Path.Combine(compilerFullPath, "vbc.exe");
+            }
 
 
             //
@@ -61,7 +116,8 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
             string ttlstr = Environment.GetEnvironmentVariable("VBCSCOMPILER_TTL");
             if (String.IsNullOrEmpty(ttlstr))
                 options.TryGetValue("CompilerServerTTL", out ttlstr);
-            if (!Int32.TryParse(ttlstr, out ttl)) {
+            if (!Int32.TryParse(ttlstr, out ttl))
+            {
                 ttl = DefaultCompilerServerTTL;
 
                 if (!String.IsNullOrEmpty(Environment.GetEnvironmentVariable("DEV_ENVIRONMENT")) ||
@@ -82,7 +138,8 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
             // WarnAsError - default false.
             //
             bool warnAsError = false;
-            if (options.TryGetValue("WarnAsError", out string sWAE)) {
+            if (options.TryGetValue("WarnAsError", out string sWAE))
+            {
                 Boolean.TryParse(sWAE, out warnAsError); // Failure to parse sets to 'false'
             }
 
@@ -97,7 +154,8 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
                     useAspNetSettings = true;
             }
 
-            ProviderOptions providerOptions = new ProviderOptions() {
+            ProviderOptions providerOptions = new ProviderOptions()
+            {
                 CompilerFullPath = compilerFullPath,
                 CompilerServerTimeToLive = ttl,
                 CompilerVersion = compilerVersion,

@@ -3,6 +3,7 @@
 
 ﻿using System;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
@@ -36,6 +37,13 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
         public CSharpCodeProvider(IProviderOptions providerOptions = null) {
             _providerOptions = providerOptions == null ? CompilationUtil.CSC2 : providerOptions;
         }
+
+        /// <summary>
+        /// Creates an instance using the given IDictionary to create IProviderOptions
+        /// </summary>
+        /// <param name="providerOptions"></param>
+        public CSharpCodeProvider(IDictionary<string, string> providerOptions)
+            : this(CompilationUtil.CreateProviderOptions(providerOptions, CompilationUtil.CSC2)) { }
 
         /// <summary>
         /// Gets an instance of the .NET Compiler Platform C# code compiler.
