@@ -18,7 +18,7 @@
   <!-- Composite targets -->
   <Target Name="BuildCI" DependsOnTargets="Clean;Build" />
 
-  <Target Name="Build" DependsOnTargets="BuildAssemblies;BuildTests;BuildPackages" />
+  <Target Name="Build" DependsOnTargets="BuildAssemblies;UnitTest;BuildPackages" />
   <Target Name="Clean" DependsOnTargets="CleanPackages;CleanTests;CleanAssemblies" />
   <Target Name="Rebuild" DependsOnTargets="Clean;Build" />
 
@@ -58,5 +58,8 @@
     <Exec Command=".nuget\NuGet.exe restore" />
   </Target>
 
-  <Import Project="tools\RoslynCodeProvider.targets" />
+  <Target Name="UnitTest" DependsOnTargets="BuildTests">
+    <MSBuild Targets="XunitTest" Projects="@(TestProject)" />
+  </Target>
+
 </Project>

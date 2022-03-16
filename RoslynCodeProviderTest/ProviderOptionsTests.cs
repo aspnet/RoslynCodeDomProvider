@@ -1,117 +1,105 @@
-﻿using Microsoft.CodeDom.Providers.DotNetCompilerPlatform;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
+﻿using System;
 using System.Configuration;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.CodeDom.Providers.DotNetCompilerPlatform;
+using Xunit;
 
-namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
-
-
-    [TestClass]
+namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest
+{
     public class ProviderOptionsTests {
-
-        private const int Failed = 1;
-        private const int Success = 0;
 
         private static bool IsDev = false;
 
-        [ClassInitialize]
-        public static void ClassInitialize(TestContext context) {
+        static ProviderOptionsTests() {
             if (!String.IsNullOrEmpty(Environment.GetEnvironmentVariable("DEV_ENVIRONMENT")) ||
                 !String.IsNullOrEmpty(Environment.GetEnvironmentVariable("IN_DEBUG_MODE")) ||
                 CompilationUtil.IsDebuggerAttached)
                 IsDev = true;
         }
 
-        [TestMethod]
+        [Fact]
         public void DefaultSettings()
         {
             IProviderOptions opts = CompilationUtil.GetProviderOptionsFor(".fakevb");
-            Assert.IsNotNull(opts);
-            Assert.AreEqual<string>(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"roslyn"), opts.CompilerFullPath);   // Would include csc.exe or vbc.exe if the extension we searched for wasn't fake.
-            Assert.AreEqual<int>(IsDev ? 15 * 60 : 10, opts.CompilerServerTimeToLive);   // 10 in Production. 900 in a "dev" environment.
-            Assert.IsTrue(opts.UseAspNetSettings);  // Default is false... except through the GetProviderOptionsFor factory method we used here.
-            Assert.IsFalse(opts.WarnAsError);
-            Assert.IsNull(opts.CompilerVersion);
-            Assert.AreEqual<int>(2, opts.AllOptions.Count);
-            Assert.AreEqual<string>("foo2", opts.AllOptions["CustomSetting"]);
-            Assert.AreEqual<string>("bar2", opts.AllOptions["AnotherCoolSetting"]);
+            Assert.NotNull(opts);
+            Assert.Equal(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"roslyn"), opts.CompilerFullPath);   // Would include csc.exe or vbc.exe if the extension we searched for wasn't fake.
+            Assert.Equal(IsDev ? 15 * 60 : 10, opts.CompilerServerTimeToLive);   // 10 in Production. 900 in a "dev" environment.
+            Assert.True(opts.UseAspNetSettings);  // Default is false... except through the GetProviderOptionsFor factory method we used here.
+            Assert.False(opts.WarnAsError);
+            Assert.Null(opts.CompilerVersion);
+            Assert.Equal(2, opts.AllOptions.Count);
+            Assert.Equal("foo2", opts.AllOptions["CustomSetting"]);
+            Assert.Equal("bar2", opts.AllOptions["AnotherCoolSetting"]);
         }
 
-        [TestMethod]
+        [Fact]
         public void FromShortConstructor()
         {
             IProviderOptions opts = new ProviderOptions(@"D:\My\Fun\Compiler\Path\compiles.exe", 123);
-            Assert.IsNotNull(opts);
-            Assert.AreEqual<string>(@"D:\My\Fun\Compiler\Path\compiles.exe", opts.CompilerFullPath);   // Would include csc.exe or vbc.exe if the extension we searched for wasn't fake.
-            Assert.AreEqual<int>(123, opts.CompilerServerTimeToLive);   // 10 in Production. 900 in a "dev" environment.
-            Assert.IsFalse(opts.UseAspNetSettings);  // Default via constructor is false.
-            Assert.IsFalse(opts.WarnAsError);
-            Assert.IsNull(opts.CompilerVersion);
-            Assert.AreEqual<int>(0, opts.AllOptions.Count);
+            Assert.NotNull(opts);
+            Assert.Equal(@"D:\My\Fun\Compiler\Path\compiles.exe", opts.CompilerFullPath);   // Would include csc.exe or vbc.exe if the extension we searched for wasn't fake.
+            Assert.Equal(123, opts.CompilerServerTimeToLive);   // 10 in Production. 900 in a "dev" environment.
+            Assert.False(opts.UseAspNetSettings);  // Default via constructor is false.
+            Assert.False(opts.WarnAsError);
+            Assert.Null(opts.CompilerVersion);
+            Assert.Equal(0, opts.AllOptions.Count);
         }
 
-        [TestMethod]
+        [Fact]
         public void FromICompilerSettings()
         {
 #pragma warning disable CS0618
             IProviderOptions opts = new ProviderOptions((ICompilerSettings)(CompilerSettingsHelper.CSC));
 #pragma warning restore CS0618
-            Assert.IsNotNull(opts);
-            Assert.AreEqual<string>(CompilerSettingsHelper.CSC.CompilerFullPath, opts.CompilerFullPath);   // Would include csc.exe or vbc.exe if the extension we searched for wasn't fake.
-            Assert.AreEqual<int>(CompilerSettingsHelper.CSC.CompilerServerTimeToLive, opts.CompilerServerTimeToLive);   // 10 in Production. 900 in a "dev" environment.
-            Assert.IsFalse(opts.UseAspNetSettings);  // Default via constructor is false.
-            Assert.IsFalse(opts.WarnAsError);
-            Assert.IsNull(opts.CompilerVersion);
-            Assert.AreEqual<int>(0, opts.AllOptions.Count);
+            Assert.NotNull(opts);
+            Assert.Equal(CompilerSettingsHelper.CSC.CompilerFullPath, opts.CompilerFullPath);   // Would include csc.exe or vbc.exe if the extension we searched for wasn't fake.
+            Assert.Equal(CompilerSettingsHelper.CSC.CompilerServerTimeToLive, opts.CompilerServerTimeToLive);   // 10 in Production. 900 in a "dev" environment.
+            Assert.False(opts.UseAspNetSettings);  // Default via constructor is false.
+            Assert.False(opts.WarnAsError);
+            Assert.Null(opts.CompilerVersion);
+            Assert.Equal(0, opts.AllOptions.Count);
         }
 
         // <providerOptions> override defaults
-        [TestMethod]
+        [Fact]
         public void FromProviderOptions()
         {
             IProviderOptions opts = CompilationUtil.GetProviderOptionsFor(".fakecs");
-            Assert.IsNotNull(opts);
-            Assert.AreEqual<string>(@"C:\Path\To\Nowhere\csc.exe", opts.CompilerFullPath);
-            Assert.AreEqual<int>(42, opts.CompilerServerTimeToLive);
-            Assert.IsFalse(opts.UseAspNetSettings);
-            Assert.IsTrue(opts.WarnAsError);
-            Assert.AreEqual<string>("v6.0", opts.CompilerVersion);
-            Assert.AreEqual<int>(7, opts.AllOptions.Count);
-            Assert.AreEqual<string>("foo", opts.AllOptions["CustomSetting"]);
-            Assert.AreEqual<string>("bar", opts.AllOptions["AnotherCoolSetting"]);
+            Assert.NotNull(opts);
+            Assert.Equal(@"C:\Path\To\Nowhere\csc.exe", opts.CompilerFullPath);
+            Assert.Equal(42, opts.CompilerServerTimeToLive);
+            Assert.False(opts.UseAspNetSettings);
+            Assert.True(opts.WarnAsError);
+            Assert.Equal("v6.0", opts.CompilerVersion);
+            Assert.Equal(7, opts.AllOptions.Count);
+            Assert.Equal("foo", opts.AllOptions["CustomSetting"]);
+            Assert.Equal("bar", opts.AllOptions["AnotherCoolSetting"]);
         }
 
         // <appSettings> override <providerOptions> for location only
         // Actually, we can't do this because A) AppSettings can be added but not cleaned up after this test, and
         // B) the setting has probably already been read and cached by the AppSettings utility class, so updating
         // the value here wouldn't have any affect anyway.
-        //[TestMethod]
+        [Fact(Skip = "Need to fake config system first")]
         public void FromAppSettings()
         {
             ConfigurationManager.AppSettings.Set("aspnet:RoslynCompilerLocation", @"C:\Location\for\all\from\appSettings\compiler.exe");
             IProviderOptions opts = CompilationUtil.GetProviderOptionsFor(".fakecs");
             ConfigurationManager.AppSettings.Remove("aspnet:RoslynCompilerLocation");
 
-            Assert.IsNotNull(opts);
-            Assert.AreEqual<string>(@"C:\Location\for\all\from\appSettings\compiler.exe", opts.CompilerFullPath);
-            Assert.AreEqual<int>(42, opts.CompilerServerTimeToLive);
-            Assert.IsFalse(opts.UseAspNetSettings);
-            Assert.IsTrue(opts.WarnAsError);
-            Assert.AreEqual<string>("v6.0", opts.CompilerVersion);
-            Assert.AreEqual<int>(7, opts.AllOptions.Count);
-            Assert.AreEqual<string>("foo", opts.AllOptions["CustomSetting"]);
-            Assert.AreEqual<string>("bar", opts.AllOptions["AnotherCoolSetting"]);
+            Assert.NotNull(opts);
+            Assert.Equal(@"C:\Location\for\all\from\appSettings\compiler.exe", opts.CompilerFullPath);
+            Assert.Equal(42, opts.CompilerServerTimeToLive);
+            Assert.False(opts.UseAspNetSettings);
+            Assert.True(opts.WarnAsError);
+            Assert.Equal("v6.0", opts.CompilerVersion);
+            Assert.Equal(7, opts.AllOptions.Count);
+            Assert.Equal("foo", opts.AllOptions["CustomSetting"]);
+            Assert.Equal("bar", opts.AllOptions["AnotherCoolSetting"]);
         }
 
         // Environment overrides all for location and TTL
-        [TestMethod]
+        [Fact]
         public void FromEnvironment()
         {
             // See note on the 'FromAppSettings' test.
@@ -123,34 +111,34 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
             Environment.SetEnvironmentVariable("VBCSCOMPILER_TTL", null);
             //ConfigurationManager.AppSettings.Remove("aspnet:RoslynCompilerLocation");
 
-            Assert.IsNotNull(opts);
-            Assert.AreEqual<string>(@"C:\My\Compiler\Location\vbcsc.exe", opts.CompilerFullPath);
-            Assert.AreEqual<int>(98, opts.CompilerServerTimeToLive);
-            Assert.IsFalse(opts.UseAspNetSettings);
-            Assert.IsTrue(opts.WarnAsError);
-            Assert.AreEqual<string>("v6.0", opts.CompilerVersion);
-            Assert.AreEqual<int>(7, opts.AllOptions.Count);
-            Assert.AreEqual<string>("foo", opts.AllOptions["CustomSetting"]);
-            Assert.AreEqual<string>("bar", opts.AllOptions["AnotherCoolSetting"]);
+            Assert.NotNull(opts);
+            Assert.Equal(@"C:\My\Compiler\Location\vbcsc.exe", opts.CompilerFullPath);
+            Assert.Equal(98, opts.CompilerServerTimeToLive);
+            Assert.False(opts.UseAspNetSettings);
+            Assert.True(opts.WarnAsError);
+            Assert.Equal("v6.0", opts.CompilerVersion);
+            Assert.Equal(7, opts.AllOptions.Count);
+            Assert.Equal("foo", opts.AllOptions["CustomSetting"]);
+            Assert.Equal("bar", opts.AllOptions["AnotherCoolSetting"]);
         }
 
         // TTL must be int
-        [TestMethod]
+        [Fact]
         public void TTL_MustBeInteger()
         {
             Environment.SetEnvironmentVariable("VBCSCOMPILER_TTL", "NotANumber");
             IProviderOptions opts = CompilationUtil.GetProviderOptionsFor(".fakevb");
             Environment.SetEnvironmentVariable("VBCSCOMPILER_TTL", null);
 
-            Assert.IsNotNull(opts);
-            Assert.AreEqual<string>(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"roslyn"), opts.CompilerFullPath);   // Would include csc.exe or vbc.exe if the extension we searched for wasn't fake.
-            Assert.AreEqual<int>(IsDev ? 15 * 60 : 10, opts.CompilerServerTimeToLive);   // 10 in Production. 900 in a "dev" environment.
-            Assert.IsTrue(opts.UseAspNetSettings);  // Default is false... except through the GetProviderOptionsFor factory method we used here.
-            Assert.IsFalse(opts.WarnAsError);
-            Assert.IsNull(opts.CompilerVersion);
-            Assert.AreEqual<int>(2, opts.AllOptions.Count);
-            Assert.AreEqual<string>("foo2", opts.AllOptions["CustomSetting"]);
-            Assert.AreEqual<string>("bar2", opts.AllOptions["AnotherCoolSetting"]);
+            Assert.NotNull(opts);
+            Assert.Equal(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"roslyn"), opts.CompilerFullPath);   // Would include csc.exe or vbc.exe if the extension we searched for wasn't fake.
+            Assert.Equal(IsDev ? 15 * 60 : 10, opts.CompilerServerTimeToLive);   // 10 in Production. 900 in a "dev" environment.
+            Assert.True(opts.UseAspNetSettings);  // Default is false... except through the GetProviderOptionsFor factory method we used here.
+            Assert.False(opts.WarnAsError);
+            Assert.Null(opts.CompilerVersion);
+            Assert.Equal(2, opts.AllOptions.Count);
+            Assert.Equal("foo2", opts.AllOptions["CustomSetting"]);
+            Assert.Equal("bar2", opts.AllOptions["AnotherCoolSetting"]);
         }
     }
 }
