@@ -112,11 +112,10 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
             //
             // CompilerServerTimeToLive - default 10 seconds in production, 15 minutes in dev environment.
             //
-            int ttl;
             string ttlstr = Environment.GetEnvironmentVariable("VBCSCOMPILER_TTL");
             if (String.IsNullOrEmpty(ttlstr))
                 options.TryGetValue("CompilerServerTTL", out ttlstr);
-            if (!Int32.TryParse(ttlstr, out ttl))
+            if (!Int32.TryParse(ttlstr, out int ttl))
             {
                 ttl = DefaultCompilerServerTTL;
 
@@ -131,8 +130,7 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
             //
             // CompilerVersion - if this is null, we don't care.
             //
-            string compilerVersion;
-            options.TryGetValue("CompilerVersion", out compilerVersion);    // Failure to parse sets to null
+            options.TryGetValue("CompilerVersion", out string compilerVersion);    // Failure to parse sets to null
 
             //
             // WarnAsError - default false.

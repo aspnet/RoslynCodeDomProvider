@@ -12,7 +12,7 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
     /// </summary>
     [DesignerCategory("code")]
     public sealed class CSharpCodeProvider : Microsoft.CSharp.CSharpCodeProvider {
-        private IProviderOptions _providerOptions;
+        private readonly IProviderOptions _providerOptions;
 
         /// <summary>
         /// Default Constructor
@@ -35,7 +35,7 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
         /// </summary>
         /// <param name="providerOptions"></param>
         public CSharpCodeProvider(IProviderOptions providerOptions = null) {
-            _providerOptions = providerOptions == null ? CompilationUtil.CSC2 : providerOptions;
+            _providerOptions = providerOptions ?? CompilationUtil.CSC2;
         }
 
         /// <summary>

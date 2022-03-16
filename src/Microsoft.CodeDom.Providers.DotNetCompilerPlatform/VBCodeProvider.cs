@@ -12,7 +12,7 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
     /// </summary>
     [DesignerCategory("code")]
     public sealed class VBCodeProvider : Microsoft.VisualBasic.VBCodeProvider {
-        private IProviderOptions _providerOptions;
+        private readonly IProviderOptions _providerOptions;
 
         /// <summary>
         /// Default Constructor
@@ -35,7 +35,7 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
         /// </summary>
         /// <param name="providerOptions"></param>
         public VBCodeProvider(IProviderOptions providerOptions = null) {
-            _providerOptions = providerOptions == null ? CompilationUtil.VBC2 : providerOptions;
+            _providerOptions = providerOptions ?? CompilationUtil.VBC2;
         }
 
         /// <summary>
