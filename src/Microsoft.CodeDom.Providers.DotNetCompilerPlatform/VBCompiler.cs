@@ -108,8 +108,8 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
             string coreAssemblyFileName = parameters.CoreAssemblyFileName;
 
             if (String.IsNullOrWhiteSpace(parameters.CoreAssemblyFileName)) {
-                string probableCoreAssemblyFilePath;
-                if (TryGetProbableCoreAssemblyFilePath(parameters, out probableCoreAssemblyFilePath)) {
+                if (TryGetProbableCoreAssemblyFilePath(parameters, out string probableCoreAssemblyFilePath))
+                {
                     coreAssemblyFileName = probableCoreAssemblyFilePath;
                 }
             }

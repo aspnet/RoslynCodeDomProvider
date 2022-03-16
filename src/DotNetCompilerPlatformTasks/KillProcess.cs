@@ -29,7 +29,7 @@ namespace DotNetCompilerPlatformTasks
                             if (mo != null)
                             {
                                 var path = (string)mo["ExecutablePath"];
-                                var executablePath = path != null ? path : string.Empty;
+                                var executablePath = path ?? string.Empty;
                                 Log.LogMessage("ExecutablePath is {0}", executablePath);
 
                                 if (executablePath.StartsWith(ImagePath, StringComparison.OrdinalIgnoreCase))

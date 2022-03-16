@@ -1,4 +1,4 @@
-<Project DefaultTargets="UnitTest" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Label="Project properties">
     <RepositoryRoot>$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), 'RoslynCodeProvider.sln'))\</RepositoryRoot>
   </PropertyGroup>
@@ -11,10 +11,12 @@
 
     <PropertyGroup>
         <BuildQuality Condition="'$(BuildQuality)' == ''">preview</BuildQuality>
-        <VersionStartYear>2020</VersionStartYear>
+        <VersionStartYear>2022</VersionStartYear>
         <VersionMajor>3</VersionMajor>
         <VersionMinor>11</VersionMinor>
+        <VersionRevision>0</VersionRevision>
         <VersionRelease>0</VersionRelease>
+        <VersionBuild Condition="'$(VersionBuild)' == '' OR '$(VersionBuild)' == '0'">$([MSBuild]::Add(1, $([MSBuild]::Subtract($([System.DateTime]::Now.Year), $(VersionStartYear)))))$([System.DateTime]::Now.ToString("MMdd"))</VersionBuild>
     </PropertyGroup>
 
     <PropertyGroup Label="NuGet package dependencies">
