@@ -1,18 +1,9 @@
-﻿using Microsoft.CodeDom.Providers.DotNetCompilerPlatform;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.CodeDom.Compiler;
+using Microsoft.CodeDom.Providers.DotNetCompilerPlatform;
+using Xunit;
 
-namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
-
-
-    [TestClass]
+namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest
+{
     public class VBCodeProviderTests {
 
         private const int Failed = 1;
@@ -23,18 +14,23 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
         private CodeDomProvider _codeProvider = new VBCodeProvider(CompilerSettingsHelper.VB);
 #pragma warning restore CS0618
 
-        [ClassInitialize]
-        public static void ClassInitialize(TestContext context) {
+        static VBCodeProviderTests() {
             //VBCompiler.MySupport = " ";   // Don't need to do this anymore with UseAspNetSettings feature
             VBCompiler.VBImportsString = " ";
         }
 
-        [TestMethod]
+        [Fact]
+        public void AssemblyVersion()
+        {
+            commonTests.AssemblyVersion(_codeProvider);
+        }
+
+        [Fact]
         public void FileExtension() {
             commonTests.FileExtension(_codeProvider, "vb");
         }
 
-        [TestMethod]
+        [Fact]
         public void CompileAssemblyFromSource_DLL_GenerateInMemory_False() {
             commonTests.CompileAssemblyFromSource_GenerateInMemory_False(_codeProvider,
 @"Public Class FooClass
@@ -44,7 +40,7 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
 End Class");
         }
 
-        [TestMethod]
+        [Fact]
         public void CompileAssemblyFromSource_WarningAsError() {
             commonTests.CompileAssemblyFromSource_WarningAsError(_codeProvider,
                 // the variable a is declared but not used
@@ -57,7 +53,7 @@ End Class",
           "BC42024");
         }
 
-        [TestMethod]
+        [Fact]
         public void CompileAssemblyFromFile_ASPNet_Magic()
         {
             // Complete added frippery is: "/nowarn:41008,40000,40008 /define:_MYTYPE=\\\"Web\\\"    /optionInfer+"
@@ -66,7 +62,7 @@ End Class",
             commonTests.CompileAssemblyFromFile_CheckArgs(new VBCodeProvider(opts), "/define:_MYTYPE=\\\"Web\\\"", true);
         }
 
-        [TestMethod]
+        [Fact]
         public void CompileAssemblyFromFile_No_ASPNet_Magic()
         {
             // _codeProvider uses options (aka CompilerSettingsHelper.VB) created via constructor, so it should

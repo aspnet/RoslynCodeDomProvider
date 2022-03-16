@@ -5,17 +5,26 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+using Xunit;
 
 namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
-    [TestClass]
+
     public class CommonCodeDomProviderTests {
 
         private const int Failed = 1;
         private const int Success = 0;
 
+        public void AssemblyVersion(CodeDomProvider provider)
+        {
+            var ver = provider.GetType().Assembly.GetName().Version;
+
+            Assert.Equal(3, ver.Major);
+            Assert.Equal(11, ver.Minor);
+        }
+
         public void FileExtension(CodeDomProvider provider, string extension) {
-            Assert.AreEqual(extension, provider.FileExtension);
+            Assert.Equal(extension, provider.FileExtension);
         }
 
 
@@ -26,10 +35,10 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
                 "public class FooClass { public string Execute() { return \"output\" /*;*/ }}"
             );
 
-            Assert.AreEqual(Failed, result.NativeCompilerReturnValue);
-            Assert.IsTrue(result.Errors.HasErrors);
-            Assert.AreEqual(1, result.Errors.Count);
-            Assert.AreEqual("CS1002", result.Errors[0].ErrorNumber);
+            Assert.Equal(Failed, result.NativeCompilerReturnValue);
+            Assert.True(result.Errors.HasErrors);
+            Assert.Single(result.Errors);
+            Assert.Equal("CS1002", result.Errors[0].ErrorNumber);
         }
 
 
@@ -44,9 +53,9 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
                 sourceCode
             );
 
-            Assert.AreEqual(Failed, result.NativeCompilerReturnValue);
-            Assert.IsTrue(result.Errors.HasErrors);
-            Assert.AreEqual(errorNumber, result.Errors[0].ErrorNumber);
+            Assert.Equal(Failed, result.NativeCompilerReturnValue);
+            Assert.True(result.Errors.HasErrors);
+            Assert.Equal(errorNumber, result.Errors[0].ErrorNumber);
         }
 
 
@@ -60,12 +69,12 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
                 "public class FooClass { public string Execute() { return \"output\"; }}"
             );
 
-            Assert.AreEqual(Success, result.NativeCompilerReturnValue);
+            Assert.Equal(Success, result.NativeCompilerReturnValue);
             var type = result.CompiledAssembly.GetType("FooClass");
             var obj = Activator.CreateInstance(type);
             var output = type.GetMethod("Execute").Invoke(obj, new object[] { });
-            Assert.IsNull(result.PathToAssembly);
-            Assert.AreEqual(@"output", output);
+            Assert.Null(result.PathToAssembly);
+            Assert.Equal(@"output", output);
         }
 
 
@@ -81,8 +90,8 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
                 "public class FooClass { public string Execute() { int a; return \"output\"; }}"
             );
 
-            // Assert.IsNull(result.PathToAssembly);
-            Assert.AreEqual(Failed, result.NativeCompilerReturnValue);
+            // Assert.Null(result.PathToAssembly);
+            Assert.Equal(Failed, result.NativeCompilerReturnValue);
 
             bool referenceErrorInOutput = false;
             foreach (var line in result.Output) {
@@ -91,7 +100,7 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
                 }
             }
 
-            Assert.IsTrue(referenceErrorInOutput);
+            Assert.True(referenceErrorInOutput);
         }
 
 
@@ -105,10 +114,10 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
                     "public class FooClass1 { public static string Execute() { return \"output\";}}"
                 );
 
-                Assert.AreEqual(Success, result1.NativeCompilerReturnValue);
-                Assert.IsNotNull(result1.PathToAssembly);
+                Assert.Equal(Success, result1.NativeCompilerReturnValue);
+                Assert.NotNull(result1.PathToAssembly);
                 tempFiles.Add(result1.PathToAssembly);
-                Assert.AreEqual(".dll", Path.GetExtension(result1.PathToAssembly));
+                Assert.Equal(".dll", Path.GetExtension(result1.PathToAssembly));
 
                 string referenceName = Path.GetFileName(result1.PathToAssembly);
                 var asm1 = GetAssemblyByName(result1.PathToAssembly);
@@ -116,7 +125,7 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
                 var obj1 = Activator.CreateInstance(type1);
                 var output1 = type1.GetMethod("Execute").Invoke(obj1, new object[] { });
 
-                Assert.AreEqual(@"output", output1);
+                Assert.Equal(@"output", output1);
 
                 var param2 = new CompilerParameters(new string[] { referenceName });
                 param2.GenerateExecutable = true;
@@ -124,9 +133,9 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
                     param2,
                     "public class FooClass2 { public static void Main() { System.Console.Write(FooClass1.Execute());}}"
                 );
-                Assert.IsNotNull(result2.PathToAssembly);
+                Assert.NotNull(result2.PathToAssembly);
                 tempFiles.Add(result2.PathToAssembly);
-                Assert.AreEqual(Success, result2.NativeCompilerReturnValue);
+                Assert.Equal(Success, result2.NativeCompilerReturnValue);
                 AppDomain newAppDomain = null;
                 try {
                     newAppDomain = System.AppDomain.CreateDomain("NewApplicationDomain");
@@ -157,17 +166,17 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
                     "public class FooClass1 { public static string Execute() { return \"output\";}}"
                 );
 
-                Assert.AreEqual(Success, result1.NativeCompilerReturnValue);
-                Assert.IsNotNull(result1.PathToAssembly);
+                Assert.Equal(Success, result1.NativeCompilerReturnValue);
+                Assert.NotNull(result1.PathToAssembly);
                 tempFiles.Add(result1.PathToAssembly);
-                Assert.AreEqual(".dll", Path.GetExtension(result1.PathToAssembly));
+                Assert.Equal(".dll", Path.GetExtension(result1.PathToAssembly));
 
                 string referenceName = Path.GetFileName(result1.PathToAssembly);
                 var asm1 = GetAssemblyByName(result1.PathToAssembly);
                 var type1 = asm1.GetType("FooClass1");
                 var obj1 = Activator.CreateInstance(type1);
                 var output1 = type1.GetMethod("Execute").Invoke(obj1, new object[] { });
-                Assert.AreEqual(@"output", output1);
+                Assert.Equal(@"output", output1);
 
                 var param2 = new CompilerParameters(new string[] { referenceName });
                 param2.GenerateExecutable = true;
@@ -176,8 +185,8 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
                     "public class FooClass2 { public static void Main() { System.Console.Write(FooClass1.Execute());}}"
                 );
 
-                Assert.AreEqual(Success, result2.NativeCompilerReturnValue);
-                Assert.IsNotNull(result2.PathToAssembly);
+                Assert.Equal(Success, result2.NativeCompilerReturnValue);
+                Assert.NotNull(result2.PathToAssembly);
                 tempFiles.Add(result2.PathToAssembly);
                 AppDomain newAppDomain = null;
                 try {
@@ -204,12 +213,12 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
                 "using System.Runtime; public class FooClass { public string Execute() { return \"output\";}}"
             );
 
-            Assert.AreEqual(Success, result.NativeCompilerReturnValue);
+            Assert.Equal(Success, result.NativeCompilerReturnValue);
             var type = result.CompiledAssembly.GetType("FooClass");
             var obj = Activator.CreateInstance(type);
             var output = type.GetMethod("Execute").Invoke(obj, new object[] { });
-            Assert.IsNull(result.PathToAssembly);
-            Assert.AreEqual(@"output", output);
+            Assert.Null(result.PathToAssembly);
+            Assert.Equal(@"output", output);
         }
 
         public void CompileAssemblyFromSource_GenerateInMemory_False(CodeDomProvider provider, string sourceCode) {
@@ -224,8 +233,8 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
                     sourceCode
                 );
 
-                Assert.AreEqual(Success, result.NativeCompilerReturnValue);
-                Assert.IsNotNull(result.PathToAssembly);
+                Assert.Equal(Success, result.NativeCompilerReturnValue);
+                Assert.NotNull(result.PathToAssembly);
 
                 // Read assembly into memory:
                 Assembly asm = GetAssemblyByName(result.PathToAssembly);
@@ -234,10 +243,10 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
                 var obj = Activator.CreateInstance(type);
                 var output = type.GetMethod("Execute").Invoke(obj, new object[] { });
 
-                Assert.AreEqual(@"output", output);
-                Assert.AreEqual(param.OutputAssembly, result.PathToAssembly);
+                Assert.Equal(@"output", output);
+                Assert.Equal(param.OutputAssembly, result.PathToAssembly);
 
-                Assert.IsTrue(File.Exists(param.OutputAssembly));
+                Assert.True(File.Exists(param.OutputAssembly));
             }
             finally {
                 DeleteFiles(tempFiles);
@@ -257,8 +266,8 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
                     "public class FooClass { public string Execute() { return \"output\";}}"
                 );
 
-                // Assert.IsNull(result.PathToAssembly);
-                Assert.AreEqual(Failed, result.NativeCompilerReturnValue);
+                // Assert.Null(result.PathToAssembly);
+                Assert.Equal(Failed, result.NativeCompilerReturnValue);
             }
             finally {
                 DeleteFiles(tempFiles);
@@ -280,8 +289,8 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
                     "public class FooClass { public static void Main(){} public string Execute() { return \"output\";}}"
                 );
 
-                Assert.AreEqual(Success, result.NativeCompilerReturnValue);
-                Assert.IsNotNull(result.PathToAssembly);
+                Assert.Equal(Success, result.NativeCompilerReturnValue);
+                Assert.NotNull(result.PathToAssembly);
                 tempFiles.Add(result.PathToAssembly);
                 Assembly asm = GetAssemblyByName(result.PathToAssembly);
 
@@ -289,8 +298,8 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
                 var obj = Activator.CreateInstance(type);
                 var output = type.GetMethod("Execute").Invoke(obj, new object[] { });
 
-                Assert.AreEqual(".exe", Path.GetExtension(result.PathToAssembly));
-                Assert.AreEqual(@"output", output);
+                Assert.Equal(".exe", Path.GetExtension(result.PathToAssembly));
+                Assert.Equal(@"output", output);
             }
             finally {
                 DeleteFiles(tempFiles);
@@ -312,9 +321,9 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
                 "public class FooClass {public string Execute() { return \"output\";}}"
             );
 
-            Assert.AreEqual(Failed, result.NativeCompilerReturnValue);
-            // Assert.IsNull(result.PathToAssembly);
-            Assert.AreEqual("CS5001"/*miss main entry*/, result.Errors[0].ErrorNumber);
+            Assert.Equal(Failed, result.NativeCompilerReturnValue);
+            // Assert.Null(result.PathToAssembly);
+            Assert.Equal("CS5001"/*miss main entry*/, result.Errors[0].ErrorNumber);
         }
 
 
@@ -331,10 +340,10 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
                         "public class FooClass { public string Execute() { return \"output\";}}"
                     );
 
-                    Assert.AreEqual(Failed, result.NativeCompilerReturnValue);
+                    Assert.Equal(Failed, result.NativeCompilerReturnValue);
                     // The InProc provider does not give error while the old provider
                     // does. We probably should fix the behavior of InProc provider.
-                    // Assert.IsFalse(result.Errors.HasErrors);
+                    // Assert.False(result.Errors.HasErrors);
                     bool filenameInOutput = false;
                     foreach (var line in result.Output) {
                         if (line.Contains(Path.GetFileName(param.OutputAssembly))) {
@@ -342,7 +351,7 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
                         }
                     }
 
-                    Assert.IsTrue(filenameInOutput);
+                    Assert.True(filenameInOutput);
                 }
             }
             finally {
@@ -367,10 +376,10 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
                         "public class FooClass { public string Execute() { return \"output\";}}"
                     );
 
-                    Assert.AreEqual(Failed, result.NativeCompilerReturnValue);
+                    Assert.Equal(Failed, result.NativeCompilerReturnValue);
                     // The InProc provider does not give error while the old provider
                     // does. We probably should fix the behavior of InProc provider.
-                    // Assert.IsFalse(result.Errors.HasErrors);
+                    // Assert.False(result.Errors.HasErrors);
                     bool filenameInOutput = false;
                     foreach (var line in result.Output) {
                         if (line.Contains(Path.GetFileName(pdbFilename))) {
@@ -378,7 +387,7 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
                         }
                     }
 
-                    Assert.IsTrue(filenameInOutput);
+                    Assert.True(filenameInOutput);
                 }
             }
             finally {
@@ -402,11 +411,11 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
                     "public class FooClass { public string Execute() { return \"output\";}}"
                 );
 
-                Assert.AreEqual(Success, result.NativeCompilerReturnValue);
+                Assert.Equal(Success, result.NativeCompilerReturnValue);
 
                 // In Debug mode, visual studio would try to load the pdb file.
                 // Delete the file before it's held by VS.
-                Assert.IsTrue(File.Exists(pdbFileName));
+                Assert.True(File.Exists(pdbFileName));
                 File.Delete(pdbFileName);
 
                 // Read assembly into memory:
@@ -415,9 +424,9 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
                 var obj = Activator.CreateInstance(type);
                 var output = type.GetMethod("Execute").Invoke(obj, new object[] { });
 
-                Assert.AreEqual(@"output", output);
-                Assert.AreEqual(param.OutputAssembly, result.PathToAssembly);
-                Assert.IsTrue(File.Exists(param.OutputAssembly));
+                Assert.Equal(@"output", output);
+                Assert.Equal(param.OutputAssembly, result.PathToAssembly);
+                Assert.True(File.Exists(param.OutputAssembly));
             }
             finally {
                 DeleteFiles(tempFiles);
@@ -440,7 +449,7 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
                     "public class FooClass { public string Execute() { return \"output\";}}"
                 );
 
-                Assert.AreEqual(Success, result.NativeCompilerReturnValue);
+                Assert.Equal(Success, result.NativeCompilerReturnValue);
 
                 // Read assembly into memory:
                 Assembly asm = GetAssemblyByName(param.OutputAssembly);
@@ -448,10 +457,10 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
                 var obj = Activator.CreateInstance(type);
                 var output = type.GetMethod("Execute").Invoke(obj, new object[] { });
 
-                Assert.AreEqual(@"output", output);
-                Assert.AreEqual(param.OutputAssembly, result.PathToAssembly);
-                Assert.IsTrue(File.Exists(param.OutputAssembly));
-                Assert.IsFalse(File.Exists(pdbFileName));
+                Assert.Equal(@"output", output);
+                Assert.Equal(param.OutputAssembly, result.PathToAssembly);
+                Assert.True(File.Exists(param.OutputAssembly));
+                Assert.False(File.Exists(pdbFileName));
             }
             finally {
                 DeleteFiles(tempFiles);
@@ -492,11 +501,11 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
                 compileUnit
             );
 
-            Assert.AreEqual(Success, result.NativeCompilerReturnValue);
+            Assert.Equal(Success, result.NativeCompilerReturnValue);
             var type = result.CompiledAssembly.GetType(string.Format("{0}.{1}", spaceName, className));
             var obj = Activator.CreateInstance(type);
             var output = type.GetMethod(methodName).Invoke(obj, new object[] { });
-            Assert.AreEqual("output", output);
+            Assert.Equal("output", output);
         }
 
 
@@ -526,16 +535,16 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
 
                 if (argStringToFind != null)
                 {
-                    Assert.AreNotEqual(Success, result.NativeCompilerReturnValue);
-                    Assert.AreEqual<bool>(expected, result.Output[0].Contains(argStringToFind));
+                    Assert.NotEqual(Success, result.NativeCompilerReturnValue);
+                    Assert.Equal(expected, result.Output[0].Contains(argStringToFind));
                     return;
                 }
 
-                Assert.AreEqual(Success, result.NativeCompilerReturnValue);
+                Assert.Equal(Success, result.NativeCompilerReturnValue);
                 var type = result.CompiledAssembly.GetType("FooClass");
                 var obj = Activator.CreateInstance(type);
                 var output = type.GetMethod("Execute").Invoke(obj, new object[] { });
-                Assert.AreEqual(@"output", output);
+                Assert.Equal(@"output", output);
             }
             finally {
                 File.Delete(sourcePath);
