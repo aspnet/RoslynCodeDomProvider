@@ -5,32 +5,40 @@ Please see the blog [Enabling the .NET Compiler Platform (“Roslyn”) in ASP.N
 for an introduction to Microsoft.CodeDom.Providers.DotNetCompilerPlatform.
 
 ## Updates
-+ #### Version 3.5.0 (preview1)
++ #### Version 3.11.0 (preview1)
+    - #### Refreshed compilers
+        In keeping with the new versioning scheme for this project, the version has been revved to 3.11 to match the version of the compilers included.
+
+    - #### Only support .Net >= 4.6.2
+        Older versions of .Net are out of support, so this update also removes support for them and no longer carries the oldest version of the compiler tools that was used in previous versions.
+
+    - #### Non-web apps and 'aspnet:RoslynCompilerLocation'
+        The appSetting `aspnet:RoslynCompilerLocation` can still be used to point at a specific download of the Roslyn compiler tools, but this package is hopefully a little more forgiving when searching for a default location and should accomodate both web projects as well as non-web projects without requiring this setting.
+      
++ #### Version 3.6.0
     - #### Refreshed compilers (and versioning)
-
         This is most likely the update everyone has been looking for. This package contains updated Roslyn bits for newer target frameworks. If your project is targeting 4.7.2 or above, this package will use `Microsoft.Net.Compilers` version 3.5 with your build. You might notice that we have revved our package version to match the most recent compiler version included. For target frameworks 4.6 through 4.7.1, the 2.10 version of compilers is used. (A slight update from 2.9 that shipped with our last package.) And as before, projects targeting 4.5.* will get version 1.3.2 of the compilers. (Note that the language version for 4.6 and above is set to "default", which means C# 7.3 max for full framework projects.)
+
     - #### Config restoration
-
         In the past, when updating or re-installing this package after re-targeting your project - the nuget package would overwrite your config entries for the codedom provider with the default options again. Borrowing a feature from Microsoft.Configuration.ConfigurationBuilders, the 3.5 packages now temporarily store existing config when uninstalling and attempt to restore it when installing instead of blindly writing defaults again. Unfortunately this won't help the 2.0* ==> 3.5 update scenario since 2.0* doesn't save configuration to the temp file. But future updates or retargeting from 3.5 will hopefully blow less custom configuration out of the water.
+
     - #### ProviderOptions for compilers
-
         Configuration options for these codedom providers has been a little haphazard in the past. Some things are set through environment variables, and some through appSettings. All such options apply to all codedom providers configured. This package still respects the old ways of setting those various config options, but also allows many of them to be set on individual codedom providers using the [providerOption](https://docs.microsoft.com/en-us/dotnet/framework/configure-apps/file-schema/compiler/provideroption-element) collection in the config file. See the [Configurations](#Configurations) section below to see what options exist.
+
     - #### Turning off ASP.Net "magic"
-
         When this project was first started, it was intended as an extension for full-framework ASP.Net only. As such, it took the liberty of "massaging" some of the compiler options it was given before starting the compiler, and there was no way to prevent the modifications from happening. If the codedom providers in this package are created using the default constructor as ASP.Net uses, we still do the magic for compat reasons. If your code is calling directly into codedom providers from this package and passing compiler options in to the constructor, then the magic is turned off. This feature can be explicitly enabled or disabled using a new provider option. See the (Configurations)[#Configurations] section below for details.
-    - #### dotnet buildable
 
+    - #### dotnet buildable
         For the adventurous developer who likes to use `dotnet` to build their full-framework projects for whatever reason, some of the MSBuild tasks our package was creating were not compatible with that environment. This package update comes with custom MSBuild tasks that should work in both the `dotnet` and full MSBuild/VS environments.
 
 + #### Version 2.0.0
     - #### There is a **breaking change**?
-
         Before 2.0.0 version, Microsoft.CodeDom.Providers.DotNetCompilerPlatform nupkg references Microsoft.Net.Compilers nupkg in order to deploy the Roslyn compiler assemblies unto you application folder. In version 2.0.0 version, the dependency is removed. Instead, Microsoft.CodeDom.Providers.DotNetCompilerPlatform nupkg includes all the Roslyn compiler assemblies under tools folder.
+
     - #### What does that mean?
-
         When you build your project in Visual Studio, Visual Studio(msbuild) will use the Roslyn compiler shipped with it to compile the source code in your project. However, if Microsoft.Net.Compilers nupkg is installed in your project, it overrides the compiler location and Visual Studio(msbuild) will use the Roslyn compiler from Microsoft.Net.Compilers nupkg. This causes two problems. 1. When you install the latest Visual Studio update which always contains new Roslyn Compiler and you configure Visual Studio to use latest language feature. And you do use the latest language feature in your code, the intellisense works and IDE doesn't show any syntax error. However, when you build your project, you see some compilation error. This is because your project is still using the old version of Microsoft.Net.Compilers nupkg. 2. The Roslyn compiler shipped with Visual Studio is NGen'd which means it has better cold startup performance. So it takes more time to build the project, if the project references Microsoft.Net.Compilers nupkg.
-    - #### What shall I do?
 
+    - #### What shall I do?
         If you are using Visual Studio 2017 with latest update, you should upgrade Microsoft.CodeDom.Providers.DotNetCompilerPlatform nupkg to 2.0.0 and **remove Microsoft.Net.Compilers nupkg from your project**.
 
 
