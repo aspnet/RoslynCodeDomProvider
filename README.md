@@ -5,6 +5,19 @@ Please see the blog [Enabling the .NET Compiler Platform (“Roslyn”) in ASP.N
 for an introduction to Microsoft.CodeDom.Providers.DotNetCompilerPlatform.
 
 ## Updates
++ #### Version 4.1.0 (preview1)
+    - #### Refreshed current compilers
+        In keeping with the new versioning scheme for this project, the version has been revved to 4.1 to match the version of the compilers included.
+
+    - #### No more old compilers
+        Stop carrying old versions of compilers. If you upgrade to get new compilers, you get new compilers. The old compilers that might carry references to binaries that get flagged in security scans even though the binaries don't get copied to the ouput directory... they just won't be included in the package anymore.
+
+    - #### .Net >= 4.7.2
+        As a result of not keeping older compilers packaged in this project, we can no longer support versions before 4.7.2 because compiler versions 3.0 and newer only support 4.7.2+.
+
+    - #### Drop install.ps1, Rely more on msbuild
+        Nuget has moved on from install.ps1. We had one foot in the msbuild camp before, and one foot still in the install.ps1 camp. Time to just jump in with both feet. See the 'RoslynRegisterInConfig' setting description below.
+
 + #### Version 3.11.0 (preview1)
     - #### Refreshed compilers
         In keeping with the new versioning scheme for this project, the version has been revved to 3.11 to match the version of the compilers included.
@@ -46,13 +59,28 @@ for an introduction to Microsoft.CodeDom.Providers.DotNetCompilerPlatform.
 Generally, command-line options for the codedom compilers can be specified using the `compilerOptions` attribute of the compiler when it is registered in configuration. There are however, a handful of options for controlling some behaviors of this package that are not command-line options. These options fall into two broad categories and can be set as follows:
 
 ### Build-time Options
-+ **Specify the path to copy Roslyn compiler at build time** - When building projects, target files included by the Microsoft.CodeDom.Providers.DotNetCompilerPlatform nupkg will copy appropriate Roslyn compiler into bin\roslyn folder. With this setting, you can specify a custom path from which the build process will copy the Roslyn compiler, rather than using one of the pre-packaged Roslyn compilers.
++ **(V2) Specify the path to copy Roslyn compiler at build time** - When building projects, target files included by the Microsoft.CodeDom.Providers.DotNetCompilerPlatform nupkg will copy appropriate Roslyn compiler into bin\roslyn folder. With this setting, you can specify a custom path from which the build process will copy the Roslyn compiler, rather than using one of the pre-packaged Roslyn compilers.
 
     **Setting name** - RoslynToolPath
 
     **How to use it** - ```msbuild mysolution.sln /t:build /p:RoslynToolPath="[Roslyn compiler folder full path]"```
 
     **Use case** - In 2.0.0 version, Microsoft.CodeDom.Providers.DotNetCompilerPlatform nupkg removes the dependency on Microsoft.Net.Compilers nupkg. Instead, it embeds one version of Roslyn compiler inside the nupkg. It's possible that the embeded version of Roslyn compiler is not the one you want, so through this setting you can specify a version of Roslyn compiler at build time which will be copied to bin\roslyn folder.
+
++ **(V4) Skip copying Roslyn compiler at build time** - When building projects, target files will copy the appropriate binaries specified by the 'RoslynToolPath' setting described above and copy them into the project output for runtime use. This copy step can be skipped by using this project setting.
+
+    **Setting name** - RoslynCopyToOutDir
+
+    **How to use it** - ```msbuild mysolution.sln /t:build /p:RoslynCopyToOutDir="[true|false]"```
+
++ **(V4) Don't modify config at build time** - CodeDom providers are not magically picked up from referenced assemblies. They must be explicitly registered in config in order to be used. Prior to the Version 4 update, all modifications to config were performed via powershell scripts included in the nuget package. This powershell method worked with 'packages.config' apps, but does not work with 'PackageReference' apps. As more applications move towards the preferred 'PackageReference' way of doing things, we have updated our method of config registration to be an msbuild task instead of a powershell install script. We take care not to stomp over existing settings. But this step gets checked/performed on every build now instead of just on package install. Use this setting to skip the config update.
+
+    **Setting name** - RoslynRegisterInConfig
+
+    **How to use it** - ```msbuild mysolution.sln /t:build /p:RoslynRegisterInConfig="[true|false]"```
+
+    **Use case** - This config-manipulation step happens on ever build. (Even designer builds.) We take care to be as non-invasive as possible, but if you want us to stay entirely hands-off and update your config registrations manually, this setting enables that.
+
 ### Run-time Options
 + **Specify the path to load Roslyn compiler at runtime** - When asp.net compiles the views at runtime or precompile time(using aspnet_compiler to precompile the web app), Microsoft.CodeDom.Providers.DotNetCompilerPlatform needs a path to load Roslyn compiler. This setting can be used to specify this loading path. 
         

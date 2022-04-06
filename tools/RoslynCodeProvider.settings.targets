@@ -10,18 +10,17 @@
     <!-- Configurable properties-->
 
     <PropertyGroup>
-        <BuildQuality Condition="'$(BuildQuality)' == ''">preview2</BuildQuality>
+        <BuildQuality Condition="'$(BuildQuality)' == ''">preview</BuildQuality>
         <VersionStartYear>2022</VersionStartYear>
-        <VersionMajor>3</VersionMajor>
-        <VersionMinor>11</VersionMinor>
+        <VersionMajor>4</VersionMajor>
+        <VersionMinor>1</VersionMinor>
         <VersionRevision>0</VersionRevision>
         <VersionRelease>0</VersionRelease>
         <VersionBuild Condition="'$(VersionBuild)' == '' OR '$(VersionBuild)' == '0'">$([MSBuild]::Add(1, $([MSBuild]::Subtract($([System.DateTime]::Now.Year), $(VersionStartYear)))))$([System.DateTime]::Now.ToString("MMdd"))</VersionBuild>
     </PropertyGroup>
 
     <PropertyGroup Label="NuGet package dependencies">
-        <MSNetCompilers46NuGetPackageVersion>2.10.0</MSNetCompilers46NuGetPackageVersion>
-        <MSNetCompilers472NuGetPackageVersion>3.11.0</MSNetCompilers472NuGetPackageVersion>
+        <MSNetCompilersNuGetPackageVersion>4.1.0</MSNetCompilersNuGetPackageVersion>
     </PropertyGroup>
 
   <Target Name="SuperClean" AfterTargets="Clean"  Condition="'$(MSBuildProjectExtension)' != '.nuproj'">

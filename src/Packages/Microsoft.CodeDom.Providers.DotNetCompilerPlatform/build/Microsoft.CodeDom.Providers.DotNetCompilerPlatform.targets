@@ -1,11 +1,12 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.Extensions.targets"/>
 
   <PropertyGroup>
     <RoslynCopyToOutDir Condition="$(RoslynCopyToOutDir) == ''">true</RoslynCopyToOutDir>
+    <RoslynRegisterInConfig Condition="$(RoslynRegisterInConfig) == ''">true</RoslynRegisterInConfig>
+    <RoslynToolPath Condition="'$(RoslynToolPath)' == ''">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\$roslynToolPath$'))</RoslynToolPath>
   </PropertyGroup>
-
-  <Target Name="SetRoslynCompilerFiles" DependsOnTargets="LocateRoslynCompilerFiles">
+    
+  <Target Name="SetRoslynCompilerFiles" >
     <Message Text="Using Roslyn from '$(RoslynToolPath)' folder" />
     <ItemGroup>
       <RoslynCompilerFiles Include="$(RoslynToolPath)\*">
@@ -37,14 +38,29 @@
     </PropertyGroup>
   </Target>
 
-  <Target Name="CopyRoslynCompilerFilesToOutputDirectory" AfterTargets="CopyFilesToOutputDirectory" DependsOnTargets="LocateRoslynToolsDestinationFolder;SetRoslynCompilerFiles"  Condition="$(RoslynCopyToOutDir) == 'true'">
+  <Target Name="CopyRoslynCompilerFilesToOutputDirectory" AfterTargets="CopyFilesToOutputDirectory" DependsOnTargets="LocateRoslynToolsDestinationFolder;SetRoslynCompilerFiles" Condition="$(RoslynCopyToOutDir) == 'true'">
     <Copy SourceFiles="@(RoslynCompilerFiles)" DestinationFolder="$(RoslynToolsDestinationFolder)" ContinueOnError="true" SkipUnchangedFiles="true" Retries="0" />
     <ItemGroup  Condition="'$(MSBuildLastTaskResult)' == 'True'" >
       <FileWrites Include="$(RoslynToolsDestinationFolder)\*" />
     </ItemGroup>
   </Target>
 
-  <Target Name="CheckIfShouldKillVBCSCompiler" DependsOnTargets="LocateRoslynCompilerFiles;LocateRoslynToolsDestinationFolder">
+  <Target Name="UpdateRoslynCompilersInConfigFile"  BeforeTargets="ResolveAssemblyReferences" Condition="$(RoslynRegisterInConfig) == 'true'">
+    <UpdateCompilerConfigRecord ConfigFile="web.config" Extension=".cs" Language="c#;cs;csharp" WarningLevel="4" Options="/langversion:default /nowarn:1659;1699;1701;612;618"
+                                CompilerType="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CSharpCodeProvider, $compilerPlatformFQAN$"
+                                Condition="Exists('web.config')" />
+    <UpdateCompilerConfigRecord ConfigFile="web.config" Extension=".vb" Language="vb;vbs;visualbasic;vbscript" WarningLevel="4" Options="/langversion:default /nowarn:41008,40000,40008 /define:_MYTYPE=\&quot;Web\&quot; /optionInfer+"
+                                CompilerType="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.VBCodeProvider, $compilerPlatformFQAN$"
+                                Condition="Exists('web.config')" />
+    <UpdateCompilerConfigRecord ConfigFile="App.config" Extension=".cs" Language="c#;cs;csharp" WarningLevel="4" Options="/langversion:default /nowarn:1659;1699;1701"
+                                CompilerType="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CSharpCodeProvider, $compilerPlatformFQAN$"
+                                Condition="Exists('App.config')" />
+    <UpdateCompilerConfigRecord ConfigFile="App.config" Extension=".vb" Language="vb;vbs;visualbasic;vbscript" WarningLevel="4" Options="/langversion:default /nowarn:41008 /optionInfer+"
+                                CompilerType="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.VBCodeProvider, $compilerPlatformFQAN$"
+                                Condition="Exists('App.config')" />
+  </Target>
+
+  <Target Name="CheckIfShouldKillVBCSCompiler" DependsOnTargets="LocateRoslynToolsDestinationFolder">
     <CheckIfVBCSCompilerWillOverride src="$(RoslynToolPath)\VBCSCompiler.exe" dest="$(RoslynToolsDestinationFolder)\VBCSCompiler.exe">
       <Output TaskParameter="WillOverride" PropertyName="ShouldKillVBCSCompiler" />
     </CheckIfVBCSCompilerWillOverride>
@@ -60,5 +76,6 @@
 
   <UsingTask TaskName="KillProcess" AssemblyFile="..\..\tasks\DotNetCompilerPlatformTasks.dll" />
   <UsingTask TaskName="CheckIfVBCSCompilerWillOverride" AssemblyFile="..\..\tasks\DotNetCompilerPlatformTasks.dll" />
+  <UsingTask TaskName="UpdateCompilerConfigRecord" AssemblyFile="..\..\tasks\DotNetCompilerPlatformTasks.dll" />
 
 </Project>
