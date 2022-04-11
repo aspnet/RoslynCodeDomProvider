@@ -208,7 +208,7 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
             string compilerFullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, webPath);
 
             // Then appdomain base
-            if (!File.Exists(compilerFullPath))
+            if (!Directory.Exists(compilerFullPath))
                 compilerFullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, appPath);
 
             return compilerFullPath;
