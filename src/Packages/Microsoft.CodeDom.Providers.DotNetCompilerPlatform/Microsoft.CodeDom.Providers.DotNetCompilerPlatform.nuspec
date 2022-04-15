@@ -16,6 +16,7 @@
         <projectUrl>https://github.com/aspnet/RoslynCodeDomProvider</projectUrl>
         <iconUrl>http://go.microsoft.com/fwlink/?LinkID=288859</iconUrl>
         <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+        <license type="expression">MIT</license>
         <requireLicenseAcceptance>true</requireLicenseAcceptance>
         <tags>Roslyn CodeDOM Compiler CSharp VB.Net ASP.NET</tags>
     </metadata>
