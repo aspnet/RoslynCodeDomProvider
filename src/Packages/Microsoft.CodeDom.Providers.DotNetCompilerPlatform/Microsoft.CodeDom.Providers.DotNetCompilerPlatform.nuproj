@@ -30,16 +30,16 @@
       <Destination>tasks</Destination>
     </NuGetContent>
     <NuGetContent Include="Content\config.install.xdt">
-      <Destination>content\net46\app.config.install.xdt</Destination>
+      <Destination>content\net462\app.config.install.xdt</Destination>
     </NuGetContent>
     <NuGetContent Include="Content\config.install.xdt">
-      <Destination>content\net46\web.config.install.xdt</Destination>
+      <Destination>content\net462\web.config.install.xdt</Destination>
     </NuGetContent>
     <NuGetContent Include="Content\config.uninstall.xdt">
-      <Destination>content\net46\app.config.uninstall.xdt</Destination>
+      <Destination>content\net462\app.config.uninstall.xdt</Destination>
     </NuGetContent>
     <NuGetContent Include="Content\config.uninstall.xdt">
-      <Destination>content\net46\web.config.uninstall.xdt</Destination>
+      <Destination>content\net462\web.config.uninstall.xdt</Destination>
     </NuGetContent>
     <NuGetContent Include="Content\config.install.xdt">
       <Destination>content\net472\app.config.install.xdt</Destination>
@@ -57,10 +57,10 @@
       <Destination>build\net472</Destination>
     </NuGetContent>
     <NuGetContent Include="build\*">
-      <Destination>build\net46</Destination>
+      <Destination>build\net462</Destination>
     </NuGetContent>
     <NuGetContent Include="build\net46\*">
-      <Destination>build\net46</Destination>
+      <Destination>build\net462</Destination>
     </NuGetContent>
     <NuGetContent Include="build\net472\*">
       <Destination>build\net472</Destination>
