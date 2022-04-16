@@ -14,8 +14,7 @@
         <summary>Replacement CodeDOM providers that use the new .NET Compiler Platform ("Roslyn") compiler as a service APIs.</summary>
         <language>en-US</language>
         <projectUrl>https://github.com/aspnet/RoslynCodeDomProvider</projectUrl>
-        <iconUrl>http://go.microsoft.com/fwlink/?LinkID=288859</iconUrl>
-        <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+        <icon>icons\dotnet.png</icon>
         <license type="expression">MIT</license>
         <requireLicenseAcceptance>true</requireLicenseAcceptance>
         <tags>Roslyn CodeDOM Compiler CSharp VB.Net ASP.NET</tags>

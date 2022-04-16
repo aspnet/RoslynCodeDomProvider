@@ -77,6 +77,9 @@
     <NuGetContent Include="tools\$(LocalRoslyn472FolderName)\*">
       <Destination>tools\$(LocalRoslyn472FolderName)</Destination>
     </NuGetContent>
+    <NuGetContent Include="..\icons\*">
+      <Destination>icons</Destination>
+    </NuGetContent>
   </ItemGroup>
   <Import Project="$(RepositoryRoot)Tools\NuGetProj.targets"/>
   <Target Name="SignPowerShellScript" Condition=" '$(SignAssembly)' == 'true' " AfterTargets="BeforeBuild">
