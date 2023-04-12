@@ -19,8 +19,8 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
         {
             var ver = provider.GetType().Assembly.GetName().Version;
 
-            Assert.Equal(3, ver.Major);
-            Assert.Equal(11, ver.Minor);
+            Assert.Equal(4, ver.Major);
+            Assert.Equal(1, ver.Minor);
         }
 
         public void FileExtension(CodeDomProvider provider, string extension) {

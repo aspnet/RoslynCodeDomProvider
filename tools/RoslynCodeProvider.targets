@@ -30,10 +30,33 @@
         </PropertyGroup>
     </Target>
 
-    <!-- We really only need to do this in the Packages project. It's superfluous and causing intermittent
+  <Target Name="SetRoslynVersionInPackageBuildTargets" BeforeTargets="GetNuGetContentFromProject">
+    <!-- AfterTargets="GenerateNuSpecFile"> -->
+
+    <PropertyGroup>
+      <NuGetBuildDirectory>$(MSBuildProjectDirectory)\build</NuGetBuildDirectory>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PropertiesToReplace Include="roslynToolPath">
+        <Value>tools\roslyn-$(MSNetCompilersNuGetPackageVersion)</Value>
+      </PropertiesToReplace>
+
+      <PropertiesToReplace Include="compilerPlatformFQAN">
+        <Value>Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=$(AssemblyVersion), Culture=neutral, PublicKeyToken=31bf3856ad364e35</Value>
+      </PropertiesToReplace>
+    </ItemGroup>
+
+    <ItemGroup>
+      <NuGetPackageBuildTargets Include="$(NuGetBuildDirectory)\*.targets" />
+    </ItemGroup>
+
+    <PreprocessFiles Files="@(NuGetPackageBuildTargets)" OutputDir="$(NuGetBuildDirectory).pp" PropertyCollection="@(PropertiesToReplace)" />
+  </Target>
+
+  <!-- We really only need to do this in the Packages project. It's superfluous and causing intermittent
         build errors in all the other projects. -->
     <Target Name="DownloadRoslynBinariesToToolsFolder" Condition="'$(MSBuildProjectExtension)' == '.nuproj'">
-        <DownloadRoslynBinaries NupkgToolPath="$(NupkgToolPath)" LocalRoslyn46FolderName="$(LocalRoslyn46FolderName)" LocalRoslyn472FolderName="$(LocalRoslyn472FolderName)" 
-            ReferenceRoslyn46NupkgVersion="$(MSNetCompilers46NuGetPackageVersion)" ReferenceRoslyn472NupkgVersion="$(MSNetCompilers472NuGetPackageVersion)" />
+        <DownloadRoslynBinaries NupkgToolPath="$(NupkgToolPath)" LocalRoslynFolderName="$(LocalRoslynFolderName)" ReferenceRoslynNupkgVersion="$(MSNetCompilersNuGetPackageVersion)" />
     </Target>
 </Project>
