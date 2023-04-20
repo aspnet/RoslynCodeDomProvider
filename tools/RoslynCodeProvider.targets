@@ -3,6 +3,7 @@
     <!-- Build order -->
     <PropertyGroup>
         <BuildDependsOn>SetNuSpecProperties;DownloadRoslynBinariesToToolsFolder;$(BuildDependsOn)</BuildDependsOn>
+        <GitCommit Condition=" '$(GitCommit)' == '' "></GitCommit>
         <GitCommitLink Condition=" '$(GitCommitLink)' == '' "></GitCommitLink>
     </PropertyGroup>
 
@@ -25,6 +26,7 @@
             <NuSpecProperties>
                 NuGetPackageVersion=$(NuGetPackageVersion);
                 NuGetPackageId=$(NuGetPackageId);
+                GitCommit=$(GitCommit);
                 GitCommitLink=$(GitCommitLink);
             </NuSpecProperties>
         </PropertyGroup>

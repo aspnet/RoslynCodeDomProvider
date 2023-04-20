@@ -10,7 +10,7 @@
     <!-- Configurable properties-->
 
     <PropertyGroup>
-        <BuildQuality Condition="'$(BuildQuality)' == ''">rtm</BuildQuality>
+        <BuildQuality Condition="'$(BuildQuality)' == ''">preview1</BuildQuality>
         <VersionStartYear>2022</VersionStartYear>
         <VersionMajor>4</VersionMajor>
         <VersionMinor>1</VersionMinor>

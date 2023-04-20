@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+    <metadata>
+        <id>$NuGetPackageId$</id>
+        <title>WebSite Installer for CodeDOM Providers for .NET Compiler Platform ("Roslyn")</title>
+        <version>$NuGetPackageVersion$</version>
+        <authors>Microsoft</authors>
+        <owners>Microsoft</owners>
+        <copyright>&#169; Microsoft Corporation. All rights reserved.</copyright>
+        <description>An installer shim to get "Roslyn" CodeDOM providers included in project-less "Web Site" builds.
+        
+        This package was built from the source at $GitCommitLink$
+        </description>
+        <summary>WebSite Shim for CodeDOM providers that use the new .NET Compiler Platform ("Roslyn") compiler as a service APIs.</summary>
+        <language>en-US</language>
+        <projectUrl>https://github.com/aspnet/RoslynCodeDomProvider</projectUrl>
+        <repository type="git" url="https://github.com/aspnet/RoslynCodeDomProvider" commit="$GitCommit$"/>
+        <icon>icons\dotnet.png</icon>
+        <readme>docs\Readme.md</readme>
+        <license type="expression">MIT</license>
+        <requireLicenseAcceptance>true</requireLicenseAcceptance>
+        <tags>Roslyn CodeDOM Compiler CSharp VB.Net ASP.NET WebSite</tags>
+
+      <dependencies>
+        <dependency id="Microsoft.CodeDom.Providers.DotNetCompilerPlatform" version="[$NuGetPackageVersion$]" />
+      </dependencies>
+
+    </metadata>
+</package>
