@@ -22,15 +22,23 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-  <ItemGroup>
+  <ItemGroup Label="Nuget Project Build Order">
     <NuGetProject Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.nuproj" />
-    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.nuspec" />
+    <NuGetProject Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.WebSites\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.WebSites.nuproj" />
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Label="Main Provider">
+    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.nuspec" />
+    <None Include="MIcrosoft.CodeDom.Providers.DotNetCompilerPlatform\Readme.md" />
     <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\tools\" />
+  <ItemGroup Label="WebSite Shim">
+    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.WebSites\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.WebSites.nuspec" />
+    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.WebSites\Readme.md" />
+    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.WebSites\content\web.config.install.xdt" />
+    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.WebSites\content\web.config.uninstall.xdt" />
+    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.WebSites\tools\common.ps1" />
+    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.WebSites\tools\install.ps1" />
+    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.WebSites\tools\uninstall.ps1" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="Build">

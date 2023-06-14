@@ -6,6 +6,11 @@ for an introduction to Microsoft.CodeDom.Providers.DotNetCompilerPlatform.
 
 ## Updates
 + #### Version 4.1.0 (preview1)
+    - #### :warning: Drop install.ps1, Rely more on msbuild :warning:
+        Nuget has moved on from install.ps1. We had one foot in the msbuild camp before, and one foot still in the install.ps1 camp. Time to just jump in with both feet. See the 'RoslynRegisterInConfig' setting description below.
+
+        <u>**Moving fully to an msbuild/targets-based model will break project-less ASP.Net "Web Sites."**</u> The old install.ps1 way of doing things was becoming less tenable as NuGet continued to evolve. The switch to msbuild/targets was an easy choice. But "Web Site" projects have very limited support in msbuild. We have created a new package that brings back the 'install.ps1' functionality of the 3.X releases _only for WebSites._ It is called [Microsoft.CodeDom.Providers.DotNetCompilerPlatform.WebSites](https://www.nuget.org/packages/Microsoft.CodeDom.Providers.DotNetCompilerPlatform.WebSites).
+
     - #### Refreshed current compilers
         In keeping with the new versioning scheme for this project, the version has been revved to 4.1 to match the version of the compilers included.
 
@@ -14,9 +19,6 @@ for an introduction to Microsoft.CodeDom.Providers.DotNetCompilerPlatform.
 
     - #### .Net >= 4.7.2
         As a result of not keeping older compilers packaged in this project, we can no longer support versions before 4.7.2 because compiler versions 3.0 and newer only support 4.7.2+.
-
-    - #### Drop install.ps1, Rely more on msbuild
-        Nuget has moved on from install.ps1. We had one foot in the msbuild camp before, and one foot still in the install.ps1 camp. Time to just jump in with both feet. See the 'RoslynRegisterInConfig' setting description below.
 
 + #### Version 3.11.0 (preview1)
     - #### Refreshed compilers

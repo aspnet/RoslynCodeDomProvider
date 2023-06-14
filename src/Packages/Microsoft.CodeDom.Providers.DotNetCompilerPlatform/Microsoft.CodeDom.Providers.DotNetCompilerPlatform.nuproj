@@ -35,6 +35,9 @@
     <NuGetContent Include="tools\$(LocalRoslynFolderName)\*">
       <Destination>tools\$(LocalRoslynFolderName)</Destination>
     </NuGetContent>
+    <NuGetContent Include="Readme.md">
+      <Destination>docs\Readme.md</Destination>
+    </NuGetContent>
     <NuGetContent Include="..\icons\*">
       <Destination>icons</Destination>
     </NuGetContent>

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<package>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
     <metadata>
         <id>$NuGetPackageId$</id>
         <title>CodeDOM Providers for .NET Compiler Platform ("Roslyn")</title>
@@ -14,7 +14,9 @@
         <summary>Replacement CodeDOM providers that use the new .NET Compiler Platform ("Roslyn") compiler as a service APIs.</summary>
         <language>en-US</language>
         <projectUrl>https://github.com/aspnet/RoslynCodeDomProvider</projectUrl>
+        <repository type="git" url="https://github.com/aspnet/RoslynCodeDomProvider" commit="$GitCommit$" />
         <icon>icons\dotnet.png</icon>
+        <readme>docs\Readme.md</readme>
         <license type="expression">MIT</license>
         <requireLicenseAcceptance>true</requireLicenseAcceptance>
         <tags>Roslyn CodeDOM Compiler CSharp VB.Net ASP.NET</tags>
