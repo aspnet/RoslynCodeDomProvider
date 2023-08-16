@@ -9,9 +9,7 @@
   <Target Name="SetRoslynCompilerFiles" >
     <Message Text="Using Roslyn from '$(RoslynToolPath)' folder" />
     <ItemGroup>
-      <RoslynCompilerFiles Include="$(RoslynToolPath)\*">
-        <Link>roslyn\%(RecursiveDir)%(Filename)%(Extension)</Link>
-      </RoslynCompilerFiles>
+      <RoslynCompilerFiles Include="$(RoslynToolPath)\**\*" />
     </ItemGroup>
   </Target>
 
