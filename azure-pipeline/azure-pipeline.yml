@@ -24,6 +24,8 @@ extends:
   template: azure-pipelines/MicroBuild.1ES.Official.yml@MicroBuildTemplate
   parameters:
     sdl:
+      policheck:
+        enabled: true
       sourceAnalysisPool:
         name: AzurePipelines-EO
         image: 1ESPT-Windows2022
