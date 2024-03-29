@@ -78,8 +78,6 @@ extends:
             createLogFile: true
             logFileVerbosity: detailed
           timeoutInMinutes: 120
-          # to delete
-          continueOnError: true
         - task: CopyFiles@2
           displayName: Stage dll's for verification
           inputs:
@@ -91,8 +89,6 @@ extends:
             TargetFolder: $(Build.SourcesDirectory)\bin\verify\dlls
             CleanTargetFolder: true
             OverWrite: true
-          # to delete
-          continueOnError: true
         - task: CopyFiles@2
           displayName: Stage nupkg for verification
           inputs:
@@ -107,15 +103,11 @@ extends:
           displayName: Verify Signed Files
           inputs:
             TargetFolders: $(Build.SourcesDirectory)\bin\verify\dlls
-          # to delete
-          continueOnError: true
         - task: ms-vseng.MicroBuildShipTasks.7c429315-71ba-4cb3-94bb-f829c95f7915.MicroBuildCodesignVerify@2
           displayName: Verify Signed Files
           inputs:
             TargetFolders: $(Build.SourcesDirectory)\bin\verify\packages
             WhiteListPathForCerts: tools/.verif.whitelist
-            # to delete
-            continueOnError: true
         - task: CmdLine@2
           displayName: Map ConnectionString for ApiScan
           inputs:
