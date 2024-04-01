@@ -132,3 +132,5 @@ extends:
             softwareBuildNum: '$(Build.BuildId)'
             symbolsFolder: '$(Build.SourcesDirectory)\bin\Release;SRV*http://symweb'
             verbosityLevel: 'none'
+          env:
+            AzureServicesAuthConnectionString: runAs=App;AppId=$(ApiScanClientID)
