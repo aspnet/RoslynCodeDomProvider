@@ -110,19 +110,8 @@ extends:
           inputs:
             TargetFolders: $(Build.SourcesDirectory)\bin\verify\packages
             WhiteListPathForCerts: tools/.verif.whitelist
-        - task: CmdLine@2
-          displayName: Map ConnectionString for ApiScan
-          inputs:
-            script: |
-              @echo off
-              REM Per the documentation here - https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=classic%2Cbatch#set-variables-in-scripts
-              REM
-              REM We can set/update pipeline variables using the syntax used below. That way we can use a script task to
-              REM pull secrets into the environment for APIScan to use, since the ApiScan task does not have an 'Environment'
-              REM section for mapping secrets in classic pipelines.
-              @echo ##vso[task.setvariable variable=AzureServicesAuthConnectionString]%MappedConnectionString%          
-          env:
-            MappedConnectionString: $(AzureServicesAuthConnectionString)
+        # Following article on https://dev.azure.com/devdiv/DevDiv/_wiki/wikis/DevDiv.wiki/25351/APIScan-step-by-step-guide-to-setting-up-a-Pipeline
+        # No longer need the old format, and following guideline to use (ApiScanClientId)
         - task: APIScan@2
           displayName: Run APIScan
           inputs:
@@ -133,4 +122,4 @@ extends:
             symbolsFolder: '$(Build.SourcesDirectory)\bin\Release;SRV*http://symweb'
             verbosityLevel: 'none'
           env:
-            AzureServicesAuthConnectionString: runAs=App;AppId=$(ApiScanClientID)
+            AzureServicesAuthConnectionString: RunAs=App;AppId=$(ApiScanClientId)
