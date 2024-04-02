@@ -111,7 +111,7 @@ extends:
             TargetFolders: $(Build.SourcesDirectory)\bin\verify\packages
             WhiteListPathForCerts: tools/.verif.whitelist
         # Following article on https://dev.azure.com/devdiv/DevDiv/_wiki/wikis/DevDiv.wiki/25351/APIScan-step-by-step-guide-to-setting-up-a-Pipeline
-        #  No longer need the old format, and following guideline to use (ApiScanClientId)
+        # No longer need the old format, and following guideline to use (ApiScanClientId)
         - task: APIScan@2
           displayName: Run APIScan
           inputs:
