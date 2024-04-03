@@ -5,6 +5,12 @@
 # This pipeline will be extended to the MicroBuild template
 # The Task 'PublishBuildArtifacts@1' has been converted to an output named 'Publish Artifact: Nuget packages' in the templateContext section.
 trigger: none
+schedules:
+- cron: "0 0 14 * *"
+  branches:
+    include:
+    - main
+  always: true
 resources:
   repositories:
   - repository: self
