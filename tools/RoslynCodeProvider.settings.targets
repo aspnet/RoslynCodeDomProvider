@@ -13,14 +13,14 @@
         <BuildQuality Condition="'$(BuildQuality)' == ''">rtm</BuildQuality>
         <VersionStartYear>2022</VersionStartYear>
         <VersionMajor>4</VersionMajor>
-        <VersionMinor>1</VersionMinor>
+        <VersionMinor>7</VersionMinor>
         <VersionRevision>0</VersionRevision>
         <VersionRelease>0</VersionRelease>
         <VersionBuild Condition="'$(VersionBuild)' == '' OR '$(VersionBuild)' == '0'">$([MSBuild]::Add(1, $([MSBuild]::Subtract($([System.DateTime]::Now.Year), $(VersionStartYear)))))$([System.DateTime]::Now.ToString("MMdd"))</VersionBuild>
     </PropertyGroup>
 
     <PropertyGroup Label="NuGet package dependencies">
-        <MSNetCompilersNuGetPackageVersion>4.1.0</MSNetCompilersNuGetPackageVersion>
+        <MSNetCompilersNuGetPackageVersion>4.7.0</MSNetCompilersNuGetPackageVersion>
     </PropertyGroup>
 
   <Target Name="SuperClean" AfterTargets="Clean"  Condition="'$(MSBuildProjectExtension)' != '.nuproj'">
