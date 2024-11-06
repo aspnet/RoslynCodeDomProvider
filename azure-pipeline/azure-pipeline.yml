@@ -30,8 +30,14 @@ extends:
   template: azure-pipelines/MicroBuild.1ES.Official.yml@MicroBuildTemplate
   parameters:
     sdl:
+      binskim:
+        enable: true
+      codeql:
+        enable: true
       policheck:
-        enabled: true
+        enable: true
+      tsa:
+        enable: true
       sourceAnalysisPool:
         name: AzurePipelines-EO
         image: 1ESPT-Windows2022
