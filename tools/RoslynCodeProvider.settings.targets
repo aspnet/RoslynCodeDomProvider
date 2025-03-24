@@ -1,31 +1,33 @@
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Label="Project properties">
-    <RepositoryRoot>$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), 'RoslynCodeProvider.sln'))\</RepositoryRoot>
+    <RepositoryRoot Condition="'$(RepositoryRoot)' == ''">$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), RoslynCodeProvider.sln))\</RepositoryRoot>
   </PropertyGroup>
-    <Import Project="$(RepositoryRoot)\packages\microbuild.core.0.3.0\build\MicroBuild.Core.props" 
-        Condition="Exists('$(RepositoryRoot)\packages\microbuild.core.0.3.0\build\MicroBuild.Core.props')" />
-    <Import Project="$(RepositoryRoot)\packages\microbuild.core.0.3.0\build\MicroBuild.Core.targets" 
-        Condition="Exists('$(RepositoryRoot)\packages\microbuild.core.0.3.0\build\MicroBuild.Core.targets')" />
+  <Import Project="$(RepositoryRoot)\packages\microbuild.core.0.3.0\build\MicroBuild.Core.props" 
+      Condition="Exists('$(RepositoryRoot)\packages\microbuild.core.0.3.0\build\MicroBuild.Core.props')" />
+  <Import Project="$(RepositoryRoot)\packages\microbuild.core.0.3.0\build\MicroBuild.Core.targets" 
+      Condition="Exists('$(RepositoryRoot)\packages\microbuild.core.0.3.0\build\MicroBuild.Core.targets')" />
 
-    <!-- Configurable properties-->
+  <!-- Configurable properties-->
 
-    <PropertyGroup>
-        <BuildQuality Condition="'$(BuildQuality)' == ''">rtm</BuildQuality>
-        <VersionStartYear>2022</VersionStartYear>
-        <VersionMajor>4</VersionMajor>
-        <VersionMinor>1</VersionMinor>
-        <VersionRevision>0</VersionRevision>
-        <VersionRelease>0</VersionRelease>
-        <VersionBuild Condition="'$(VersionBuild)' == '' OR '$(VersionBuild)' == '0'">$([MSBuild]::Add(1, $([MSBuild]::Subtract($([System.DateTime]::Now.Year), $(VersionStartYear)))))$([System.DateTime]::Now.ToString("MMdd"))</VersionBuild>
-    </PropertyGroup>
+  <PropertyGroup>
+    <BuildQuality Condition="'$(BuildQuality)' == ''">rtm</BuildQuality>
+    <VersionStartYear>2025</VersionStartYear>
+    <VersionMajor>4</VersionMajor>
+    <VersionMinor>1</VersionMinor>
+    <VersionRevision>0</VersionRevision>
+    <VersionRelease>0</VersionRelease>
+    <VersionBuild Condition="'$(VersionBuild)' == '' OR '$(VersionBuild)' == '0'">$([MSBuild]::Add(1, $([MSBuild]::Subtract($([System.DateTime]::Now.Year), $(VersionStartYear)))))$([System.DateTime]::Now.ToString("MMdd"))</VersionBuild>
+  </PropertyGroup>
 
-    <PropertyGroup Label="NuGet package dependencies">
-        <MSNetCompilersNuGetPackageVersion>4.1.0</MSNetCompilersNuGetPackageVersion>
-    </PropertyGroup>
+  <PropertyGroup Label="NuGet package dependencies">
+     <MSNetCompilersNuGetPackageVersion>4.1.0</MSNetCompilersNuGetPackageVersion>
+  </PropertyGroup>
 
-  <Target Name="SuperClean" AfterTargets="Clean"  Condition="'$(MSBuildProjectExtension)' != '.nuproj'">
-    <RemoveDir Directories="$(OutputPath)" />
-    <RemoveDir Directories="$(IntermediateOutputRoot)" />
+  <!-- Common Targets -->
+  <Target Name="SuperClean" AfterTargets="Clean" >
+    <!-- $(OutputPath) is shared across all projects. Not all of them should clean it up. -->
+    <RemoveDir Directories="$(OutputPath)" Condition="'$(MSBuildProjectExtension)' != '.nuproj' AND !$(MSBuildProjectName.Contains('Packages'))" />
+    <RemoveDir Directories="$(RepositoryRoot)obj\$(Configuration)\$(MSBuildProjectName)" />
   </Target>
 
   <Target Name="SuperCleanPackage" AfterTargets="Clean" Condition="'$(MSBuildProjectExtension)' == '.nuproj'">
@@ -35,32 +37,28 @@
   </Target>
 
   <!-- Default properties -->
+  <PropertyGroup Label="Common Configuration">
+    <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
+    <OutputPath>$(RepositoryRoot)bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>$(RepositoryRoot)obj\$(Configuration)\$(MSBuildProjectName)\</IntermediateOutputPath>
+  </PropertyGroup>
 
-    <PropertyGroup>
-        <RepositoryRoot Condition="'$(RepositoryRoot)' == ''">$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), RoslynCodeProvider.sln))\</RepositoryRoot>
-    </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyPath Condition="'$(AssemblyPath)' == ''">$(OutputPath)</AssemblyPath>
+    <NuGetOutputPath>$(AssemblyPath)Packages</NuGetOutputPath>
+    <NuGetSymbolsOutputPath>$(AssemblyPath)\SymbolPackages</NuGetSymbolsOutputPath>
+    <TestOutputPath>$(OutputPath)test\</TestOutputPath>
+  </PropertyGroup>
 
-    <PropertyGroup Label="Common Configuration">
-        <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
-        <OutputPath>$(RepositoryRoot)bin\$(Configuration)\</OutputPath>
-        <IntermediateOutputPath>$(RepositoryRoot)obj\$(Configuration)\$(MSBuildProjectName)\</IntermediateOutputPath>
-    </PropertyGroup>
+  <PropertyGroup>
+    <ReferencePackagesPath>$(RepositoryRoot)packages\</ReferencePackagesPath>
+    <NuGetPackSymbols Condition="'$(NuGetPackSymbols)' == ''">true</NuGetPackSymbols>
+    <SourceRootFullPath>$(RepositoryRoot)\src\$(MSBuildProjectName)\</SourceRootFullPath>
+  </PropertyGroup>
 
-    <PropertyGroup>
-        <AssemblyPath Condition="'$(AssemblyPath)' == ''">$(OutputPath)</AssemblyPath>
-        <NuGetOutputPath>$(AssemblyPath)Packages</NuGetOutputPath>
-        <NuGetSymbolsOutputPath>$(AssemblyPath)\SymbolPackages</NuGetSymbolsOutputPath>
-        <TestOutputPath>$(OutputPath)test\</TestOutputPath>
-    </PropertyGroup>
+  <PropertyGroup>
+    <CustomAfterMicrosoftCommonTargets>$(RepositoryRoot)tools\RoslynCodeProvider.targets</CustomAfterMicrosoftCommonTargets>
+    <CustomAfterNuGetProjTargets>$(CustomAfterMicrosoftCommonTargets)</CustomAfterNuGetProjTargets>
+  </PropertyGroup>
 
-    <PropertyGroup>
-        <ReferencePackagesPath>$(RepositoryRoot)packages\</ReferencePackagesPath>
-        <NuGetPackSymbols Condition="'$(NuGetPackSymbols)' == ''">true</NuGetPackSymbols>
-        <SourceRootFullPath>$(RepositoryRoot)\src\$(MSBuildProjectName)\</SourceRootFullPath>
-    </PropertyGroup>
-
-    <PropertyGroup>
-        <CustomAfterMicrosoftCommonTargets>$(RepositoryRoot)tools\RoslynCodeProvider.targets</CustomAfterMicrosoftCommonTargets>
-        <CustomAfterNuGetProjTargets>$(CustomAfterMicrosoftCommonTargets)</CustomAfterNuGetProjTargets>
-    </PropertyGroup>
 </Project>

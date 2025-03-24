@@ -13,11 +13,13 @@ set logOptions=/v:n /flp:Summary;Verbosity=diag;LogFile=msbuild.log /flp1:warnin
 REM set logOptions=/v:diag /flp:Summary;Verbosity=diag;LogFile=msbuild.log /flp1:warningsonly;logfile=msbuild.wrn /flp2:errorsonly;logfile=msbuild.err
 
 %MSBUILDEXE% "%~dp0\RoslynCodeProvider.msbuild" /t:Clean %logOptions% /maxcpucount /nodeReuse:false %cfgOption%%*
-rd /q /s Roslyn46
-rd /q /s Roslyn472
-rd /q /s RoslynLatest
-del /F msbuild.log
-del /F msbuild.wrn
-del /F msbuild.err
+pushd %~dp0\src\Packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform
+rd /q /s tools
+rd /q /s tasks
+rd /q /s build.pp
+popd
+rd /q /s bin
+rd /q /s obj
+del /F msbuild.*
 
 endlocal
