@@ -8,13 +8,17 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{770A45B7-BC65-4FC4-94FF-7F99838F3219}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest", "RoslynCodeProviderTest\Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest.csproj", "{12B521BD-F065-4F81-BD7A-D6F715B38F12}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7EC5863F-7FF1-41C7-A384-8FFF81531E7A} = {7EC5863F-7FF1-41C7-A384-8FFF81531E7A}
+		{E3D81E13-7489-4064-B789-AE1B02C7C616} = {E3D81E13-7489-4064-B789-AE1B02C7C616}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.CodeDom.Providers.DotNetCompilerPlatform", "src\Microsoft.CodeDom.Providers.DotNetCompilerPlatform\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.csproj", "{BE52ED6A-F180-499D-80BB-B0237B50023C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Packages", "src\Packages\Packages.csproj", "{7EC5863F-7FF1-41C7-A384-8FFF81531E7A}"
 	ProjectSection(ProjectDependencies) = postProject
-		{E3D81E13-7489-4064-B789-AE1B02C7C616} = {E3D81E13-7489-4064-B789-AE1B02C7C616}
 		{BE52ED6A-F180-499D-80BB-B0237B50023C} = {BE52ED6A-F180-499D-80BB-B0237B50023C}
+		{E3D81E13-7489-4064-B789-AE1B02C7C616} = {E3D81E13-7489-4064-B789-AE1B02C7C616}
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{793EB7E3-C526-48B6-9614-7AA972D9BB46}"
@@ -23,8 +27,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		packages\repositories.config = packages\repositories.config
 		tools\RoslynCodeProvider.Extensions.targets = tools\RoslynCodeProvider.Extensions.targets
 		RoslynCodeProvider.msbuild = RoslynCodeProvider.msbuild
-		tools\RoslynCodeProvider.settings.targets = tools\RoslynCodeProvider.settings.targets
 		tools\RoslynCodeProvider.targets = tools\RoslynCodeProvider.targets
+		tools\RoslynCodeProvider.settings.targets = tools\RoslynCodeProvider.settings.targets
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{6EB4E0F1-33C7-4743-A925-C8D5BC32FB81}"
@@ -35,6 +39,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{6EB4E0
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetCompilerPlatformTasks", "src\DotNetCompilerPlatformTasks\DotNetCompilerPlatformTasks.csproj", "{E3D81E13-7489-4064-B789-AE1B02C7C616}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BE52ED6A-F180-499D-80BB-B0237B50023C} = {BE52ED6A-F180-499D-80BB-B0237B50023C}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
