@@ -6,7 +6,6 @@
     <NuGetPackageId>$(MSBuildProjectName)</NuGetPackageId>
     <NuSpecFile>$(MSBuildProjectName).nuspec</NuSpecFile>
     <NuGetPackSymbols>false</NuGetPackSymbols>
-    <IsPackage>true</IsPackage>
   </PropertyGroup>
   <ItemGroup>
     <NuGetContentProject Include="$(RepositoryRoot)\src\Microsoft.CodeDom.Providers.DotNetCompilerPlatform\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.csproj" />
@@ -30,27 +29,4 @@
     </NuGetContent>
   </ItemGroup>
   <Import Project="$(RepositoryRoot)Tools\NuGetProj.targets"/>
-  <Target Name="SignPowerShellScript" Condition=" '$(SignAssembly)' == 'true' " AfterTargets="BeforeBuild">
-    <ItemGroup>
-      <OriginalScriptFiles Include="$(MSBuildThisFileDirectory)\tools\*.ps1" />
-    </ItemGroup>
-    <Copy SourceFiles="@(OriginalScriptFiles)" DestinationFolder="$(MSBuildThisFileDirectory)\tools\signed" SkipUnchangedFiles="true" />
-    <ItemGroup>
-      <ScriptFilesToSign Include="$(MSBuildThisFileDirectory)\tools\signed\*.ps1">
-        <Authenticode>Microsoft400</Authenticode>
-      </ScriptFilesToSign>
-    </ItemGroup>
-    <SignFiles Files="@(ScriptFilesToSign)" Type="$(SignType)" BinariesDirectory="$(MSBuildThisFileDirectory)\tools\signed"
-        IntermediatesDirectory="$(MSBuildThisFileDirectory)\tools" ESRPSigning="$(ESRPSigning)" UseBearerToken="$(UseBearerToken)" />
-  </Target>
-  <Target Name="AfterBuild">
-    <PropertyGroup>
-      <OutDir>$(PackageOutputDir)</OutDir>
-    </PropertyGroup>
-    <ItemGroup>
-      <FilesToSign Include="$(NuGetPackTargetFile)" Condition="'$(SignAssembly)' == 'true'">
-        <Authenticode>NuGet</Authenticode>
-      </FilesToSign>
-    </ItemGroup>
-  </Target>
 </Project>

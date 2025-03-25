@@ -10,7 +10,10 @@ using Xunit;
 
 namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
 
-    public class CommonCodeDomProviderTests {
+    public class CommonCodeDomProviderTests
+    {
+        public static readonly Version ExpectedVersion = new Version(4, 1, 0, 0); // Maj, Min, Build, Rev
+        public static readonly string ExpectedNugetVersion = "4.1.0";
 
         private const int Failed = 1;
         private const int Success = 0;
@@ -19,8 +22,9 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
         {
             var ver = provider.GetType().Assembly.GetName().Version;
 
-            Assert.Equal(4, ver.Major);
-            Assert.Equal(1, ver.Minor);
+            Assert.Equal(ExpectedVersion.Major, ver.Major);
+            Assert.Equal(ExpectedVersion.Minor, ver.Minor);
+            Assert.Equal(ExpectedVersion.Build, ver.Build);
         }
 
         public void FileExtension(CodeDomProvider provider, string extension) {

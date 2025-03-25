@@ -18,7 +18,7 @@
   <!-- Composite targets -->
   <Target Name="BuildCI" DependsOnTargets="Clean;Build" />
 
-  <Target Name="Build" DependsOnTargets="BuildAssemblies;UnitTest;BuildPackages" />
+  <Target Name="Build" DependsOnTargets="BuildAssemblies;BuildPackages;UnitTest" />
   <Target Name="Clean" DependsOnTargets="CleanPackages;CleanTests;CleanAssemblies" />
   <Target Name="Rebuild" DependsOnTargets="Clean;Build" />
 
@@ -58,7 +58,7 @@
     <Exec Command=".nuget\NuGet.exe restore" />
   </Target>
 
-  <Target Name="UnitTest" DependsOnTargets="BuildTests">
+  <Target Name="UnitTest" DependsOnTargets="BuildTests;BuildPackages">
     <MSBuild Targets="XunitTest" Projects="@(TestProject)" />
   </Target>
 
