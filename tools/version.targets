@@ -14,12 +14,12 @@ Project global versioning targets.
     <VersionFileGenerationEnabled Condition="'$(VersionFileGenerationEnabled)' == ''">false</VersionFileGenerationEnabled>
   </PropertyGroup>
 
-  <!-- Versioning:
-          Major:	'Major' for Assembly, File, Info, and Package.
-          Minor:	'Minor' for Assembly, File, Info, and Package.
-          Revision:	Third for Assembly and File. Strategy - Try to leave this 0 and only rev Major/Minor for big changes and Release for non-dependency-breaking changes.
-          Release:	Third for Info and Package.
-          Build:	(Auto-generated) for File and Info. (Assembly is always 0)
+  <!-- Versioning - Different than .Net's Version(Major.Minor.Build.Revision):
+          1)  Major:	'Major' for Assembly, File, Info, and Package.
+          2)  Minor:	'Minor' for Assembly, File, Info, and Package.
+          3a) Revision:	Third for Assembly and File. Strategy - Try to leave this 0 and only rev Major/Minor for big changes and Release for non-dependency-breaking changes.
+          3b) Release:	Third for Info and Package.
+          4)  Build:	(Auto-generated) for File and Info. (Assembly is always 0)
        Update package and file without touching assembly, except for major releases.
 
        Most of the interesting ones are already set in each project's individual settings file.
