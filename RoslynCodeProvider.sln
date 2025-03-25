@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.CodeDom.Providers
 		{E3D81E13-7489-4064-B789-AE1B02C7C616} = {E3D81E13-7489-4064-B789-AE1B02C7C616}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.CodeDom.Providers.DotNetCompilerPlatform", "src\Microsoft.CodeDom.Providers.DotNetCompilerPlatform\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.csproj", "{BE52ED6A-F180-499D-80BB-B0237B50023C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetCompilerPlatform", "src\DotNetCompilerPlatform\DotNetCompilerPlatform.csproj", "{BE52ED6A-F180-499D-80BB-B0237B50023C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Packages", "src\Packages\Packages.csproj", "{7EC5863F-7FF1-41C7-A384-8FFF81531E7A}"
 	ProjectSection(ProjectDependencies) = postProject

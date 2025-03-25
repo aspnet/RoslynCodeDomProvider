@@ -8,7 +8,7 @@
     <NuGetPackSymbols>false</NuGetPackSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <NuGetContentProject Include="$(RepositoryRoot)\src\Microsoft.CodeDom.Providers.DotNetCompilerPlatform\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.csproj" />
+    <NuGetContentProject Include="$(RepositoryRoot)\src\DotNetCompilerPlatform\DotNetCompilerPlatform.csproj" />
     <NuGetContent Include="Content\web.config.install.xdt">
       <Destination>content\net472\web.config.install.xdt</Destination>
     </NuGetContent>
