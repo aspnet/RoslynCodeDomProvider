@@ -22,10 +22,8 @@ resources:
     ref: refs/tags/release
 name: $(Date:yyyyMMdd).$(Rev:r)
 variables:
-- name: EnableNuGetPackageRestore
-  value: true
-- name: TeamName
-  value: Asp.Net
+  TeamName: AspNet
+  EnableNuGetPackageRestore: true
 extends:
   template: azure-pipelines/MicroBuild.1ES.Official.yml@MicroBuildTemplate
   parameters:
@@ -49,10 +47,10 @@ extends:
       jobs:
       - job: Phase_1
         displayName: Phase 1
-        timeoutInMinutes: 180
+        timeoutInMinutes: 120
         cancelTimeoutInMinutes: 1
         pool:
-          name: VSEngSS-MicroBuild2019-1ES
+          name: VSEngSS-MicroBuild2022-1ES
         templateContext:
           mb:
             signing:
@@ -62,11 +60,19 @@ extends:
           outputs:
           - output: pipelineArtifact
             displayName: 'Publish Artifact: Nuget packages'
-            targetPath: bin\Release\Packages
             artifactName: Nuget packages
+            targetPath: $(Build.SourcesDirectory)\.binaries\Packages\Release
+            sbomEnabled: true
+            sbomBuildDropPath: $(Build.SourcesDirectory)\.binaries\Packages\Release
+            sbomBuildComponentPath: $(Build.SourcesDirectory)\.binaries\Packages\Release
+            sbomPackageName: Microsoft.AspNet.OutputCache
+            # sbomPackageVersion: $(NugetPackageVersion)
+            sbomValidate: true
         steps:
         - checkout: self
+          clean: true
           fetchTags: true
+          persistCredentials: true
         - task: NuGetToolInstaller@0
           displayName: Use NuGet 5.4.0
           inputs:
@@ -76,7 +82,7 @@ extends:
           displayName: NuGet custom
           inputs:
             command: custom
-            arguments: 'install MicroBuild.Core -version 0.3.0 -OutputDirectory .\packages -source https://devdiv.pkgs.visualstudio.com/DefaultCollection/_packaging/MicroBuildToolset/nuget/v3/index.json '
+            arguments: install MicroBuild.Core -version 0.3.0 -OutputDirectory .\packages -source https://devdiv.pkgs.visualstudio.com/DefaultCollection/_packaging/MicroBuildToolset/nuget/v3/index.json
         - task: NuGetCommand@2
           displayName: NuGet restore
           inputs:
@@ -85,9 +91,10 @@ extends:
           displayName: Build solution RoslynCodeProvider.msbuild
           inputs:
             solution: RoslynCodeProvider.msbuild
-            msbuildVersion: 16.0
+            msbuildVersion: 17.0
+            msbuildArchitecture: x64
             configuration: Release
-            msbuildArguments: /p:GitCommit=%BUILD_SOURCEVERSION% /p:GitCommitLink="https://github.com/aspnet/RoslynCodeDomProvider/commit/%BUILD_SOURCEVERSION%" /p:SignAssembly=true
+            msbuildArguments: /p:GitCommit=$(Build.SourceVersion) /p:GitCommitLink="https://github.com/aspnet/RoslynCodeDomProvider/commit/$(Build.SourceVersion)" /p:SignType=real /p:SignAssembly=true /verbosity:normal
             clean: true
             createLogFile: true
             logFileVerbosity: detailed
@@ -95,43 +102,45 @@ extends:
         - task: CopyFiles@2
           displayName: Stage dll's for verification
           inputs:
-            SourceFolder: $(Build.SourcesDirectory)\bin\Release
-            Contents: |-
+            SourceFolder: $(Build.SourcesDirectory)\.binaries\bin\Release
+            Contents: |
               DotNetCompilerPlatformTasks.dll
               Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
               System.Management.dll
-            TargetFolder: $(Build.SourcesDirectory)\bin\verify\dlls
+            TargetFolder: $(Build.SourcesDirectory)\.binaries\verify\dlls
             CleanTargetFolder: true
             OverWrite: true
         - task: CopyFiles@2
-          displayName: Stage nupkg for verification
+          displayName: Stage nupkg's for verification
           inputs:
-            SourceFolder: $(Build.SourcesDirectory)\bin\Release\Packages
-            Contents: |-
+            SourceFolder: $(Build.SourcesDirectory)\.binaries\Packages\Release
+            Contents: |
               *.nupkg
               !*.symbols.nupkg
-            TargetFolder: $(Build.SourcesDirectory)\bin\verify\packages
+            TargetFolder: $(Build.SourcesDirectory)\.binaries\verify\packages
             CleanTargetFolder: true
             OverWrite: true
-        - task: ms-vseng.MicroBuildShipTasks.7c429315-71ba-4cb3-94bb-f829c95f7915.MicroBuildCodesignVerify@2
-          displayName: Verify Signed Files
+        - task: ms-vseng.MicroBuildShipTasks.7c429315-71ba-4cb3-94bb-f829c95f7915.MicroBuildCodesignVerify@1
+          displayName: Verify Signed Binaries
           inputs:
-            TargetFolders: $(Build.SourcesDirectory)\bin\verify\dlls
-        - task: ms-vseng.MicroBuildShipTasks.7c429315-71ba-4cb3-94bb-f829c95f7915.MicroBuildCodesignVerify@2
-          displayName: Verify Signed Files
+            TargetFolders: $(Build.SourcesDirectory)\.binaries\verify\dlls
+            ExcludeFolders: .git MicroBuild apiscan
+        - task: ms-vseng.MicroBuildShipTasks.7c429315-71ba-4cb3-94bb-f829c95f7915.MicroBuildCodesignVerify@1
+          displayName: Verify Signed Packages
           inputs:
-            TargetFolders: $(Build.SourcesDirectory)\bin\verify\packages
-            WhiteListPathForCerts: tools/.verif.whitelist
+            TargetFolders: $(Build.SourcesDirectory)\.binaries\verify\packages
+            WhiteListPathForCerts: $(Build.SourcesDirectory)\tools\.verif.whitelist
+            ExcludeFolders: .git MicroBuild decom *.xml
         # Following article on https://dev.azure.com/devdiv/DevDiv/_wiki/wikis/DevDiv.wiki/25351/APIScan-step-by-step-guide-to-setting-up-a-Pipeline
         # No longer need the old format, and following guideline to use (ApiScanClientId)
         - task: APIScan@2
           displayName: Run APIScan
           inputs:
-            softwareFolder: '$(Build.SourcesDirectory)\bin\verify\dlls'
-            softwareName: '*'
+            softwareFolder: '$(Build.SourcesDirectory)\.binaries\verify\dlls'
+            softwareName: 'Microsoft.CodeDom.Providers.DotNetCompilerPlatform'
             softwareVersionNum: '*'
             softwareBuildNum: '$(Build.BuildId)'
-            symbolsFolder: '$(Build.SourcesDirectory)\bin\Release;SRV*http://symweb'
+            symbolsFolder: '$(Build.SourcesDirectory)\.binaries\Release;SRV*http://symweb'
             verbosityLevel: 'none'
           env:
             AzureServicesAuthConnectionString: RunAs=App;AppId=$(ApiScanClientId)

@@ -23,6 +23,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Packages", "src\Packages\Pa
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{793EB7E3-C526-48B6-9614-7AA972D9BB46}"
 	ProjectSection(SolutionItems) = preProject
+		azure-pipeline\azure-pipeline.yml = azure-pipeline\azure-pipeline.yml
 		README.md = README.md
 		packages\repositories.config = packages\repositories.config
 		tools\RoslynCodeProvider.Extensions.targets = tools\RoslynCodeProvider.Extensions.targets
