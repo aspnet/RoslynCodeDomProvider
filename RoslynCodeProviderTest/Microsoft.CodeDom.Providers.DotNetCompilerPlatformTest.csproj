@@ -61,9 +61,9 @@
     <Compile Include="VBCodeProviderTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\src\Microsoft.CodeDom.Providers.DotNetCompilerPlatform\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.csproj">
+    <ProjectReference Include="..\src\DotNetCompilerPlatform\DotNetCompilerPlatform.csproj">
       <Project>{be52ed6a-f180-499d-80bb-b0237b50023c}</Project>
-      <Name>Microsoft.CodeDom.Providers.DotNetCompilerPlatform</Name>
+      <Name>DotNetCompilerPlatform</Name>
       <ReferenceOutputAssembly>True</ReferenceOutputAssembly>
       <SpecificVersion>True</SpecificVersion>
     </ProjectReference>

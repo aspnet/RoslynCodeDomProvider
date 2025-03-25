@@ -28,7 +28,7 @@
   </ItemGroup>
   <ItemGroup Label="Main Provider">
     <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.nuspec" />
-    <None Include="MIcrosoft.CodeDom.Providers.DotNetCompilerPlatform\Readme.md" />
+    <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\Readme.md" />
     <None Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets" />
   </ItemGroup>
   <ItemGroup Label="WebSite Shim">

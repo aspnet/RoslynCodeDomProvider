@@ -42,7 +42,7 @@
       <Source>$(OutputPath)</Source>
       <Destination>lib\net472</Destination>
     </NuGetContent>
-    <NuGetContentProject Include="$(RepositoryRoot)\src\$(MSBuildProjectName)\$(MSBuildProjectName).csproj" Condition="'$(NuGetPackSymbols)' == 'true'" />
+    <NuGetContentProject Include="$(RepositoryRoot)\src\DotNetCompilerPlatform\DotNetCompilerPlatform.csproj" Condition="'$(NuGetPackSymbols)' == 'true'" />
     <NuGetContent Include="DotNetCompilerPlatformTasks.dll">
       <Source>$(OutputPath)</Source>
       <Destination>tasks</Destination>
