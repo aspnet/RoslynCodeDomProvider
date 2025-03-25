@@ -22,8 +22,8 @@
                 {
                    using (var wc = new WebClient())
                     {
-                        var roslynNugetBaseUri = "https://api.nuget.org/packages/microsoft.net.compilers.{0}.nupkg";
-                        var roslynPackageName = "microsoft.net.compilers.{0}.nupkg";
+                        var roslynNugetBaseUri = "https://api.nuget.org/packages/microsoft.net.compilers.toolset.{0}.nupkg";
+                        var roslynPackageName = "microsoft.net.compilers.toolset.{0}.nupkg";
 
                         var targetFilePath = Path.Combine(Path.GetTempPath(), string.Format(roslynPackageName, ReferenceRoslynNupkgVersion));
                         var targetExtractPath = Path.Combine(Path.GetTempPath(), LocalRoslynFolderName);
@@ -38,11 +38,11 @@
                         }
 
                         wc.DownloadFile(string.Format(roslynNugetBaseUri, ReferenceRoslynNupkgVersion), targetFilePath);
-                        Log.LogMessage("Microsoft.Net.Compilers.{0}.nupkg is downloaded", ReferenceRoslynNupkgVersion);
+                        Log.LogMessage("Microsoft.Net.Compilers.toolset.{0}.nupkg is downloaded", ReferenceRoslynNupkgVersion);
 
                         ZipFile.ExtractToDirectory(targetFilePath, targetExtractPath);
                         Directory.CreateDirectory(packageToolsPath);
-                        foreach (var file in Directory.GetFiles(Path.Combine(targetExtractPath, "tools")))
+                        foreach (var file in Directory.GetFiles(Path.Combine(targetExtractPath, "tasks", "net472")))
                         {
                             var fi = new FileInfo(file);
                             File.Copy(file, Path.Combine(packageToolsPath, fi.Name));

@@ -18,6 +18,9 @@ rd /q /s tools
 rd /q /s tasks
 rd /q /s build.pp
 popd
+pushd %~dp0\src\Packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.WebSites
+rd /q /s tools.pp
+popd
 rd /q /s bin
 rd /q /s obj
 del /F msbuild.*

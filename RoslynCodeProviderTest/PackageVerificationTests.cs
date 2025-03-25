@@ -77,6 +77,21 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest
             var contentFiles = VerifyPlatforms(_fixture.WebSitesZip, "content/", new[] { "net472" }, exclusive: true);
             VerifyAllowedExtensions(contentFiles, new[] { ".xdt" });
             Assert.Equal(2, contentFiles.Count);
+
+            var scriptTools = _fixture.WebSitesZip.Entries
+                .Where(e => e.FullName.StartsWith("tools/", StringComparison.OrdinalIgnoreCase))
+                .ToList();
+            VerifyAllowedExtensions(scriptTools, new[] { ".ps1" });
+            Assert.Equal(3, scriptTools.Count);
+
+            foreach (var script in scriptTools)
+            {
+                using (var reader = new StreamReader(script.Open()))
+                {
+                    var content = reader.ReadToEnd();
+                    Assert.DoesNotContain("$providerVersion$", content, StringComparison.OrdinalIgnoreCase);
+                }
+            }
         }
 
         [Fact]

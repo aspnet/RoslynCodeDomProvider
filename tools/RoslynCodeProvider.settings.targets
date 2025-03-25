@@ -2,6 +2,7 @@
 
   <!-- Configurable properties-->
   <PropertyGroup>
+    <_PreventVersionPropertyCaching>$([System.DateTime]::Now.Ticks)</_PreventVersionPropertyCaching>
     <!-- Versioning:
             Major:	'Major' for Assembly, File, Info, and Package.
             Minor:	'Minor' for Assembly, File, Info, and Package.
@@ -15,14 +16,14 @@
     <BuildQuality Condition="'$(BuildQuality)' == ''">rtm</BuildQuality>
     <VersionStartYear>2025</VersionStartYear>
     <VersionMajor>4</VersionMajor>
-    <VersionMinor>1</VersionMinor>
+    <VersionMinor>5</VersionMinor>
     <VersionRevision>0</VersionRevision>
     <VersionRelease>0</VersionRelease>
     <VersionBuild>0</VersionBuild>
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet package dependencies">
-    <MSNetCompilersNuGetPackageVersion>4.1.0</MSNetCompilersNuGetPackageVersion>
+    <MSNetCompilersNuGetPackageVersion>4.5.0</MSNetCompilersNuGetPackageVersion>
   </PropertyGroup>
 
   <!-- Common Properties & Imports -->
