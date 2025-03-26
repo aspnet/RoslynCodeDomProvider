@@ -50,9 +50,10 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
 
             try {
                 var sources = compilationUnits.Select(c => {
-                    var writer = new StringWriter();
-                    _codeDomProvider.GenerateCodeFromCompileUnit(c, writer, new CodeGeneratorOptions());
-                    return writer.ToString();
+                    using (var writer = new StringWriter()) {
+                        _codeDomProvider.GenerateCodeFromCompileUnit(c, writer, new CodeGeneratorOptions());
+                        return writer.ToString();
+                    }
                 });
 
                 return FromSourceBatch(options, sources.ToArray());
@@ -192,27 +193,28 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatform {
 
             // the extra try-catch is here to mitigate exception filter injection attacks.
             try {
-                WindowsImpersonationContext impersonation = RevertImpersonation();
-                try {
-                    for (int i = 0; i < sources.Length; i++) {
-                        string name = options.TempFiles.AddExtension(i + FileExtension);
-                        var temp = new FileStream(name, FileMode.Create, FileAccess.Write, FileShare.Read);
-                        try {
-                            using (var sw = new StreamWriter(temp, Encoding.UTF8)) {
-                                sw.Write(sources[i]);
-                                sw.Flush();
+                using (WindowsImpersonationContext impersonation = RevertImpersonation()) {
+                    try {
+                        for (int i = 0; i < sources.Length; i++) {
+                            string name = options.TempFiles.AddExtension(i + FileExtension);
+                            var temp = new FileStream(name, FileMode.Create, FileAccess.Write, FileShare.Read);
+                            try {
+                                using (var sw = new StreamWriter(temp, Encoding.UTF8)) {
+                                    sw.Write(sources[i]);
+                                    sw.Flush();
+                                }
                             }
+                            finally {
+                                temp.Close();
+                            }
+                            filenames[i] = name;
                         }
-                        finally {
-                            temp.Close();
-                        }
-                        filenames[i] = name;
-                    }
 
-                    results = FromFileBatch(options, filenames);
-                }
-                finally {
-                    ReImpersonate(impersonation);
+                        results = FromFileBatch(options, filenames);
+                    }
+                    finally {
+                        ReImpersonate(impersonation);
+                    }
                 }
             }
             catch {
