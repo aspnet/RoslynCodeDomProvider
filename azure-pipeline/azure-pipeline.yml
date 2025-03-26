@@ -1,0 +1,138 @@
+
+# This Yaml Document has been converted by ESAI Yaml Pipeline Conversion Tool.
+# Please make sure to check all the converted content, it is your team's responsibility to make sure that the pipeline is still valid and functions as expected.
+# The SBOM tasks have been removed because they are not required for the unofficial template.
+# You can manually enable SBOM in the unofficial template if needed, othewise its automatically enabled when using official template. https://eng.ms/docs/cloud-ai-platform/devdiv/one-engineering-system-1es/1es-docs/1es-pipeline-templates/features/sbom
+# This pipeline will be extended to the MicroBuild template
+# The Task 'PublishBuildArtifacts@1' has been converted to an output named 'Publish Artifact: Nuget packages' in the templateContext section.
+trigger: none
+schedules:
+- cron: "0 0 14 * *"
+  branches:
+    include:
+    - main
+  always: true
+resources:
+  repositories:
+  - repository: self
+    type: git
+    ref: refs/heads/main
+  - repository: MicroBuildTemplate
+    type: git
+    name: 1ESPipelineTemplates/MicroBuildTemplate
+    ref: refs/tags/release
+name: $(Date:yyyyMMdd).$(Rev:r)
+variables:
+- name: EnableNuGetPackageRestore
+  value: true
+- name: TeamName
+  value: Asp.Net
+extends:
+  template: azure-pipelines/MicroBuild.1ES.Official.yml@MicroBuildTemplate
+  parameters:
+    sdl:
+      binskim:
+        enable: true
+      codeql:
+        enable: true
+      policheck:
+        enable: true
+      tsa:
+        enable: true
+      sourceAnalysisPool:
+        name: AzurePipelines-EO
+        image: 1ESPT-Windows2022
+        os: windows
+    customBuildTags:
+    - ES365AIMigrationTooling
+    stages:
+    - stage: stage
+      jobs:
+      - job: Phase_1
+        displayName: Phase 1
+        timeoutInMinutes: 180
+        cancelTimeoutInMinutes: 1
+        pool:
+          name: VSEngSS-MicroBuild2019-1ES
+        templateContext:
+          mb:
+            signing:
+              enabled: true
+              signType: test
+              zipSources: false
+          outputs:
+          - output: pipelineArtifact
+            displayName: 'Publish Artifact: Nuget packages'
+            targetPath: bin\Release\Packages
+            artifactName: Nuget packages
+        steps:
+        - checkout: self
+          fetchTags: true
+        - task: NuGetToolInstaller@0
+          displayName: Use NuGet 5.4.0
+          inputs:
+            versionSpec: 5.4.0
+            checkLatest: true
+        - task: NuGetCommand@2
+          displayName: NuGet custom
+          inputs:
+            command: custom
+            arguments: 'install MicroBuild.Core -version 0.3.0 -OutputDirectory .\packages -source https://devdiv.pkgs.visualstudio.com/DefaultCollection/_packaging/MicroBuildToolset/nuget/v3/index.json '
+        - task: NuGetCommand@2
+          displayName: NuGet restore
+          inputs:
+            solution: RoslynCodeProvider.sln
+        - task: MSBuild@1
+          displayName: Build solution RoslynCodeProvider.msbuild
+          inputs:
+            solution: RoslynCodeProvider.msbuild
+            msbuildVersion: 16.0
+            configuration: Release
+            msbuildArguments: /p:GitCommit=%BUILD_SOURCEVERSION% /p:GitCommitLink="https://github.com/aspnet/RoslynCodeDomProvider/commit/%BUILD_SOURCEVERSION%" /p:SignAssembly=true
+            clean: true
+            createLogFile: true
+            logFileVerbosity: detailed
+          timeoutInMinutes: 120
+        - task: CopyFiles@2
+          displayName: Stage dll's for verification
+          inputs:
+            SourceFolder: $(Build.SourcesDirectory)\bin\Release
+            Contents: |-
+              DotNetCompilerPlatformTasks.dll
+              Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
+              System.Management.dll
+            TargetFolder: $(Build.SourcesDirectory)\bin\verify\dlls
+            CleanTargetFolder: true
+            OverWrite: true
+        - task: CopyFiles@2
+          displayName: Stage nupkg for verification
+          inputs:
+            SourceFolder: $(Build.SourcesDirectory)\bin\Release\Packages
+            Contents: |-
+              *.nupkg
+              !*.symbols.nupkg
+            TargetFolder: $(Build.SourcesDirectory)\bin\verify\packages
+            CleanTargetFolder: true
+            OverWrite: true
+        - task: ms-vseng.MicroBuildShipTasks.7c429315-71ba-4cb3-94bb-f829c95f7915.MicroBuildCodesignVerify@2
+          displayName: Verify Signed Files
+          inputs:
+            TargetFolders: $(Build.SourcesDirectory)\bin\verify\dlls
+        - task: ms-vseng.MicroBuildShipTasks.7c429315-71ba-4cb3-94bb-f829c95f7915.MicroBuildCodesignVerify@2
+          displayName: Verify Signed Files
+          inputs:
+            TargetFolders: $(Build.SourcesDirectory)\bin\verify\packages
+            WhiteListPathForCerts: tools/.verif.whitelist
+        # Following article on https://dev.azure.com/devdiv/DevDiv/_wiki/wikis/DevDiv.wiki/25351/APIScan-step-by-step-guide-to-setting-up-a-Pipeline
+        # No longer need the old format, and following guideline to use (ApiScanClientId)
+        - task: APIScan@2
+          displayName: Run APIScan
+          inputs:
+            softwareFolder: '$(Build.SourcesDirectory)\bin\verify\dlls'
+            softwareName: '*'
+            softwareVersionNum: '*'
+            softwareBuildNum: '$(Build.BuildId)'
+            symbolsFolder: '$(Build.SourcesDirectory)\bin\Release;SRV*http://symweb'
+            verbosityLevel: 'none'
+          env:
+            AzureServicesAuthConnectionString: RunAs=App;AppId=$(ApiScanClientId)

@@ -14,7 +14,7 @@
         <VersionStartYear>2020</VersionStartYear>
         <VersionMajor>3</VersionMajor>
         <VersionMinor>6</VersionMinor>
-        <VersionRelease>0</VersionRelease>
+        <VersionRelease>1</VersionRelease>
     </PropertyGroup>
 
     <PropertyGroup Label="NuGet package dependencies">
