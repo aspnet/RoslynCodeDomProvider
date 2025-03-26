@@ -4,9 +4,8 @@
   <Target Name="SetRoslynCompilerFiles" DependsOnTargets="LocateRoslynCompilerFiles">
     <Message Text="Using Roslyn from '$(RoslynToolPath)' folder" />
     <ItemGroup>
-      <RoslynCompilerFiles Include="$(RoslynToolPath)\*">
-        <Link>roslyn\%(RecursiveDir)%(Filename)%(Extension)</Link>
-      </RoslynCompilerFiles>
+      <_RoslynCompilerFilesList Include='$(RoslynToolPath)\**\*' />
+      <RoslynCompilerFiles Include='@(_RoslynCompilerFilesList)' Link="%(RecursiveDir)%(Filename)%(Extension)" />
     </ItemGroup>
   </Target>
 
@@ -28,9 +27,9 @@
   </Target>
 
   <Target Name="CopyRoslynCompilerFilesToOutputDirectory" AfterTargets="CopyFilesToOutputDirectory" DependsOnTargets="LocateRoslynToolsDestinationFolder;SetRoslynCompilerFiles">
-    <Copy SourceFiles="@(RoslynCompilerFiles)" DestinationFolder="$(RoslynToolsDestinationFolder)" ContinueOnError="true" SkipUnchangedFiles="true" Retries="0" />
+    <Copy SourceFiles="@(RoslynCompilerFiles)" DestinationFiles="@(RoslynCompilerFiles -> '$(RoslynToolsDestinationFolder)\%(Link)')" ContinueOnError="true" SkipUnchangedFiles="true" Retries="0" />
     <ItemGroup  Condition="'$(MSBuildLastTaskResult)' == 'True'" >
-      <FileWrites Include="$(RoslynToolsDestinationFolder)\*" />
+      <FileWrites Include="$(RoslynToolsDestinationFolder)\**\*" />
     </ItemGroup>
   </Target>
 
