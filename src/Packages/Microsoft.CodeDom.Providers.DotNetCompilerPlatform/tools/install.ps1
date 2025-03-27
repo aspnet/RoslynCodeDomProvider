@@ -8,7 +8,7 @@
 
 param($installPath, $toolsPath, $package, $project)
 
-$assemblyVersion = '3.11.0.0'
+$assemblyVersion = '3.11.1.0'
 $roslynSubFolder = 'roslyn'
 
 if ($project -eq $null) {
