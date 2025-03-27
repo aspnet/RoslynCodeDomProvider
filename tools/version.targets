@@ -83,7 +83,22 @@ Project global versioning targets.
   </PropertyGroup>
   <Target Name="GenerateVersionFile" DependsOnTargets="$(GenerateVersionFileDependsOn)" />
 
-  <Target Name="GenerateVersionFileCore" Condition="'$(ShouldGenerateVersionFile)' == 'true'">
+  <Target Name="EnsureGitInfo" Condition="'$(GitCommit)' == ''">
+    <Exec Command="git describe --match= --always --dirty --abbrev=40" ConsoleToMSBuild="true" IgnoreExitCode="false" ContinueOnError="true" >
+      <Output PropertyName="GitDescribeOutput" TaskParameter="ConsoleOutput" />
+      <Output PropertyName="GitDescribeExit" TaskParameter="ExitCode" />
+    </Exec>
+    <PropertyGroup Condition="'$(GitDescribeExit)' == '0'">
+      <GitCommit>$(GitDescribeOutput)</GitCommit>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="GenerateVersionFileCore" Condition="'$(ShouldGenerateVersionFile)' == 'true'" DependsOnTargets="EnsureGitInfo">
+    <PropertyGroup>
+      <AssemblyInfoVersion Condition="'$(GitCommit)' != ''">$(VersionMajor).$(VersionMinor).$(VersionRelease)+$(GitCommit)</AssemblyInfoVersion>
+      <AssemblyInfoVersion Condition="'$(AssemblyInfoVersion)' == '' AND '$(VersionBuild)' != ''">$(VersionMajor).$(VersionMinor).$(VersionRelease)-$(VersionBuild)</AssemblyInfoVersion>
+      <AssemblyInfoVersion Condition="'$(AssemblyInfoVersion)' == ''">$(AssemblyFileVersion)</AssemblyInfoVersion>
+    </PropertyGroup>
     <ItemGroup>
       <LinesToWrite Include="// $(SourceFileCopyright)" Condition="'$(SourceFileCopyright)' != ''"/>
       <LinesToWrite Include="// &lt;auto-generated&gt;" />
