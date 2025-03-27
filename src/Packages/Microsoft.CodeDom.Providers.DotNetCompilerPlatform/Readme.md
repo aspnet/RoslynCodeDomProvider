@@ -8,6 +8,15 @@ Please see the blog [Enabling the .NET Compiler Platform (“Roslyn”) in ASP.N
 for an introduction to Microsoft.CodeDom.Providers.DotNetCompilerPlatform. The [project github](https://github.com/aspnet/RoslynCodeDomProvider) also has the most up-to-date documentation of the various settings available for configuring this provider.
 
 ## Updates
++ #### Version 4.5.0
+    - #### Refreshed compilers
+        In keeping with the new versioning scheme for this project, the version has been revved to 4.5 to match the version of the compilers included.
+
+        :information_source: The source of compiler tools in this package has been updated to [Microsoft.Net.Compilers.**Toolset**](https://www.nuget.org/packages/Microsoft.Net.Compilers.Toolset) from the old, deprecated `Microsoft.Net.Compilers` package that had been used before. There shouldn't be any behavioral change due to this change in Roslyn packages.
+
+    - #### Fixed targets-based tool copy
+       The msbuild targets-based identification and copy of Roslyn files to the project output was not working correctly in the last version. This has been fixed to ensure that Roslyn compiler files are copied to the correct location during build.
+
 + #### Version 4.1.0 (preview1)
     - #### Drop install.ps1, Rely more on msbuild
         Nuget has moved on from install.ps1. We had one foot in the msbuild camp before, and one foot still in the install.ps1 camp. Time to just jump in with both feet. See the 'RoslynRegisterInConfig' setting description below.

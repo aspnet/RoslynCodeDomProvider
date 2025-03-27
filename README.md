@@ -5,7 +5,23 @@ Please see the blog [Enabling the .NET Compiler Platform (“Roslyn”) in ASP.N
 for an introduction to Microsoft.CodeDom.Providers.DotNetCompilerPlatform.
 
 ## Updates
-+ #### Version 4.1.0 (preview1)
+
++ #### Version 4.5.0
+    - #### Refreshed compilers
+        In keeping with the new versioning scheme for this project, the version has been revved to 4.5 to match the version of the compilers included.
+
+        :information_source: The source of compiler tools in this package has been updated to [Microsoft.Net.Compilers.**Toolset**](https://www.nuget.org/packages/Microsoft.Net.Compilers.Toolset) from the old, deprecated `Microsoft.Net.Compilers` package that had been used before. There shouldn't be any behavioral change due to this change in Roslyn packages.
+
+    - #### Fixed targets-based tool copy
+       The msbuild targets-based identification and copy of Roslyn files to the project output was not working correctly in the last version. This has been fixed to ensure that Roslyn compiler files are copied to the correct location during build.
+
+    - #### Still .Net >= 4.7.2
+        This change was made with the introduction of the 4.X series of this package. But is worth mentioning here, as the call-out of that change is now hidden in the collapsed section below.
+
+<details>
+<summary>Older Updates</summary>
+
++ #### Version 4.1.0
     - #### :warning: Drop install.ps1, Rely more on msbuild :warning:
         Nuget has moved on from install.ps1. We had one foot in the msbuild camp before, and one foot still in the install.ps1 camp. Time to just jump in with both feet. See the 'RoslynRegisterInConfig' setting description below.
 
@@ -20,7 +36,11 @@ for an introduction to Microsoft.CodeDom.Providers.DotNetCompilerPlatform.
     - #### .Net >= 4.7.2
         As a result of not keeping older compilers packaged in this project, we can no longer support versions before 4.7.2 because compiler versions 3.0 and newer only support 4.7.2+.
 
-+ #### Version 3.11.0 (preview1)
++ #### Version 3.11.1
+    - #### Fixed targets-based tool copy
+       The msbuild targets-based identification and copy of Roslyn files to the project output was not working correctly in the last version. This has been fixed to ensure that Roslyn compiler files are copied to the correct location during build.
+
++ #### Version 3.11.0
     - #### Refreshed compilers
         In keeping with the new versioning scheme for this project, the version has been revved to 3.11 to match the version of the compilers included.
 
@@ -30,6 +50,10 @@ for an introduction to Microsoft.CodeDom.Providers.DotNetCompilerPlatform.
     - #### Non-web apps and 'aspnet:RoslynCompilerLocation'
         The appSetting `aspnet:RoslynCompilerLocation` can still be used to point at a specific download of the Roslyn compiler tools, but this package is hopefully a little more forgiving when searching for a default location and should accomodate both web projects as well as non-web projects without requiring this setting.
       
++ #### Version 3.6.1
+    - #### Fixed targets-based tool copy
+       The msbuild targets-based identification and copy of Roslyn files to the project output was not working correctly in the last version. This has been fixed to ensure that Roslyn compiler files are copied to the correct location during build.
+
 + #### Version 3.6.0
     - #### Refreshed compilers (and versioning)
         This is most likely the update everyone has been looking for. This package contains updated Roslyn bits for newer target frameworks. If your project is targeting 4.7.2 or above, this package will use `Microsoft.Net.Compilers` version 3.5 with your build. You might notice that we have revved our package version to match the most recent compiler version included. For target frameworks 4.6 through 4.7.1, the 2.10 version of compilers is used. (A slight update from 2.9 that shipped with our last package.) And as before, projects targeting 4.5.* will get version 1.3.2 of the compilers. (Note that the language version for 4.6 and above is set to "default", which means C# 7.3 max for full framework projects.)
@@ -55,36 +79,39 @@ for an introduction to Microsoft.CodeDom.Providers.DotNetCompilerPlatform.
 
     - #### What shall I do?
         If you are using Visual Studio 2017 with latest update, you should upgrade Microsoft.CodeDom.Providers.DotNetCompilerPlatform nupkg to 2.0.0 and **remove Microsoft.Net.Compilers nupkg from your project**.
-
+</details>
 
 ## Configurations
 Generally, command-line options for the codedom compilers can be specified using the `compilerOptions` attribute of the compiler when it is registered in configuration. There are however, a handful of options for controlling some behaviors of this package that are not command-line options. These options fall into two broad categories and can be set as follows:
 
 ### Build-time Options
-+ **(V2) Specify the path to copy Roslyn compiler at build time** - When building projects, target files included by the Microsoft.CodeDom.Providers.DotNetCompilerPlatform nupkg will copy appropriate Roslyn compiler into bin\roslyn folder. With this setting, you can specify a custom path from which the build process will copy the Roslyn compiler, rather than using one of the pre-packaged Roslyn compilers.
++ #### <u>Setting: RoslynToolPath</u>
 
-    **Setting name** - RoslynToolPath
+    **(V2) Specify the path to copy Roslyn compiler at build time** - When building projects, target files included by the Microsoft.CodeDom.Providers.DotNetCompilerPlatform nupkg will copy appropriate Roslyn compiler into bin\roslyn folder. With this setting, you can specify a custom path from which the build process will copy the Roslyn compiler, rather than using one of the pre-packaged Roslyn compilers.
 
     **How to use it** - ```msbuild mysolution.sln /t:build /p:RoslynToolPath="[Roslyn compiler folder full path]"```
 
     **Use case** - In 2.0.0 version, Microsoft.CodeDom.Providers.DotNetCompilerPlatform nupkg removes the dependency on Microsoft.Net.Compilers nupkg. Instead, it embeds one version of Roslyn compiler inside the nupkg. It's possible that the embeded version of Roslyn compiler is not the one you want, so through this setting you can specify a version of Roslyn compiler at build time which will be copied to bin\roslyn folder.
 
-+ **(V4) Skip copying Roslyn compiler at build time** - When building projects, target files will copy the appropriate binaries specified by the 'RoslynToolPath' setting described above and copy them into the project output for runtime use. This copy step can be skipped by using this project setting.
++ #### <u>Setting: RoslynCopyToOutDir</u>
 
-    **Setting name** - RoslynCopyToOutDir
+    **(V4) Skip copying Roslyn compiler at build time** - When building projects, target files will copy the appropriate binaries specified by the 'RoslynToolPath' setting described above and copy them into the project output for runtime use. This copy step can be skipped by using this project setting.
 
     **How to use it** - ```msbuild mysolution.sln /t:build /p:RoslynCopyToOutDir="[true|false]"```
 
-+ **(V4) Don't modify config at build time** - CodeDom providers are not magically picked up from referenced assemblies. They must be explicitly registered in config in order to be used. Prior to the Version 4 update, all modifications to config were performed via powershell scripts included in the nuget package. This powershell method worked with 'packages.config' apps, but does not work with 'PackageReference' apps. As more applications move towards the preferred 'PackageReference' way of doing things, we have updated our method of config registration to be an msbuild task instead of a powershell install script. We take care not to stomp over existing settings. But this step gets checked/performed on every build now instead of just on package install. Use this setting to skip the config update.
++ #### <u>Setting: RoslynRegisterInConfig</u>
 
-    **Setting name** - RoslynRegisterInConfig
+    **(V4) Don't modify config at build time** - CodeDom providers are not magically picked up from referenced assemblies. They must be explicitly registered in config in order to be used. Prior to the Version 4 update, all modifications to config were performed via powershell scripts included in the nuget package. This powershell method worked with 'packages.config' apps, but does not work with 'PackageReference' apps. As more applications move towards the preferred 'PackageReference' way of doing things, we have updated our method of config registration to be an msbuild task instead of a powershell install script. We take care not to stomp over existing settings. But this step gets checked/performed on every build now instead of just on package install. Use this setting to skip the config update.
 
     **How to use it** - ```msbuild mysolution.sln /t:build /p:RoslynRegisterInConfig="[true|false]"```
 
     **Use case** - This config-manipulation step happens on ever build. (Even designer builds.) We take care to be as non-invasive as possible, but if you want us to stay entirely hands-off and update your config registrations manually, this setting enables that.
 
 ### Run-time Options
-+ **Specify the path to load Roslyn compiler at runtime** - When asp.net compiles the views at runtime or precompile time(using aspnet_compiler to precompile the web app), Microsoft.CodeDom.Providers.DotNetCompilerPlatform needs a path to load Roslyn compiler. This setting can be used to specify this loading path. 
+
++ #### <u>Roslyn Compiler Location</u>
+
+    **Specify the path to load Roslyn compiler at runtime** - When asp.net compiles the views at runtime or precompile time(using aspnet_compiler to precompile the web app), Microsoft.CodeDom.Providers.DotNetCompilerPlatform needs a path to load Roslyn compiler. This setting can be used to specify this loading path. 
         
     1. **Environment variable** - This is the first setting Microsoft.CodeDom.Providers.DotNetCompilerPlatform reads. If this setting is used, Microsoft.CodeDom.Providers.DotNetCompilerPlatform will ignore the other setting.    
 
@@ -112,7 +139,9 @@ Generally, command-line options for the codedom compilers can be specified using
 
     4. **Default setting** - The default location is bin\roslyn folder.
 
-+ **Specify the TTL of Roslyn compiler server** - Microsoft.CodeDom.Providers.DotNetCompilerPlatform leverages Roslyn compiler server(VBCSCompiler.exe) to compile the generated code. In order to save system resources, VBCSCompiler.exe will be shutdown after idling 10 seconds in the server environment. However, in the development environment(running your web application from visual studio) the idle time is set to 15 mininutes. The reason behind this is to improve the startup performance of your web application when you run/debug the application in Visual Studio, since VBCSCompiler.exe takes several seconds to start if relevant Roslyn assemblies are not NGen'd. With this setting, you can control the idle time of VBCSCompiler.exe.
++ #### <u>Roslyn Server TTL</u>
+
+    **Specify the TTL of Roslyn compiler server** - Microsoft.CodeDom.Providers.DotNetCompilerPlatform leverages Roslyn compiler server(VBCSCompiler.exe) to compile the generated code. In order to save system resources, VBCSCompiler.exe will be shutdown after idling 10 seconds in the server environment. However, in the development environment(running your web application from visual studio) the idle time is set to 15 mininutes. The reason behind this is to improve the startup performance of your web application when you run/debug the application in Visual Studio, since VBCSCompiler.exe takes several seconds to start if relevant Roslyn assemblies are not NGen'd. With this setting, you can control the idle time of VBCSCompiler.exe.
 
     1. **Environment variable** - This is the first setting Microsoft.CodeDom.Providers.DotNetCompilerPlatform reads. If this setting is used, Microsoft.CodeDom.Providers.DotNetCompilerPlatform will ignore the other setting.    
 
@@ -128,7 +157,9 @@ Generally, command-line options for the codedom compilers can be specified using
 
         **How to use it** - Add this providerOption into your config file under the `system.codedom/compilers/compiler` to which you want it to apply.
         
-+ **Disable ASP.Net "Magic"** - If the helpful manipulation of `compilerOptions` for running smoothly in an ASP.Net environment is not so helpful for your environment, you can disable this and Microsoft.CodeDom.Providers.DotNetCompilerPlatform will get out of your way, using the `compilerOptions` provided to it with no additions or manipulations.
++ #### <u>ASP.Net "Magic"</u>
+
+    **Disable ASP.Net "Magic"** - If the helpful manipulation of `compilerOptions` for running smoothly in an ASP.Net environment is not so helpful for your environment, you can disable this and Microsoft.CodeDom.Providers.DotNetCompilerPlatform will get out of your way, using the `compilerOptions` provided to it with no additions or manipulations.
 
     **Provider Option** - This is the only option to specify whether `compilerOptions` manipulation should happen automatically or not.
 
@@ -136,7 +167,9 @@ Generally, command-line options for the codedom compilers can be specified using
 
     **How to use it** - Add this providerOption into your config file under the `system.codedom/compilers/compiler` to which you want it to apply.
 
-+ **Treat Warnings as Errors** - This `System.CodeDom.Compiler.CompilerParameters` property is unfortunately at a conflict with ability to tell the compiler how to behave directly with a `compilerOption`. Prior to v3.5, Microsoft.CodeDom.Providers.DotNetCompilerPlatform would always set this to false. Now developers have a choice in how to manage this conflict.
++ #### <u>Warnings as Errors</u>
+
+    **Treat Warnings as Errors** - This `System.CodeDom.Compiler.CompilerParameters` property is unfortunately at a conflict with ability to tell the compiler how to behave directly with a `compilerOption`. Prior to v3.5, Microsoft.CodeDom.Providers.DotNetCompilerPlatform would always set this to false. Now developers have a choice in how to manage this conflict.
 
     **Provider Option** - `<providerOption name="WarnAsError" value="[true|false]" />` - The default is false.
 
