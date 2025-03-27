@@ -64,12 +64,13 @@
     <ReferencePackagesPath>$(RepositoryRoot)packages\</ReferencePackagesPath>
     <SourceRootFullPath>$(RepositoryRoot)\src\$(MSBuildProjectName)\</SourceRootFullPath>
     <NuGetScriptDirectory>$(MSBuildProjectDirectory)\tools</NuGetScriptDirectory>
+    <NuGetBuildDirectory>$(MSBuildProjectDirectory)\build</NuGetBuildDirectory>
     <NuGetProcessedScriptSubDirectory>pp</NuGetProcessedScriptSubDirectory>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(MSBuildProjectExtension)' == '.nuproj'">
     <NuGetScriptFiles Include="$(NuGetScriptDirectory)\*.ps1" />
-    <NuGetSharedScriptFiles Include="$(NuGetSharedScriptDirectory)\*.ps1" />
+    <NuGetBuildTargets Include="$(NuGetBuildDirectory)\*.targets" />
   </ItemGroup>
 
   <Import Project="$(MSBuildThisFileDirectory)version.targets" Condition="'$(MSBuildProjectExtension)' == '.nuproj'"/>
@@ -82,6 +83,24 @@
         GitCommitLink=$(GitCommitLink);
       </NuSpecProperties>
     </PropertyGroup>
+  </Target>
+
+  <Target Name="PreprocessNuGetScripts" BeforeTargets="GetNugetContentFromProject"> <!-- AfterTargets="GenerateNuSpecFile"> -->
+    <ItemGroup>
+      <PropertiesToReplace Include="roslynToolPath">
+        <Value>tools\roslyn-$(MSNetCompilersNuGetPackageVersion)</Value>
+      </PropertiesToReplace>
+      <PropertiesToReplace Include="compilerPlatformFQAN">
+        <Value>Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=$(AssemblyVersion), Culture=neutral, PublicKeyToken=31bf3856ad364e35</Value>
+      </PropertiesToReplace>
+      <PropertiesToReplace Include="providerVersion">
+        <Value>$(AssemblyVersion)</Value>
+      </PropertiesToReplace>
+    </ItemGroup>
+
+    <PreprocessFiles Files="@(NuGetScriptFiles)" OutputDir="$(NuGetScriptDirectory)\$(NuGetProcessedScriptSubDirectory)" PropertyCollection="@(PropertiesToReplace)" />
+    <!-- Signing targets use the name 'NuGetProcessScriptSubDirectory'... but we can use the same convention here, even if we're not signing targets files. -->
+    <PreprocessFiles Files="@(NuGetBuildTargets)" OutputDir="$(NuGetBuildDirectory)\$(NuGetProcessedScriptSubDirectory)" PropertyCollection="@(PropertiesToReplace)" />
   </Target>
 
   <!-- Test recognition -->

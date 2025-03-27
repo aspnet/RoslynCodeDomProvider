@@ -12,22 +12,6 @@
     <DownloadRoslynBinaries NupkgToolPath="$(NupkgToolPath)" LocalRoslynFolderName="$(LocalRoslynFolderName)" ReferenceRoslynNupkgVersion="$(MSNetCompilersNuGetPackageVersion)" />
   </Target>
 
-  <!-- Preprocess token replacement in some content before packing -->
-  <ItemGroup>
-    <PropertiesToReplace Include="roslynToolPath">
-      <Value>tools\roslyn-$(MSNetCompilersNuGetPackageVersion)</Value>
-    </PropertiesToReplace>
-    <PropertiesToReplace Include="compilerPlatformFQAN">
-      <Value>Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=$(AssemblyVersion), Culture=neutral, PublicKeyToken=31bf3856ad364e35</Value>
-    </PropertiesToReplace>
-  </ItemGroup>
-  <ItemGroup>
-    <NuGetPackageBuildTargets Include="build\*.targets" />
-  </ItemGroup>
-  <Target Name="PreprocessNuGetScripts" BeforeTargets="GetNugetContentFromProject">
-    <PreprocessFiles Files="@(NuGetPackageBuildTargets)" OutputDir="build.pp" PropertyCollection="@(PropertiesToReplace)" />
-  </Target>
-
   <!-- Content to pack -->
   <ItemGroup>
     <NuGetContent Include="$(AssemblyName).dll">

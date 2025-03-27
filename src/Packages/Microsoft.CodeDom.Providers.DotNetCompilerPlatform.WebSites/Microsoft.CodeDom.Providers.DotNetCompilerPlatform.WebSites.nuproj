@@ -8,19 +8,6 @@
     <NuGetPackSymbols>false</NuGetPackSymbols>
   </PropertyGroup>
 
-  <!-- Preprocess token replacement in some content before packing -->
-  <ItemGroup>
-    <PropertiesToReplace Include="providerVersion">
-      <Value>$(AssemblyVersion)</Value>
-    </PropertiesToReplace>
-  </ItemGroup>
-  <ItemGroup>
-    <NuGetPackageBuildTargets Include="tools\*.ps1" />
-  </ItemGroup>
-  <Target Name="PreprocessNuGetScripts" BeforeTargets="GetNugetContentFromProject">
-    <PreprocessFiles Files="@(NuGetPackageBuildTargets)" OutputDir="tools.pp" PropertyCollection="@(PropertiesToReplace)" />
-  </Target>
-  
   <ItemGroup>
     <NuGetContentProject Include="$(RepositoryRoot)\src\DotNetCompilerPlatform\DotNetCompilerPlatform.csproj" />
     <NuGetContent Include="Content\web.config.install.xdt">
@@ -29,10 +16,7 @@
     <NuGetContent Include="Content\web.config.uninstall.xdt">
       <Destination>content\net472\web.config.uninstall.xdt</Destination>
     </NuGetContent>
-    <NuGetContent Include="tools.pp\*.ps1" Condition="'$(SignAssembly)' != 'true'">
-      <Destination>tools</Destination>
-    </NuGetContent>
-    <NuGetContent Include="tools.pp\signed\*.ps1" Condition="'$(SignAssembly)' == 'true'">
+    <NuGetContent Include="tools\pp\*.ps1">
       <Destination>tools</Destination>
     </NuGetContent>
     <NuGetContent Include="Readme.md">
