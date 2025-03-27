@@ -5,7 +5,11 @@ Please see the blog [Enabling the .NET Compiler Platform (“Roslyn”) in ASP.N
 for an introduction to Microsoft.CodeDom.Providers.DotNetCompilerPlatform.
 
 ## Updates
-+ #### Version 3.11.0 (preview1)
++ #### Version 3.11.1
+    - #### Fixed targets-based tool copy
+        The msbuild targets-based identification and copy of Roslyn files to the project output was not working correctly in the last version. This has been fixed to ensure that Roslyn compiler files are copied to the correct location during build.
+
++ #### Version 3.11.0
     - #### Refreshed compilers
         In keeping with the new versioning scheme for this project, the version has been revved to 3.11 to match the version of the compilers included.
 
@@ -15,6 +19,10 @@ for an introduction to Microsoft.CodeDom.Providers.DotNetCompilerPlatform.
     - #### Non-web apps and 'aspnet:RoslynCompilerLocation'
         The appSetting `aspnet:RoslynCompilerLocation` can still be used to point at a specific download of the Roslyn compiler tools, but this package is hopefully a little more forgiving when searching for a default location and should accomodate both web projects as well as non-web projects without requiring this setting.
       
++ #### Version 3.6.1
+    - #### Fixed targets-based tool copy
+        The msbuild targets-based identification and copy of Roslyn files to the project output was not working correctly in the last version. This has been fixed to ensure that Roslyn compiler files are copied to the correct location during build.
+
 + #### Version 3.6.0
     - #### Refreshed compilers (and versioning)
         This is most likely the update everyone has been looking for. This package contains updated Roslyn bits for newer target frameworks. If your project is targeting 4.7.2 or above, this package will use `Microsoft.Net.Compilers` version 3.5 with your build. You might notice that we have revved our package version to match the most recent compiler version included. For target frameworks 4.6 through 4.7.1, the 2.10 version of compilers is used. (A slight update from 2.9 that shipped with our last package.) And as before, projects targeting 4.5.* will get version 1.3.2 of the compilers. (Note that the language version for 4.6 and above is set to "default", which means C# 7.3 max for full framework projects.)
