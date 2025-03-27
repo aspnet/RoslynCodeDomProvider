@@ -25,6 +25,7 @@ Project global versioning targets.
        Most of the interesting ones are already set in each project's individual settings file.
   -->
   <PropertyGroup>
+    <_PreventVSPropertyCaching>$([System.DateTime]::Now.Ticks)</_PreventVSPropertyCaching>
     <VersionStartYear Condition="'$(VersionStartYear)' == ''">INVALID_VersionStartYear</VersionStartYear>
     <VersionMajor Condition="'$(VersionMajor)' == ''">INVALID_VersionMajor</VersionMajor>
     <VersionMinor Condition="'$(VersionMinor)' == ''">INVALID_VersionMinor</VersionMinor>
@@ -37,24 +38,20 @@ Project global versioning targets.
   <!-- Comptued parameters -->
 
   <PropertyGroup>
+    <_PreventVSPropertyCaching2>$([System.DateTime]::Now.Ticks)</_PreventVSPropertyCaching2>
     <AssemblyVersion>$(VersionMajor).$(VersionMinor).$(VersionRevision).$(VersionBuild)</AssemblyVersion>
     <AssemblyFileVersion>$(VersionMajor).$(VersionMinor).$(VersionRevision).$(VersionBuild)</AssemblyFileVersion>
     <AssemblyInfoVersion>$(VersionMajor).$(VersionMinor).$(VersionRelease)-$(VersionBuild)</AssemblyInfoVersion>
     <AssemblyVersionFile>$(IntermediateOutputPath)$(MSBuildProjectName).version.cs</AssemblyVersionFile>
-  </PropertyGroup>
-
-  <PropertyGroup>
+    <SatelliteContractVersion Condition="'$(SatelliteContractVersion)' == ''">$(AssemblyVersion)</SatelliteContractVersion>
     <NuGetPackageVersion Condition="'$(NuGetPackageVersion)' == ''">$(VersionMajor).$(VersionMinor).$(VersionRelease)</NuGetPackageVersion>
   </PropertyGroup>
+
   <PropertyGroup Label="Add prerelease tag to non-rtm releases" Condition="'$(BuildQuality)' != 'rtm'">
     <NuGetPackageVersion>$(NuGetPackageVersion)-$(BuildQuality)</NuGetPackageVersion>
   </PropertyGroup>
   <PropertyGroup Label="Add date-stamp to 'preview' releases" Condition="'$(BuildQuality)' == 'preview'">
     <NuGetPackageVersion>$(NuGetPackageVersion)$(VersionBuild)</NuGetPackageVersion>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <SatelliteContractVersion Condition="'$(SatelliteContractVersion)' == ''">$(AssemblyVersion)</SatelliteContractVersion>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(VersionFileGenerationEnabled)' == 'true'">

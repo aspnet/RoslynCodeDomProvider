@@ -2,7 +2,6 @@
 
   <!-- Configurable properties-->
   <PropertyGroup>
-    <_PreventVersionPropertyCaching>$([System.DateTime]::Now.Ticks)</_PreventVersionPropertyCaching>
     <!-- Versioning:
             Major:	'Major' for Assembly, File, Info, and Package.
             Minor:	'Minor' for Assembly, File, Info, and Package.
@@ -13,7 +12,8 @@
 
          Most of the interesting ones are already set in each project's individual settings file.
     -->
-    <BuildQuality Condition="'$(BuildQuality)' == ''">rtm</BuildQuality>
+    <!--<_PreventVersionPropertyCaching4>$([System.DateTime]::Now.Ticks)</_PreventVersionPropertyCaching4>-->
+    <BuildQuality Condition="'$(BuildQuality)' == ''">preview1</BuildQuality>
     <VersionStartYear>2025</VersionStartYear>
     <VersionMajor>4</VersionMajor>
     <VersionMinor>5</VersionMinor>
