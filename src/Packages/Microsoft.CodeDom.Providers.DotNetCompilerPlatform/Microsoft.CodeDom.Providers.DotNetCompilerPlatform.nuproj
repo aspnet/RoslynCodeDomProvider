@@ -35,7 +35,7 @@
       <Source>$(OutputPath)</Source>
       <Destination>tasks</Destination>
     </NuGetContent>
-    <NuGetContent Include="build.pp\*">
+    <NuGetContent Include="build\pp\*">
       <Destination>build\net472</Destination>
     </NuGetContent>
     <NuGetContent Include="tools\$(LocalRoslynFolderName)\*">
