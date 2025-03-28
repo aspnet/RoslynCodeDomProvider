@@ -12,7 +12,7 @@
 
          Most of the interesting ones are already set in each project's individual settings file.
     -->
-    <_PreventVersionPropertyCaching>$([System.DateTime]::Now.Ticks)</_PreventVersionPropertyCaching>
+    <!-- <_PreventVersionPropertyCaching>$([System.DateTime]::Now.Ticks)</_PreventVersionPropertyCaching> -->
     <BuildQuality Condition="'$(BuildQuality)' == ''">preview1</BuildQuality>
     <VersionStartYear>2025</VersionStartYear>
     <VersionMajor>4</VersionMajor>

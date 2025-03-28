@@ -9,7 +9,7 @@
 
 param($installPath, $toolsPath, $package, $project)
 
-$assemblyVersion = '4.1.0.0'
+$assemblyVersion = '$providerVersion$'
 
 if ($project -eq $null) {
     $project = Get-Project
