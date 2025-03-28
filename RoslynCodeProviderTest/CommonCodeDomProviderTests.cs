@@ -12,8 +12,8 @@ namespace Microsoft.CodeDom.Providers.DotNetCompilerPlatformTest {
 
     public class CommonCodeDomProviderTests
     {
-        public static readonly Version ExpectedVersion = new Version(4, 5, 0, 0); // Maj, Min, Build, Rev
-        public static readonly string ExpectedNugetVersion = "4.5.0-preview1";
+        public static readonly Version ExpectedVersion = new Version(4, 13, 0, 0); // Maj, Min, Build, Rev
+        public static readonly string ExpectedNugetVersion = "4.13.0-preview1";
 
         private const int Failed = 1;
         private const int Success = 0;

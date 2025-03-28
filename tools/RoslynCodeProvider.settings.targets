@@ -12,18 +12,18 @@
 
          Most of the interesting ones are already set in each project's individual settings file.
     -->
-    <!--<_PreventVersionPropertyCaching4>$([System.DateTime]::Now.Ticks)</_PreventVersionPropertyCaching4>-->
+    <_PreventVersionPropertyCaching>$([System.DateTime]::Now.Ticks)</_PreventVersionPropertyCaching>
     <BuildQuality Condition="'$(BuildQuality)' == ''">preview1</BuildQuality>
     <VersionStartYear>2025</VersionStartYear>
     <VersionMajor>4</VersionMajor>
-    <VersionMinor>5</VersionMinor>
+    <VersionMinor>13</VersionMinor>
     <VersionRevision>0</VersionRevision>
     <VersionRelease>0</VersionRelease>
     <VersionBuild>0</VersionBuild>
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet package dependencies">
-    <MSNetCompilersNuGetPackageVersion>4.5.0</MSNetCompilersNuGetPackageVersion>
+    <MSNetCompilersNuGetPackageVersion>4.13.0</MSNetCompilersNuGetPackageVersion>
   </PropertyGroup>
 
   <!-- Common Properties & Imports -->

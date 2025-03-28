@@ -6,6 +6,18 @@ for an introduction to Microsoft.CodeDom.Providers.DotNetCompilerPlatform.
 
 ## Updates
 
++ #### Version 4.13.0
+    - #### Refreshed compilers
+        In keeping with the new versioning scheme for this project, the version has been revved to 4.13 to match the version of the compilers included.
+
+        :information_source: The source of compiler tools in this package has been updated to [Microsoft.Net.Compilers.**Toolset**](https://www.nuget.org/packages/Microsoft.Net.Compilers.Toolset) from the old, deprecated `Microsoft.Net.Compilers` package that had been used before. There shouldn't be any behavioral change due to this change in Roslyn packages.
+
+    - #### Still .Net >= 4.7.2
+        This change was made with the introduction of the 4.X series of this package. But is worth mentioning here, as the call-out of that change is now hidden in the collapsed section below.
+
+<details>
+<summary>Older Updates</summary>
+
 + #### Version 4.5.0
     - #### Refreshed compilers
         In keeping with the new versioning scheme for this project, the version has been revved to 4.5 to match the version of the compilers included.
@@ -17,9 +29,6 @@ for an introduction to Microsoft.CodeDom.Providers.DotNetCompilerPlatform.
 
     - #### Still .Net >= 4.7.2
         This change was made with the introduction of the 4.X series of this package. But is worth mentioning here, as the call-out of that change is now hidden in the collapsed section below.
-
-<details>
-<summary>Older Updates</summary>
 
 + #### Version 4.1.0
     - #### :warning: Drop install.ps1, Rely more on msbuild :warning:
