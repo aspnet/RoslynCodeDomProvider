@@ -9,7 +9,24 @@
 
   <!-- Get the Roslyn toolset -->
   <Target Name="DownloadRoslynBinariesToToolsFolder" BeforeTargets="GetNugetContentFromProject">
-    <DownloadRoslynBinaries NupkgToolPath="$(NupkgToolPath)" LocalRoslynFolderName="$(LocalRoslynFolderName)" ReferenceRoslynNupkgVersion="$(MSNetCompilersNuGetPackageVersion)" />
+    <PropertyGroup>
+      <RoslynPackageInstallPath>$(IntermediateOutputPath)RoslynPackage</RoslynPackageInstallPath>
+      <RoslynPackageExtractPath>$(RoslynPackageInstallPath)\Microsoft.Net.Compilers.Toolset</RoslynPackageExtractPath>
+      <RoslynPackageToolsPath>$(NupkgToolPath)$(LocalRoslynFolderName)</RoslynPackageToolsPath>
+    </PropertyGroup>
+
+    <RemoveDir Directories="$(RoslynPackageInstallPath);$(RoslynPackageToolsPath)" />
+    <MakeDir Directories="$(RoslynPackageInstallPath)" />
+    <Exec Command="&quot;$(NuGetExePath)&quot; install Microsoft.Net.Compilers.Toolset -Version &quot;$(MSNetCompilersNuGetPackageVersion)&quot; -ConfigFile &quot;$(RepositoryRoot).nuget\NuGet.Config&quot; -OutputDirectory &quot;$(RoslynPackageInstallPath)&quot; -ExcludeVersion -DirectDownload -NoCache -NonInteractive"
+          LogStandardErrorAsError="true" />
+
+    <ItemGroup>
+      <RoslynCompilerFile Include="$(RoslynPackageExtractPath)\tasks\net472\*" />
+    </ItemGroup>
+    <Error Condition="'@(RoslynCompilerFile)' == ''"
+           Text="Microsoft.Net.Compilers.Toolset $(MSNetCompilersNuGetPackageVersion) did not contain any files under tasks\net472." />
+    <MakeDir Directories="$(RoslynPackageToolsPath)" />
+    <Copy SourceFiles="@(RoslynCompilerFile)" DestinationFolder="$(RoslynPackageToolsPath)" />
   </Target>
 
   <!-- Content to pack -->
