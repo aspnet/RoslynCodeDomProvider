@@ -33,7 +33,35 @@
     <!-- We really only need to do this in the Packages project. It's superfluous and causing intermittent
         build errors in all the other projects. -->
     <Target Name="DownloadRoslynBinariesToToolsFolder" Condition="'$(MSBuildProjectExtension)' == '.nuproj'">
-        <DownloadRoslynBinaries NupkgToolPath="$(NupkgToolPath)" LocalRoslyn46FolderName="$(LocalRoslyn46FolderName)" LocalRoslyn472FolderName="$(LocalRoslyn472FolderName)" 
-            ReferenceRoslyn46NupkgVersion="$(MSNetCompilers46NuGetPackageVersion)" ReferenceRoslyn472NupkgVersion="$(MSNetCompilers472NuGetPackageVersion)" />
+        <PropertyGroup>
+            <Roslyn46PackageInstallPath>$(IntermediateOutputPath)RoslynPackage-46</Roslyn46PackageInstallPath>
+            <Roslyn46PackageExtractPath>$(Roslyn46PackageInstallPath)\Microsoft.Net.Compilers</Roslyn46PackageExtractPath>
+            <Roslyn46Version>$(MSNetCompilers46NuGetPackageVersion)</Roslyn46Version>
+            <Roslyn46PackageToolsPath>$(NupkgToolPath)$(LocalRoslyn46FolderName)</Roslyn46PackageToolsPath>
+
+            <Roslyn472PackageInstallPath>$(IntermediateOutputPath)RoslynPackage-472</Roslyn472PackageInstallPath>
+            <Roslyn472PackageExtractPath>$(Roslyn472PackageInstallPath)\Microsoft.Net.Compilers</Roslyn472PackageExtractPath>
+            <Roslyn472Version>$(MSNetCompilers472NuGetPackageVersion)</Roslyn472Version>
+            <Roslyn472PackageToolsPath>$(NupkgToolPath)$(LocalRoslyn472FolderName)</Roslyn472PackageToolsPath>
+        </PropertyGroup>
+
+        <RemoveDir Directories="$(Roslyn46PackageInstallPath);$(Roslyn46PackageToolsPath);$(Roslyn472PackageInstallPath);$(Roslyn472PackageToolsPath)" />
+        <MakeDir Directories="$(Roslyn46PackageInstallPath);$(Roslyn472PackageInstallPath)" />
+        <Exec Command="&quot;$(NuGetExePath)&quot; install Microsoft.Net.Compilers -Version &quot;$(MSNetCompilers46NuGetPackageVersion)&quot; -ConfigFile &quot;$(RepositoryRoot).nuget\NuGet.Config&quot; -OutputDirectory &quot;$(Roslyn46PackageInstallPath)&quot; -ExcludeVersion -DirectDownload -NoCache -NonInteractive"
+            LogStandardErrorAsError="true" />
+        <Exec Command="&quot;$(NuGetExePath)&quot; install Microsoft.Net.Compilers -Version &quot;$(MSNetCompilers472NuGetPackageVersion)&quot; -ConfigFile &quot;$(RepositoryRoot).nuget\NuGet.Config&quot; -OutputDirectory &quot;$(Roslyn472PackageInstallPath)&quot; -ExcludeVersion -DirectDownload -NoCache -NonInteractive"
+            LogStandardErrorAsError="true" />
+
+        <ItemGroup>
+            <Roslyn46CompilerFile Include="$(Roslyn46PackageExtractPath)\tools\*" />
+            <Roslyn472CompilerFile Include="$(Roslyn472PackageExtractPath)\tools\*" />
+        </ItemGroup>
+        <Error Condition="'@(Roslyn46CompilerFile)' == ''"
+            Text="Microsoft.Net.Compilers $(MSNetCompilers46NuGetPackageVersion) did not contain any files under 'tools'. ($(Roslyn46PackageExtractPath))" />
+        <Error Condition="'@(Roslyn472CompilerFile)' == ''"
+            Text="Microsoft.Net.Compilers $(MSNetCompilers472NuGetPackageVersion) did not contain any files under 'tools'. ($(Roslyn472PackageExtractPath))" />
+        <MakeDir Directories="$(Roslyn46PackageToolsPath);$(Roslyn472PackageToolsPath)" />
+        <Copy SourceFiles="@(Roslyn46CompilerFile)" DestinationFolder="$(Roslyn46PackageToolsPath)" />
+        <Copy SourceFiles="@(Roslyn472CompilerFile)" DestinationFolder="$(Roslyn472PackageToolsPath)" />
     </Target>
 </Project>
