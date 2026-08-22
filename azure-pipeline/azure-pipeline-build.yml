@@ -28,9 +28,9 @@ stages:
       - output: pipelineArtifact
         displayName: 'Publish Artifact: Nuget packages'
         artifactName: Nuget packages
-        targetPath: $(Build.SourcesDirectory)\.binaries\Packages\Release
+        targetPath: $(Build.SourcesDirectory)\bin\Release\Packages
         sbomEnabled: true
-        sbomBuildComponentPath: $(Build.SourcesDirectory)\.binaries\Packages\Release
+        sbomBuildComponentPath: $(Build.SourcesDirectory)\bin\Release\Packages
         sbomPackageName: Microsoft.CodeDom.Providers.DotNetCompilerPlatform
         sbomValidate: true
     steps:
@@ -71,44 +71,44 @@ stages:
     - task: CopyFiles@2
       displayName: Stage dll's for verification
       inputs:
-        SourceFolder: $(Build.SourcesDirectory)\.binaries\bin\Release
+        SourceFolder: $(Build.SourcesDirectory)\bin\Release
         Contents: |
           DotNetCompilerPlatformTasks.dll
           Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
           System.Management.dll
-        TargetFolder: $(Build.SourcesDirectory)\.binaries\verify\dlls
+        TargetFolder: $(Build.SourcesDirectory)\bin\Release\verify\dlls
         CleanTargetFolder: true
         OverWrite: true
     - task: CopyFiles@2
       displayName: Stage nupkg's for verification
       inputs:
-        SourceFolder: $(Build.SourcesDirectory)\.binaries\Packages\Release
+        SourceFolder: $(Build.SourcesDirectory)\bin\Release\Packages
         Contents: |
           *.nupkg
           !*.symbols.nupkg
-        TargetFolder: $(Build.SourcesDirectory)\.binaries\verify\packages
+        TargetFolder: $(Build.SourcesDirectory)\bin\Release\verify\packages
         CleanTargetFolder: true
         OverWrite: true
     - task: ms-vseng.MicroBuildShipTasks.7c429315-71ba-4cb3-94bb-f829c95f7915.MicroBuildCodesignVerify@1
       displayName: Verify Signed Binaries
       inputs:
-        TargetFolder: $(Build.SourcesDirectory)\.binaries\verify\dlls
+        TargetFolder: $(Build.SourcesDirectory)\bin\Release\verify\dlls
         ExcludeFolders: .git MicroBuild apiscan
     - task: ms-vseng.MicroBuildShipTasks.7c429315-71ba-4cb3-94bb-f829c95f7915.MicroBuildCodesignVerify@1
       displayName: Verify Signed Packages
       inputs:
-        TargetFolder: $(Build.SourcesDirectory)\.binaries\verify\packages
+        TargetFolder: $(Build.SourcesDirectory)\bin\Release\verify\packages
         WhiteListPathForCerts: $(Build.SourcesDirectory)\tools\.verif.whitelist
         ExcludeFolders: .git MicroBuild decomp *.xml
     # APIScan is an explicit API Usage compliance scan; it is not injected by the 1ES template.
     - task: APIScan@2
       displayName: Run APIScan
       inputs:
-        softwareFolder: '$(Build.SourcesDirectory)\.binaries\verify\dlls'
+        softwareFolder: '$(Build.SourcesDirectory)\bin\Release\verify\dlls'
         softwareName: 'Microsoft.CodeDom.Providers.DotNetCompilerPlatform'
         softwareVersionNum: '*'
         softwareBuildNum: '$(Build.BuildId)'
-        symbolsFolder: '$(Build.SourcesDirectory)\.binaries\bin\Release;SRV*http://symweb'
+        symbolsFolder: '$(Build.SourcesDirectory)\bin\Release;SRV*http://symweb'
         verbosityLevel: 'none'
         toolVersion: 'Latest'
         azureSubscription: 'VSEng-APIScanSC'
