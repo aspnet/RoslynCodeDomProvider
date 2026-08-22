@@ -16,14 +16,14 @@
     <BuildQuality Condition="'$(BuildQuality)' == ''">preview1</BuildQuality>
     <VersionStartYear>2025</VersionStartYear>
     <VersionMajor>4</VersionMajor>
-    <VersionMinor>13</VersionMinor>
+    <VersionMinor>14</VersionMinor>
     <VersionRevision>0</VersionRevision>
     <VersionRelease>0</VersionRelease>
     <VersionBuild>0</VersionBuild>
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet package dependencies">
-    <MSNetCompilersNuGetPackageVersion>4.13.0</MSNetCompilersNuGetPackageVersion>
+    <MSNetCompilersNuGetPackageVersion>4.14.0</MSNetCompilersNuGetPackageVersion>
   </PropertyGroup>
 
   <!-- Common Properties & Imports -->
